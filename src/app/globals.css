@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #00152f;
+  --color-navy-2: #0a2547;
+  --color-navy-3: #000d1f;
+  --color-ink: #15263f;
+  --color-gold: #e29f5b;
+  --color-gold-2: #ebc08a;
+  --color-cream: #f3eee6;
+  --color-cream-2: #f4efe6;
+
+  --font-sans: var(--font-manrope), "PT Sans", system-ui, sans-serif;
+  --font-serif: var(--font-playfair), "PT Serif", Georgia, serif;
+
+  --animate-kenburns: kenburns 26s ease-in-out infinite alternate;
+  --animate-scrolln: scrolln 2.1s ease-in-out infinite;
+  --animate-dash: dash 14s linear infinite;
+  --animate-pulse-dot: pulse-dot 2.4s ease-out infinite;
+  --animate-fly: fly 9s ease-in-out infinite;
+
+  @keyframes kenburns {
+    from { transform: scale(1.06); }
+    to { transform: scale(1.16) translate(-2%, 1.5%); }
+  }
+  @keyframes scrolln {
+    0%, 100% { opacity: 0.3; transform: scaleY(0.6); }
+    50% { opacity: 1; transform: scaleY(1); }
+  }
+  @keyframes dash {
+    to { stroke-dashoffset: -200; }
+  }
+  @keyframes pulse-dot {
+    0% { box-shadow: 0 0 0 0 rgb(226 159 91 / 0.5); }
+    70% { box-shadow: 0 0 0 18px rgb(226 159 91 / 0); }
+    100% { box-shadow: 0 0 0 0 rgb(226 159 91 / 0); }
+  }
+  @keyframes fly {
+    0% { left: 55%; top: 28%; transform: translate(-50%, -50%) rotate(120deg); }
+    50% { left: 70%; top: 50%; transform: translate(-50%, -50%) rotate(150deg); }
+    100% { left: 72%; top: 68%; transform: translate(-50%, -50%) rotate(165deg); opacity: 0; }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply overflow-x-hidden bg-navy font-sans text-base leading-[1.6] text-cream antialiased;
+  }
+  ::selection {
+    @apply bg-gold/85 text-navy;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+  }
+}
+
+/* Inline icon box: sizes a lucide <svg> to the current font size. */
+@utility lic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.14em;
+  flex: none;
+
+  & > svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    stroke-width: 1.6;
+  }
+}
+
+/* Scroll-reveal classes toggled from the useReveal hook. */
+@layer components {
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition:
+      opacity 0.9s cubic-bezier(0.2, 0.7, 0.3, 1),
+      transform 0.9s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: none;
+  }
+  .d1 { transition-delay: 0.1s; }
+  .d2 { transition-delay: 0.2s; }
+  .d3 { transition-delay: 0.3s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+    .animate-kenburns,
+    .animate-fly,
+    .animate-pulse-dot {
+      animation: none;
+    }
+  }
+}

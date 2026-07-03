@@ -1,0 +1,137 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useLang } from "@/lib/LanguageContext";
+import { LANGS, NAV_ROUTES, type NavKey } from "@/lib/content";
+import { cx, ui } from "@/lib/ui";
+import Logo from "./Logo";
+
+const NAV_KEYS: NavKey[] = ["home", "about", "tours", "gallery", "services", "contacts"];
+
+const navLink =
+  "relative cursor-pointer py-1 text-sm font-semibold tracking-[0.02em] transition-colors after:absolute after:-bottom-0.5 after:left-0 after:h-[1.5px] after:w-0 after:bg-gold after:transition-[width] after:duration-300 hover:text-white hover:after:w-full";
+
+export default function Header() {
+  const { lang, setLang, t } = useLang();
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > window.innerHeight - 90);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  const solid = !isHome || scrolled || open;
+  const burgerBar = "block h-0.5 w-[22px] bg-cream transition-all duration-300";
+
+  return (
+    <>
+      <header
+        className={cx(
+          "fixed inset-x-0 top-0 z-50 border-b py-[22px] transition-all duration-[450ms]",
+          solid
+            ? "border-gold/15 bg-[rgba(0,16,36,0.92)] py-3.5 backdrop-blur-[14px]"
+            : "border-transparent"
+        )}
+      >
+        <div className={cx(ui.wrap, "flex items-center justify-between gap-6")}>
+          <Link href="/" className="flex items-center gap-[13px]" aria-label="GVIDON TOUR">
+            <div className="h-[42px] w-[42px] flex-none [&_svg]:block [&_svg]:h-full [&_svg]:w-full">
+              <Logo />
+            </div>
+            <div>
+              <div className="whitespace-nowrap text-lg font-extrabold leading-none tracking-[0.22em]">
+                GVIDON TOUR
+              </div>
+              <div className="mt-1 hidden max-w-[170px] text-[8.5px] uppercase tracking-[0.2em] text-gold/85 md:block">
+                {t.brandTag}
+              </div>
+            </div>
+          </Link>
+
+          <nav className="hidden items-center gap-[30px] lg:flex">
+            {NAV_KEYS.map((key) => {
+              const active = pathname === NAV_ROUTES[key];
+              return (
+                <Link
+                  key={key}
+                  href={NAV_ROUTES[key]}
+                  className={cx(navLink, active ? "text-gold after:w-full" : "text-cream/80")}
+                >
+                  {t.nav[key]}
+                </Link>
+              );
+            })}
+          </nav>
+
+          <div className="flex items-center gap-[22px]">
+            <div className="flex items-center gap-0.5 text-xs font-bold tracking-[0.08em]">
+              {LANGS.map((code) => (
+                <button
+                  key={code}
+                  type="button"
+                  className={cx(
+                    "cursor-pointer rounded px-2 py-[5px] transition-colors",
+                    lang === code ? "bg-gold text-navy" : "text-cream/50 hover:text-white"
+                  )}
+                  onClick={() => setLang(code)}
+                >
+                  {code.toUpperCase()}
+                </button>
+              ))}
+            </div>
+            <Link href="/contacts" className={cx(ui.btnGold, "max-md:hidden")}>
+              {t.hero.cta2}
+            </Link>
+            <button
+              type="button"
+              className="flex h-11 w-11 cursor-pointer flex-col items-center justify-center gap-[5px] lg:hidden"
+              aria-label={t.nav.home}
+              aria-expanded={open}
+              onClick={() => setOpen((v) => !v)}
+            >
+              <span className={cx(burgerBar, open && "translate-y-[7px] rotate-45")} />
+              <span className={cx(burgerBar, open && "opacity-0")} />
+              <span className={cx(burgerBar, open && "-translate-y-[7px] -rotate-45")} />
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <nav
+        className={cx(
+          "fixed inset-x-0 top-0 z-40 flex flex-col gap-1 border-b border-gold/20 bg-[rgba(0,13,31,0.98)] px-[26px] pb-[34px] pt-24 backdrop-blur-2xl transition-transform duration-[400ms] lg:hidden",
+          open ? "translate-y-0" : "-translate-y-[102%]"
+        )}
+      >
+        {NAV_KEYS.map((key) => {
+          const active = pathname === NAV_ROUTES[key];
+          return (
+            <Link
+              key={key}
+              href={NAV_ROUTES[key]}
+              className={cx(
+                navLink,
+                "py-[11px] text-lg",
+                active ? "text-gold after:w-full" : "text-cream/80"
+              )}
+              onClick={() => setOpen(false)}
+            >
+              {t.nav[key]}
+            </Link>
+          );
+        })}
+      </nav>
+    </>
+  );
+}
