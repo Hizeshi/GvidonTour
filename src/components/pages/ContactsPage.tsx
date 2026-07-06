@@ -3,7 +3,8 @@
 import { useState, type FormEvent } from "react";
 import { AtSign, CheckCircle2, Clock, Mail, MapPin, Phone, Send } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
-import { EMAIL, INSTAGRAM, PHONE, PHONE_HREF } from "@/lib/content";
+import type { LText } from "@/lib/catalog-types";
+import { EMAIL, INSTAGRAM, PHONE, PHONE_2, PHONE_2_HREF, PHONE_HREF } from "@/lib/content";
 import { cx, ui } from "@/lib/ui";
 import KazMap from "@/components/KazMap";
 import PageHead from "@/components/PageHead";
@@ -14,8 +15,8 @@ const infoLabel = "text-xs uppercase tracking-[0.12em] text-cream/50";
 const infoValue = "mt-[3px] text-base font-semibold";
 const infoIcon = "lic mt-0.5 text-[22px] text-gold";
 
-export default function ContactsPage() {
-  const { t } = useLang();
+export default function ContactsPage({ tourTitles }: { tourTitles: LText[] }) {
+  const { t, lang } = useLang();
   const [sent, setSent] = useState(false);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -23,7 +24,7 @@ export default function ContactsPage() {
     setSent(true);
   };
 
-  const tourOptions = [t.contacts.tour, ...t.tours.map((tour) => tour.title)];
+  const tourOptions = [t.contacts.tour, ...tourTitles.map((title) => title[lang])];
 
   return (
     <main>
@@ -116,8 +117,11 @@ export default function ContactsPage() {
                 </span>
                 <div>
                   <div className={infoLabel}>{t.contacts.lPhone}</div>
-                  <a className={infoValue} href={PHONE_HREF}>
+                  <a className={cx(infoValue, "block")} href={PHONE_HREF}>
                     {PHONE}
+                  </a>
+                  <a className={cx(infoValue, "block")} href={PHONE_2_HREF}>
+                    {PHONE_2}
                   </a>
                 </div>
               </div>

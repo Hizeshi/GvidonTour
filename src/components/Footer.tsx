@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useLang } from "@/lib/LanguageContext";
-import { EMAIL, NAV_ROUTES, PHONE, PHONE_HREF, type NavKey } from "@/lib/content";
+import { EMAIL, NAV_ROUTES, PHONE, PHONE_2, PHONE_2_HREF, PHONE_HREF, type NavKey } from "@/lib/content";
 import { cx, ui } from "@/lib/ui";
 import Logo from "./Logo";
 
@@ -52,6 +52,9 @@ export default function Footer() {
             <span className={footLink}>{t.contacts.address}</span>
             <a className={footLink} href={PHONE_HREF}>
               {PHONE}
+            </a>
+            <a className={footLink} href={PHONE_2_HREF}>
+              {PHONE_2}
             </a>
             <a className={cx(footLink, "break-all")} href={`mailto:${EMAIL}`}>
               {EMAIL}

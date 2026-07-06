@@ -1,0 +1,92 @@
+// GVIDON TOUR data model.
+// Localized text fields (Json) hold {ru, en, kk} strings.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum TourKind {
+  TOUR
+  EXCURSION
+}
+
+enum MediaKind {
+  PHOTO
+  VIDEO
+}
+
+model Tour {
+  id         String    @id @default(cuid())
+  slug       String    @unique
+  kind       TourKind  @default(TOUR)
+  region     Json // {ru,en,kk} — badge on the card
+  title      Json
+  desc       Json
+  duration   Json // "2 дня" / "2 days" / "2 күн"
+  days       Int
+  priceFrom  Int // numeric ₸ value for filters/sorting
+  priceText  Json // "от 120 000 ₸"
+  city       String? // direction slug (astana, almaty, ...)
+  season     String?
+  restType   String?
+  image      String
+  imagePos   String?
+  featured   Boolean   @default(false)
+  sortOrder  Int       @default(0)
+  published  Boolean   @default(true)
+  details    Json? // future excursion page: program, included, map, tips...
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id])
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model Category {
+  id        String @id @default(cuid())
+  slug      String @unique
+  name      Json
+  icon      String
+  sortOrder Int    @default(0)
+  tours     Tour[]
+}
+
+model Direction {
+  id        String  @id @default(cuid())
+  slug      String  @unique
+  name      Json
+  image     String?
+  sortOrder Int     @default(0)
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  author    String
+  text      Json
+  rating    Int      @default(5)
+  photo     String?
+  videoUrl  String?
+  date      DateTime @default(now())
+  published Boolean  @default(true)
+}
+
+model GalleryItem {
+  id        String    @id @default(cuid())
+  kind      MediaKind @default(PHOTO)
+  src       String
+  caption   Json
+  span      String?
+  sortOrder Int       @default(0)
+  published Boolean   @default(true)
+}
+
+model Achievement {
+  id        String @id @default(cuid())
+  title     Json
+  image     String
+  sortOrder Int    @default(0)
+}

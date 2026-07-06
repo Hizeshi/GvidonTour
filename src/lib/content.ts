@@ -389,5 +389,11 @@ export const GRID_SPANS = [
 
 export const PHONE = "+7 701 362 67 25";
 export const PHONE_HREF = "tel:+77013626725";
-export const EMAIL = "Tatiana.gvidon@gmail.com";
+export const PHONE_2 = "+7 775 944 31 36";
+export const PHONE_2_HREF = "tel:+77759443136";
+export const WHATSAPP_LINKS = [
+  { label: "+7 701 362 67 25", href: "https://wa.me/77013626725" },
+  { label: "+7 775 944 31 36", href: "https://wa.me/77759443136" },
+];
+export const EMAIL = "gvidontour.kz@gmail.com";
 export const INSTAGRAM = "@gvidontour";

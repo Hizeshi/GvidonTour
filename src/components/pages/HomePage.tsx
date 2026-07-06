@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
-import { TOUR_IMAGES } from "@/lib/content";
+import type { CatalogTour } from "@/lib/catalog-types";
 import { cx, ui } from "@/lib/ui";
 import CtaBand from "@/components/CtaBand";
 import HomeHero from "@/components/HomeHero";
@@ -11,7 +11,7 @@ import Reveal from "@/components/Reveal";
 import TourCard from "@/components/TourCard";
 import ValuesGrid from "@/components/ValuesGrid";
 
-export default function HomePage() {
+export default function HomePage({ tours }: { tours: CatalogTour[] }) {
   const { t } = useLang();
   return (
     <main>
@@ -36,14 +36,8 @@ export default function HomePage() {
             <div className={ui.divider} />
           </Reveal>
           <div className="mt-[58px] grid grid-cols-1 gap-[30px] sm:grid-cols-2 lg:grid-cols-3">
-            {t.tours.slice(0, 3).map((tour, i) => (
-              <TourCard
-                key={tour.title}
-                tour={tour}
-                image={TOUR_IMAGES[i]}
-                details={t.toursPage.details}
-                delay={i % 4}
-              />
+            {tours.slice(0, 3).map((tour, i) => (
+              <TourCard key={tour.slug} tour={tour} details={t.toursPage.details} delay={i % 4} />
             ))}
           </div>
           <Reveal className="mt-[54px] flex justify-center">
