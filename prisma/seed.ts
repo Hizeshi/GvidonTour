@@ -7,6 +7,7 @@ import {
   DIRECTION_DATA,
   GRID_IMAGES,
   GRID_SPANS,
+  REVIEW_DATA,
   TOUR_IMAGES,
   TOUR_META,
 } from "../src/lib/content";
@@ -76,13 +77,26 @@ async function main() {
     })),
   });
 
-  const [tours, categories, directions, gallery] = await Promise.all([
+  await prisma.review.deleteMany();
+  await prisma.review.createMany({
+    data: REVIEW_DATA.map((r) => ({
+      author: r.author,
+      rating: r.rating,
+      text: r.text,
+      videoUrl: r.videoUrl,
+    })),
+  });
+
+  const [tours, categories, directions, gallery, reviews] = await Promise.all([
     prisma.tour.count(),
     prisma.category.count(),
     prisma.direction.count(),
     prisma.galleryItem.count(),
+    prisma.review.count(),
   ]);
-  console.log(`Seeded: ${tours} tours, ${categories} categories, ${directions} directions, ${gallery} gallery items`);
+  console.log(
+    `Seeded: ${tours} tours, ${categories} categories, ${directions} directions, ${gallery} gallery items, ${reviews} reviews`
+  );
 }
 
 main()

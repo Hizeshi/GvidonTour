@@ -35,6 +35,8 @@ export interface Dict {
   values: ValueEntry[];
   homeCats: { eyebrow: string; title: string };
   homeDirs: { eyebrow: string; title: string };
+  homeReviews: { eyebrow: string; title: string; video: string };
+  homeAch: { eyebrow: string; title: string; note: string };
   featured: { eyebrow: string; title: string; viewAll: string };
   catalog: {
     book: string;
@@ -120,6 +122,8 @@ export const CONTENT: Record<Lang, Dict> = {
     ],
     homeCats: { eyebrow: "Виды туризма", title: "Категории туров" },
     homeDirs: { eyebrow: "Популярные направления", title: "Куда поехать в Казахстане" },
+    homeReviews: { eyebrow: "Отзывы", title: "Что говорят наши гости", video: "Смотреть видеоотзыв" },
+    homeAch: { eyebrow: "Достижения", title: "Нам доверяют", note: "Лицензии, сертификаты и награды — доступны в офисе по запросу." },
     featured: { eyebrow: "Готовые туры", title: "Избранные маршруты", viewAll: "Все туры" },
     catalog: {
       book: "Забронировать",
@@ -253,6 +257,8 @@ export const CONTENT: Record<Lang, Dict> = {
     ],
     homeCats: { eyebrow: "Tourism types", title: "Tour categories" },
     homeDirs: { eyebrow: "Popular destinations", title: "Where to go in Kazakhstan" },
+    homeReviews: { eyebrow: "Reviews", title: "What our guests say", video: "Watch video review" },
+    homeAch: { eyebrow: "Achievements", title: "Trusted by travellers", note: "Licences, certificates and awards — available at the office on request." },
     featured: { eyebrow: "Ready-made tours", title: "Featured journeys", viewAll: "All tours" },
     catalog: {
       book: "Book now",
@@ -386,6 +392,8 @@ export const CONTENT: Record<Lang, Dict> = {
     ],
     homeCats: { eyebrow: "Туризм түрлері", title: "Тур санаттары" },
     homeDirs: { eyebrow: "Танымал бағыттар", title: "Қазақстанда қайда бару" },
+    homeReviews: { eyebrow: "Пікірлер", title: "Қонақтарымыз не дейді", video: "Бейнепікірді көру" },
+    homeAch: { eyebrow: "Жетістіктер", title: "Бізге сенеді", note: "Лицензиялар, сертификаттар мен марапаттар — сұраныс бойынша кеңседе қолжетімді." },
     featured: { eyebrow: "Дайын турлар", title: "Таңдаулы маршруттар", viewAll: "Барлық турлар" },
     catalog: {
       book: "Брондау",
@@ -593,6 +601,51 @@ export const DIRECTION_DATA = [
 export const DIRECTION_IMAGE_POS: Record<string, string> = {
   astana: "50% 22%",
 };
+
+/** Demo testimonials — the client replaces these with real reviews via the DB.
+ *  videoUrl is optional (shows a "watch video review" link when present). */
+export const REVIEW_DATA = [
+  {
+    author: "Анна Ковалёва",
+    rating: 5,
+    videoUrl: null as string | null,
+    text: {
+      ru: "Организовали нам тур по Астане и Боровому — всё до мелочей продумано, гид великолепный. Вернёмся ещё!",
+      en: "They arranged a tour of Astana and Burabay for us — everything thought through to the last detail, a wonderful guide. We'll be back!",
+      kk: "Астана мен Бурабай бойынша тур ұйымдастырды — бәрі майда-шүйдесіне дейін ойластырылған, гид тамаша. Тағы ораламыз!",
+    },
+  },
+  {
+    author: "Марат Сулейменов",
+    rating: 5,
+    videoUrl: null,
+    text: {
+      ru: "Ездили на Чарын и Кольсай. Трансфер вовремя, обеды вкусные, маршрут — огонь. Рекомендую GVIDON TOUR всем.",
+      en: "We went to Charyn and Kolsai. Transfers on time, tasty meals, a fantastic route. I recommend GVIDON TOUR to everyone.",
+      kk: "Шарын мен Көлсайға бардық. Трансфер уақытында, тамақ дәмді, маршрут керемет. GVIDON TOUR-ды бәріне ұсынамын.",
+    },
+  },
+  {
+    author: "Elena Fischer",
+    rating: 5,
+    videoUrl: null,
+    text: {
+      ru: "Приезжала из Германии на экспедицию в Мангистау. Профессиональная команда и незабываемые пейзажи Бозжыры.",
+      en: "I came from Germany for the Mangystau expedition. A professional team and the unforgettable landscapes of Bozzhyra.",
+      kk: "Германиядан Маңғыстау экспедициясына келдім. Кәсіби команда және Бозжыраның ұмытылмас пейзаждары.",
+    },
+  },
+];
+
+/** Achievement placeholders — the client provides real licence/award/partner
+ *  images (kept in the office); until then these render as labelled icon tiles. */
+export const ACHIEVEMENT_DATA = [
+  { icon: "shield-check", name: { ru: "Лицензия туроператора", en: "Tour operator licence", kk: "Туроператор лицензиясы" } },
+  { icon: "award", name: { ru: "Сертификаты качества", en: "Quality certificates", kk: "Сапа сертификаттары" } },
+  { icon: "trophy", name: { ru: "Отраслевые награды", en: "Industry awards", kk: "Салалық марапаттар" } },
+  { icon: "map-pin", name: { ru: "Visit Astana", en: "Visit Astana", kk: "Visit Astana" } },
+  { icon: "handshake", name: { ru: "Надёжные партнёры", en: "Trusted partners", kk: "Сенімді серіктестер" } },
+];
 
 export const TOUR_META = [
   { slug: "astana-city", days: 2, priceFrom: 120_000, city: "astana", featured: true },

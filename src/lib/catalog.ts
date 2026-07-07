@@ -4,6 +4,7 @@ import {
   DIRECTION_DATA,
   GRID_IMAGES,
   GRID_SPANS,
+  REVIEW_DATA,
   TOUR_IMAGES,
   TOUR_META,
 } from "./content";
@@ -11,6 +12,7 @@ import type {
   CatalogCategory,
   CatalogDirection,
   CatalogGalleryItem,
+  CatalogReview,
   CatalogTour,
   LText,
   TourDetails,
@@ -22,6 +24,7 @@ export type {
   CatalogCategory,
   CatalogDirection,
   CatalogGalleryItem,
+  CatalogReview,
   CatalogTour,
   LText,
   TourDetails,
@@ -137,5 +140,35 @@ export async function getDirections(): Promise<CatalogDirection[]> {
   } catch (err) {
     console.error("[catalog] DB unavailable, serving static directions:", err);
     return DIRECTION_DATA;
+  }
+}
+
+function fallbackReviews(): CatalogReview[] {
+  return REVIEW_DATA.map((r) => ({
+    author: r.author,
+    rating: r.rating,
+    text: r.text,
+    photo: null,
+    videoUrl: r.videoUrl,
+  }));
+}
+
+export async function getReviews(): Promise<CatalogReview[]> {
+  try {
+    const rows = await prisma.review.findMany({
+      where: { published: true },
+      orderBy: { date: "desc" },
+    });
+    if (rows.length === 0) return fallbackReviews();
+    return rows.map((r) => ({
+      author: r.author,
+      rating: r.rating,
+      text: r.text as LText,
+      photo: r.photo,
+      videoUrl: r.videoUrl,
+    }));
+  } catch (err) {
+    console.error("[catalog] DB unavailable, serving static reviews:", err);
+    return fallbackReviews();
   }
 }

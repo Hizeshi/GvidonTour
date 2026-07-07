@@ -1,4 +1,5 @@
 import {
+  Award,
   Backpack,
   BadgeCheck,
   BedDouble,
@@ -12,9 +13,12 @@ import {
   HeartHandshake,
   Landmark,
   Map,
+  MapPin,
   Route,
+  ShieldCheck,
   Stamp,
   Tent,
+  Trophy,
   UserCheck,
   Utensils,
   type LucideIcon,
@@ -39,6 +43,10 @@ const ICONS: Record<string, LucideIcon> = {
   "user-check": UserCheck,
   handshake: Handshake,
   headphones: Headphones,
+  award: Award,
+  "shield-check": ShieldCheck,
+  trophy: Trophy,
+  "map-pin": MapPin,
 };
 
 export default function IconByName({ name }: { name: string }) {

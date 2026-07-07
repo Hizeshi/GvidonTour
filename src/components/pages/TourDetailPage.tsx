@@ -32,7 +32,7 @@ export default function TourDetailPage({ tour, similar }: TourDetailPageProps) {
 
   return (
     <main>
-      <div className="bg-gradient-to-b from-[#001833] to-navy pb-10 pt-32">
+      <div className="bg-gradient-to-b from-panel to-surface pb-10 pt-32">
         <div className={ui.wrap}>
           <Link
             href="/tours"

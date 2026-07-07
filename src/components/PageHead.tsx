@@ -11,7 +11,7 @@ interface PageHeadProps {
 
 export default function PageHead({ eyebrow, title, intro }: PageHeadProps) {
   return (
-    <div className="bg-gradient-to-b from-[#001833] to-navy pb-[70px] pt-40 text-center">
+    <div className="bg-gradient-to-b from-panel to-surface pb-[70px] pt-40 text-center">
       <div className={ui.wrap}>
         <Reveal className={ui.eyebrow} immediate>
           {eyebrow}

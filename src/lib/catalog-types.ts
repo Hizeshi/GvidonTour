@@ -62,3 +62,11 @@ export interface CatalogDirection {
   name: LText;
   image: string | null;
 }
+
+export interface CatalogReview {
+  author: string;
+  rating: number;
+  text: LText;
+  photo: string | null;
+  videoUrl: string | null;
+}
