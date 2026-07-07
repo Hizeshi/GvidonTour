@@ -4,9 +4,10 @@ import Link from "next/link";
 import { useLang } from "@/lib/LanguageContext";
 import { EMAIL, NAV_ROUTES, PHONE, PHONE_2, PHONE_2_HREF, PHONE_HREF, type NavKey } from "@/lib/content";
 import { cx, ui } from "@/lib/ui";
+import CurrencyTicker from "./CurrencyTicker";
 import Logo from "./Logo";
 
-const NAV_KEYS: NavKey[] = ["home", "about", "tours", "gallery", "services", "contacts"];
+const NAV_KEYS: NavKey[] = ["home", "about", "tours", "gallery", "services", "agencies", "contacts"];
 
 const footLink =
   "block cursor-pointer py-1.5 text-[14.5px] text-content/70 transition-colors hover:text-gold";
@@ -61,7 +62,10 @@ export default function Footer() {
             </a>
           </div>
         </div>
-        <div className="mt-[54px] flex flex-wrap items-center justify-between gap-3.5 border-t border-content/10 pt-[26px] text-[13px] text-content/45">
+        <div className="mt-[54px] border-t border-content/10 pt-[26px]">
+          <CurrencyTicker />
+        </div>
+        <div className="mt-[22px] flex flex-wrap items-center justify-between gap-3.5 text-[13px] text-content/45">
           <span>© 2026 GVIDON TOUR. {t.footer.rights}</span>
           <span className="font-serif text-[15px] italic text-gold/85">{t.slogan}</span>
         </div>

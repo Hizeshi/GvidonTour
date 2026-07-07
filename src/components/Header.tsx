@@ -3,14 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Moon, Sun } from "lucide-react";
+import { ChevronDown, Moon, Sun } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
 import { useTheme } from "@/lib/ThemeContext";
-import { LANGS, NAV_ROUTES, type NavKey } from "@/lib/content";
+import { LANGS, NAV_ROUTES, TOURS_MENU_LINKS, type NavKey } from "@/lib/content";
 import { cx, ui } from "@/lib/ui";
 import Logo from "./Logo";
 
-const NAV_KEYS: NavKey[] = ["home", "about", "tours", "gallery", "services", "contacts"];
+const NAV_KEYS: NavKey[] = ["home", "about", "tours", "gallery", "services", "agencies", "contacts"];
 
 const navBase =
   "relative cursor-pointer py-1 text-sm font-semibold tracking-[0.02em] transition-colors after:absolute after:-bottom-0.5 after:left-0 after:h-[1.5px] after:w-0 after:bg-gold after:transition-[width] after:duration-300 hover:after:w-full";
@@ -72,6 +72,32 @@ export default function Header() {
           <nav className="hidden items-center gap-[30px] lg:flex">
             {NAV_KEYS.map((key) => {
               const active = pathname === NAV_ROUTES[key];
+              if (key === "tours") {
+                return (
+                  <div key={key} className="group relative">
+                    <Link
+                      href={NAV_ROUTES[key]}
+                      className={cx(navBase, "flex items-center gap-1", active ? "text-gold after:w-full" : navInactive)}
+                    >
+                      {t.nav[key]}
+                      <span className="lic text-[13px] transition-transform duration-300 group-hover:rotate-180">
+                        <ChevronDown />
+                      </span>
+                    </Link>
+                    <div className="invisible absolute left-0 top-full z-10 min-w-[210px] rounded-[3px] border border-content/10 bg-panel p-2 opacity-0 shadow-[0_20px_40px_-16px_rgba(0,0,0,0.5)] transition-all duration-200 group-hover:visible group-hover:opacity-100">
+                      {TOURS_MENU_LINKS.map((link) => (
+                        <Link
+                          key={link.key}
+                          href={link.href}
+                          className="block cursor-pointer rounded-[2px] px-3.5 py-2.5 text-[13.5px] font-semibold text-content/75 transition-colors hover:bg-gold/10 hover:text-gold"
+                        >
+                          {t.toursMenu[link.key]}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
               return (
                 <Link
                   key={key}
@@ -135,18 +161,33 @@ export default function Header() {
         {NAV_KEYS.map((key) => {
           const active = pathname === NAV_ROUTES[key];
           return (
-            <Link
-              key={key}
-              href={NAV_ROUTES[key]}
-              className={cx(
-                navBase,
-                "py-[11px] text-lg",
-                active ? "text-gold after:w-full" : "text-content/80 hover:text-content"
+            <div key={key}>
+              <Link
+                href={NAV_ROUTES[key]}
+                className={cx(
+                  navBase,
+                  "py-[11px] text-lg",
+                  active ? "text-gold after:w-full" : "text-content/80 hover:text-content"
+                )}
+                onClick={() => setOpen(false)}
+              >
+                {t.nav[key]}
+              </Link>
+              {key === "tours" && (
+                <div className="mb-1.5 ml-3.5 flex flex-col gap-0.5 border-l border-content/15 pl-3.5">
+                  {TOURS_MENU_LINKS.map((link) => (
+                    <Link
+                      key={link.key}
+                      href={link.href}
+                      className="cursor-pointer py-2 text-[14.5px] font-semibold text-content/60 transition-colors hover:text-gold"
+                      onClick={() => setOpen(false)}
+                    >
+                      {t.toursMenu[link.key]}
+                    </Link>
+                  ))}
+                </div>
               )}
-              onClick={() => setOpen(false)}
-            >
-              {t.nav[key]}
-            </Link>
+            </div>
           );
         })}
       </nav>

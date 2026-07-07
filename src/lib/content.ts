@@ -2,7 +2,7 @@ export type Lang = "ru" | "en" | "kk";
 
 export const LANGS: Lang[] = ["ru", "en", "kk"];
 
-export type NavKey = "home" | "about" | "tours" | "gallery" | "services" | "contacts";
+export type NavKey = "home" | "about" | "tours" | "gallery" | "services" | "agencies" | "contacts";
 
 export const NAV_ROUTES: Record<NavKey, string> = {
   home: "/",
@@ -10,8 +10,18 @@ export const NAV_ROUTES: Record<NavKey, string> = {
   tours: "/tours",
   gallery: "/gallery",
   services: "/services",
+  agencies: "/agencies",
   contacts: "/contacts",
 };
+
+/** Sub-links shown in the "Tours" header dropdown — reuse the existing
+ *  catalog filters (days=1, category=kids/mice) instead of new content types. */
+export const TOURS_MENU_LINKS = [
+  { key: "all", href: "/tours" },
+  { key: "excursions", href: "/tours?days=1" },
+  { key: "kids", href: "/tours?category=kids" },
+  { key: "mice", href: "/tours?category=mice" },
+] as const;
 
 export interface TourEntry {
   region: string;
@@ -27,9 +37,38 @@ export interface ValueEntry {
   d: string;
 }
 
+export interface AgencyBenefit {
+  icon: string;
+  t: string;
+  d: string;
+}
+
+export interface AgencyStep {
+  n: string;
+  t: string;
+  d: string;
+}
+
 export interface Dict {
   brandTag: string;
   nav: Record<NavKey, string>;
+  toursMenu: { all: string; excursions: string; kids: string; mice: string };
+  currencyLabel: string;
+  agencies: {
+    eyebrow: string;
+    title: string;
+    intro: string;
+    benefitsEyebrow: string;
+    benefitsTitle: string;
+    benefits: AgencyBenefit[];
+    stepsEyebrow: string;
+    stepsTitle: string;
+    steps: AgencyStep[];
+    ctaTitle: string;
+    ctaSub: string;
+    ctaBtn: string;
+    bookMsg: string;
+  };
   hero: { eyebrow: string; title: string; sub: string; cta1: string; cta2: string; scroll: string };
   valuesHead: { eyebrow: string; title: string };
   values: ValueEntry[];
@@ -102,7 +141,33 @@ export interface Dict {
 export const CONTENT: Record<Lang, Dict> = {
   ru: {
     brandTag: "Принимающий туроператор в Казахстане",
-    nav: { home: "Главная", about: "О компании", tours: "Туры", gallery: "Галерея", services: "Услуги", contacts: "Контакты" },
+    nav: { home: "Главная", about: "О компании", tours: "Туры", gallery: "Галерея", services: "Услуги", agencies: "Для агентств", contacts: "Контакты" },
+    toursMenu: { all: "Все туры", excursions: "Экскурсии", kids: "Детский туризм", mice: "MICE" },
+    currencyLabel: "Курс валют",
+    agencies: {
+      eyebrow: "Для агентств",
+      title: "Партнёрство с GVIDON TOUR",
+      intro: "Работаем с турагентствами по всему миру — предлагаем выгодные условия, готовые маршруты и полное сопровождение групп в Казахстане.",
+      benefitsEyebrow: "Условия сотрудничества",
+      benefitsTitle: "Почему агентства выбирают нас",
+      benefits: [
+        { icon: "percent", t: "Комиссионное вознаграждение", d: "Гибкая система комиссий и специальные тарифы для постоянных партнёров." },
+        { icon: "users", t: "Персональный менеджер", d: "Отдельный менеджер для быстрой обработки заявок и подбора маршрутов." },
+        { icon: "megaphone", t: "Маркетинговые материалы", d: "Фото, видео и презентации туров для продвижения на вашей площадке." },
+        { icon: "file-signature", t: "Прозрачные условия", d: "Официальный договор, понятные сроки оплаты и подтверждения бронирований." },
+      ],
+      stepsEyebrow: "Как начать",
+      stepsTitle: "Три шага до сотрудничества",
+      steps: [
+        { n: "01", t: "Заявка", d: "Отправьте заявку на партнёрство — мы свяжемся в течение 24 часов." },
+        { n: "02", t: "Договор", d: "Подписываем агентский договор и согласуем условия." },
+        { n: "03", t: "Работа", d: "Получаете доступ к каталогу туров и персональному менеджеру." },
+      ],
+      ctaTitle: "Станьте партнёром GVIDON TOUR",
+      ctaSub: "Расскажите о своём агентстве — и мы подготовим индивидуальные условия сотрудничества.",
+      ctaBtn: "Оставить заявку",
+      bookMsg: "Здравствуйте! Представляю турагентство и хочу узнать об условиях партнёрства с GVIDON TOUR.",
+    },
     hero: {
       eyebrow: "Откройте Казахстан с надёжным партнёром",
       title: "Путешествие в сердце Евразии",
@@ -237,7 +302,33 @@ export const CONTENT: Record<Lang, Dict> = {
   },
   en: {
     brandTag: "Inbound tour operator in Kazakhstan",
-    nav: { home: "Home", about: "About", tours: "Tours", gallery: "Gallery", services: "Services", contacts: "Contacts" },
+    nav: { home: "Home", about: "About", tours: "Tours", gallery: "Gallery", services: "Services", agencies: "For Agencies", contacts: "Contacts" },
+    toursMenu: { all: "All tours", excursions: "Excursions", kids: "Kids tourism", mice: "MICE" },
+    currencyLabel: "Exchange rate",
+    agencies: {
+      eyebrow: "For Agencies",
+      title: "Partner with GVIDON TOUR",
+      intro: "We work with travel agencies worldwide — offering attractive terms, ready-made routes and full group support across Kazakhstan.",
+      benefitsEyebrow: "Partnership terms",
+      benefitsTitle: "Why agencies choose us",
+      benefits: [
+        { icon: "percent", t: "Commission rewards", d: "A flexible commission structure and special rates for regular partners." },
+        { icon: "users", t: "Dedicated manager", d: "A personal manager for fast request handling and route selection." },
+        { icon: "megaphone", t: "Marketing materials", d: "Photos, videos and presentations to promote our tours on your platform." },
+        { icon: "file-signature", t: "Transparent terms", d: "An official contract with clear payment terms and booking confirmations." },
+      ],
+      stepsEyebrow: "How to start",
+      stepsTitle: "Three steps to partnership",
+      steps: [
+        { n: "01", t: "Application", d: "Send a partnership request — we will get back to you within 24 hours." },
+        { n: "02", t: "Contract", d: "We sign an agency agreement and agree on the terms." },
+        { n: "03", t: "Work together", d: "You get access to the tour catalogue and a dedicated manager." },
+      ],
+      ctaTitle: "Become a GVIDON TOUR partner",
+      ctaSub: "Tell us about your agency — and we will prepare individual partnership terms.",
+      ctaBtn: "Send a request",
+      bookMsg: "Hello! I represent a travel agency and would like to learn about partnership terms with GVIDON TOUR.",
+    },
     hero: {
       eyebrow: "Discover Kazakhstan with a trusted partner",
       title: "A journey to the heart of Eurasia",
@@ -372,7 +463,33 @@ export const CONTENT: Record<Lang, Dict> = {
   },
   kk: {
     brandTag: "Қазақстандағы қабылдаушы туроператор",
-    nav: { home: "Басты бет", about: "Компания", tours: "Турлар", gallery: "Галерея", services: "Қызметтер", contacts: "Байланыс" },
+    nav: { home: "Басты бет", about: "Компания", tours: "Турлар", gallery: "Галерея", services: "Қызметтер", agencies: "Агенттіктерге", contacts: "Байланыс" },
+    toursMenu: { all: "Барлық турлар", excursions: "Экскурсиялар", kids: "Балалар туризмі", mice: "MICE" },
+    currencyLabel: "Валюта бағамы",
+    agencies: {
+      eyebrow: "Агенттіктерге",
+      title: "GVIDON TOUR-мен серіктестік",
+      intro: "Біз бүкіл әлем бойынша турагенттіктермен жұмыс істейміз — тиімді шарттар, дайын маршруттар және Қазақстан бойынша топтарды толық сүйемелдеу ұсынамыз.",
+      benefitsEyebrow: "Ынтымақтастық шарттары",
+      benefitsTitle: "Агенттіктер неге бізді таңдайды",
+      benefits: [
+        { icon: "percent", t: "Комиссиялық сыйақы", d: "Тұрақты серіктестер үшін икемді комиссия жүйесі және арнайы тарифтер." },
+        { icon: "users", t: "Жеке менеджер", d: "Өтінімдерді жылдам өңдеу және маршрут таңдау үшін жеке менеджер." },
+        { icon: "megaphone", t: "Маркетингтік материалдар", d: "Алаңыңызда турларды жылжыту үшін фото, видео және презентациялар." },
+        { icon: "file-signature", t: "Ашық шарттар", d: "Ресми келісімшарт, түсінікті төлем мерзімдері және брондау растаулары." },
+      ],
+      stepsEyebrow: "Қалай бастау керек",
+      stepsTitle: "Ынтымақтастыққа дейінгі үш қадам",
+      steps: [
+        { n: "01", t: "Өтінім", d: "Серіктестікке өтінім жіберіңіз — 24 сағат ішінде хабарласамыз." },
+        { n: "02", t: "Келісімшарт", d: "Агенттік келісімшартқа қол қоямыз және шарттарды келісеміз." },
+        { n: "03", t: "Жұмыс", d: "Турлар каталогына және жеке менеджерге қолжетімділік аласыз." },
+      ],
+      ctaTitle: "GVIDON TOUR серіктесі болыңыз",
+      ctaSub: "Агенттігіңіз туралы айтыңыз — біз жеке ынтымақтастық шарттарын дайындаймыз.",
+      ctaBtn: "Өтінім қалдыру",
+      bookMsg: "Сәлеметсіз бе! Мен турагенттікті білдіремін және GVIDON TOUR-мен серіктестік шарттары туралы білгім келеді.",
+    },
     hero: {
       eyebrow: "Қазақстанды сенімді серіктеспен ашыңыз",
       title: "Еуразияның жүрегіне саяхат",

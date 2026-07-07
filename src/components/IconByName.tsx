@@ -8,18 +8,22 @@ import {
   Compass,
   Crown,
   Factory,
+  FileSignature,
   Handshake,
   Headphones,
   HeartHandshake,
   Landmark,
   Map,
   MapPin,
+  Megaphone,
+  Percent,
   Route,
   ShieldCheck,
   Stamp,
   Tent,
   Trophy,
   UserCheck,
+  Users,
   Utensils,
   type LucideIcon,
 } from "lucide-react";
@@ -47,6 +51,10 @@ const ICONS: Record<string, LucideIcon> = {
   "shield-check": ShieldCheck,
   trophy: Trophy,
   "map-pin": MapPin,
+  percent: Percent,
+  users: Users,
+  megaphone: Megaphone,
+  "file-signature": FileSignature,
 };
 
 export default function IconByName({ name }: { name: string }) {

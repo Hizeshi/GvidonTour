@@ -6,6 +6,10 @@ import type { NextConfig } from "next";
  *   hydration scripts and next/font injects inline styles. For a site with no
  *   user-generated content this is an accepted trade-off; a stricter
  *   nonce-based CSP would require dynamic rendering (middleware).
+ * - connect-src allows open.er-api.com (client-side exchange-rate fetch in
+ *   CurrencyTicker); frame-src allows YouTube/Vimeo embeds (Lightbox video
+ *   items) — both fall back to 'self' via default-src otherwise and would be
+ *   silently blocked.
  * - Everything else is served same-origin: fonts are self-hosted by
  *   next/font, all photos live in /public.
  */
@@ -15,6 +19,8 @@ const csp = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data:",
   "font-src 'self'",
+  "connect-src 'self' https://open.er-api.com",
+  "frame-src https://www.youtube.com https://player.vimeo.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
