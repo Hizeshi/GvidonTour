@@ -22,3 +22,9 @@ All photos are from [Wikimedia Commons](https://commons.wikimedia.org) and are u
 | about-yurt.jpg | Yurt at the Foot of the Cliffs, Aktobe Region, Kazakhstan.jpg | Danatleg122 | CC BY 4.0 |
 | dir-burabay.jpg | View of the Burabay lake.jpg | Kejurim | CC BY-SA 4.0 |
 | dir-baikonur.jpg | Baikonur Cosmodrome Soyuz launch pad.jpg | Bill Ingalls (NASA) | Public domain |
+
+# Map data credits
+
+| Used in | Source file on Commons | Author | License |
+| --- | --- | --- | --- |
+| `src/lib/kz-outline.ts` (`KZ_OUTLINE_PATH`, country border traced and simplified from this file) | Kazakhstan location map.svg | NordNordWest | CC BY-SA 3.0 DE |

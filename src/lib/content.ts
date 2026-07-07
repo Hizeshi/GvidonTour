@@ -142,7 +142,7 @@ export interface Dict {
     lAddr: string; lPhone: string; lMail: string; lHours: string; lSocial: string;
     address: string; hours: string; mapEyebrow: string; mapTitle: string;
   };
-  mapCities: { n: string; x: number; y: number; hub?: boolean }[];
+  mapCities: { key: string; n: string; hub?: boolean }[];
   footer: { nav: string; contacts: string; rights: string };
   slogan: string;
 }
@@ -348,13 +348,13 @@ export const CONTENT: Record<Lang, Dict> = {
       mapTitle: "Мы работаем по всему Казахстану",
     },
     mapCities: [
-      { n: "Астана", x: 55, y: 28, hub: true },
-      { n: "Алматы", x: 72, y: 68 },
-      { n: "Туркестан", x: 46, y: 73 },
-      { n: "Актау", x: 9, y: 60 },
-      { n: "Уральск", x: 14, y: 30 },
-      { n: "Павлодар", x: 64, y: 22 },
-      { n: "Атырау", x: 11, y: 48 },
+      { key: "astana", n: "Астана", hub: true },
+      { key: "almaty", n: "Алматы" },
+      { key: "turkestan", n: "Туркестан" },
+      { key: "aktau", n: "Актау" },
+      { key: "oral", n: "Уральск" },
+      { key: "pavlodar", n: "Павлодар" },
+      { key: "atyrau", n: "Атырау" },
     ],
     footer: { nav: "Навигация", contacts: "Контакты", rights: "Все права защищены." },
     slogan: "Откройте Казахстан с надёжным партнёром",
@@ -559,13 +559,13 @@ export const CONTENT: Record<Lang, Dict> = {
       mapTitle: "We operate across all of Kazakhstan",
     },
     mapCities: [
-      { n: "Astana", x: 55, y: 28, hub: true },
-      { n: "Almaty", x: 72, y: 68 },
-      { n: "Turkestan", x: 46, y: 73 },
-      { n: "Aktau", x: 9, y: 60 },
-      { n: "Oral", x: 14, y: 30 },
-      { n: "Pavlodar", x: 64, y: 22 },
-      { n: "Atyrau", x: 11, y: 48 },
+      { key: "astana", n: "Astana", hub: true },
+      { key: "almaty", n: "Almaty" },
+      { key: "turkestan", n: "Turkestan" },
+      { key: "aktau", n: "Aktau" },
+      { key: "oral", n: "Oral" },
+      { key: "pavlodar", n: "Pavlodar" },
+      { key: "atyrau", n: "Atyrau" },
     ],
     footer: { nav: "Navigation", contacts: "Contacts", rights: "All rights reserved." },
     slogan: "Discover Kazakhstan with a trusted partner",
@@ -770,13 +770,13 @@ export const CONTENT: Record<Lang, Dict> = {
       mapTitle: "Біз бүкіл Қазақстан бойынша жұмыс істейміз",
     },
     mapCities: [
-      { n: "Астана", x: 55, y: 28, hub: true },
-      { n: "Алматы", x: 72, y: 68 },
-      { n: "Түркістан", x: 46, y: 73 },
-      { n: "Ақтау", x: 9, y: 60 },
-      { n: "Орал", x: 14, y: 30 },
-      { n: "Павлодар", x: 64, y: 22 },
-      { n: "Атырау", x: 11, y: 48 },
+      { key: "astana", n: "Астана", hub: true },
+      { key: "almaty", n: "Алматы" },
+      { key: "turkestan", n: "Түркістан" },
+      { key: "aktau", n: "Ақтау" },
+      { key: "oral", n: "Орал" },
+      { key: "pavlodar", n: "Павлодар" },
+      { key: "atyrau", n: "Атырау" },
     ],
     footer: { nav: "Навигация", contacts: "Байланыс", rights: "Барлық құқықтар қорғалған." },
     slogan: "Қазақстанды сенімді серіктеспен ашыңыз",

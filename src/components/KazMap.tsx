@@ -1,47 +1,116 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Plane } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
+import { KZ_CITIES, KZ_FLIGHT_ORDER, KZ_OUTLINE_PATH, KZ_VIEWBOX, type KzCityPos } from "@/lib/kz-outline";
 import { cx } from "@/lib/ui";
+
+const CANVAS = { w: 1984.254, h: 1133.857 };
+const ASPECT = CANVAS.w / CANVAS.h;
+
+function cityPos(key: string): KzCityPos {
+  return KZ_CITIES.find((c) => c.key === key) ?? KZ_CITIES[0];
+}
+
+function toPx(c: KzCityPos) {
+  return { x: (c.xPct / 100) * CANVAS.w, y: (c.yPct / 100) * CANVAS.h };
+}
 
 export default function KazMap() {
   const { t } = useLang();
   const [activeCity, setActiveCity] = useState(-1);
+  const planeRef = useRef<HTMLSpanElement | null>(null);
+
+  const cities = t.mapCities.map((c) => ({ ...c, ...cityPos(c.key) }));
+  const hub = cities.find((c) => c.hub) ?? cities[0];
+
+  // Flies the plane through every city in a loop, at constant apparent
+  // speed (keyframe offsets weighted by aspect-corrected leg distance) and
+  // rotated to face the direction of travel.
+  useEffect(() => {
+    const el = planeRef.current;
+    if (!el) return;
+
+    const waypoints = KZ_FLIGHT_ORDER.map(cityPos);
+    const legLengths: number[] = [];
+    let total = 0;
+    for (let i = 1; i < waypoints.length; i++) {
+      const dx = waypoints[i].xPct - waypoints[i - 1].xPct;
+      const dy = (waypoints[i].yPct - waypoints[i - 1].yPct) / ASPECT;
+      const len = Math.hypot(dx, dy);
+      legLengths.push(len);
+      total += len;
+    }
+
+    const angleTo = (a: KzCityPos, b: KzCityPos) =>
+      (Math.atan2((b.yPct - a.yPct) / ASPECT, b.xPct - a.xPct) * 180) / Math.PI;
+
+    let cumulative = 0;
+    const keyframes: Keyframe[] = waypoints.map((wp, i) => {
+      if (i > 0) cumulative += legLengths[i - 1];
+      const offset = total > 0 ? Math.min(cumulative / total, 1) : 0;
+      const angle =
+        i < waypoints.length - 1 ? angleTo(wp, waypoints[i + 1]) : angleTo(waypoints[i - 1], wp);
+      return {
+        offset,
+        left: `${wp.xPct}%`,
+        top: `${wp.yPct}%`,
+        transform: `translate(-50%, -50%) rotate(${angle + 45}deg)`,
+      };
+    });
+
+    const duration = Math.max(18000, Math.min(32000, total * 900));
+    const animation = el.animate(keyframes, { duration, iterations: Infinity, easing: "ease-in-out" });
+    return () => animation.cancel();
+  }, []);
 
   return (
-    <div className="kazmap relative mt-[34px] h-[430px] overflow-hidden rounded-[5px] border border-current/10">
-      <div className="absolute left-1/2 top-1/2 h-[64%] w-[78%] -translate-x-1/2 -translate-y-1/2 -rotate-3 rounded-[46%_54%_60%_40%/50%_46%_54%_50%] border border-dashed border-gold/30 bg-[radial-gradient(60%_60%_at_50%_50%,rgba(226,159,91,0.05),transparent_70%)]" />
-      <svg
-        className="absolute inset-0 z-[2] h-full w-full"
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
-        aria-hidden="true"
-      >
-        {["M55 28 Q70 40 72 68", "M55 28 Q44 52 46 73", "M55 28 Q28 38 9 60", "M55 28 Q60 22 64 22"].map(
-          (d) => (
-            <path
-              key={d}
-              d={d}
-              fill="none"
-              stroke="rgba(226,159,91,0.55)"
-              strokeWidth="0.5"
-              strokeDasharray="2.5 2.5"
-              className="animate-dash"
-            />
-          )
-        )}
+    <div
+      className="kazmap relative mt-[34px] w-full overflow-hidden rounded-[5px] border border-current/10"
+      style={{ aspectRatio: `${CANVAS.w} / ${CANVAS.h}` }}
+    >
+      <svg className="absolute inset-0 z-[1] h-full w-full" viewBox={KZ_VIEWBOX} aria-hidden="true">
+        <path
+          d={KZ_OUTLINE_PATH}
+          fill="currentColor"
+          fillOpacity="0.07"
+          stroke="rgba(226,159,91,0.65)"
+          strokeWidth="3"
+          strokeLinejoin="round"
+        />
+        {cities
+          .filter((c) => !c.hub)
+          .map((c) => {
+            const from = toPx(hub);
+            const to = toPx(c);
+            return (
+              <path
+                key={c.key}
+                d={`M${from.x},${from.y} L${to.x},${to.y}`}
+                fill="none"
+                stroke="rgba(226,159,91,0.45)"
+                strokeWidth="3"
+                strokeDasharray="10 8"
+                className="animate-dash"
+              />
+            );
+          })}
       </svg>
-      <span className="lic absolute z-[5] animate-fly text-lg text-gold">
+      <span
+        ref={planeRef}
+        className="lic absolute z-[5] text-lg text-gold"
+        style={{ left: `${hub.xPct}%`, top: `${hub.yPct}%`, transform: "translate(-50%, -50%)" }}
+      >
         <Plane />
       </span>
-      {t.mapCities.map((c, i) => {
+      {cities.map((c, i) => {
         const active = activeCity === i;
         return (
           <div
-            key={c.n}
+            key={c.key}
             className="group absolute z-[4] -translate-x-1/2 -translate-y-1/2 cursor-pointer"
-            style={{ left: `${c.x}%`, top: `${c.y}%` }}
+            style={{ left: `${c.xPct}%`, top: `${c.yPct}%` }}
             onClick={() => setActiveCity(i)}
           >
             <span
