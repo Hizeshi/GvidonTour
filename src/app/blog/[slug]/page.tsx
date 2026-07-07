@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BlogPostPage from "@/components/pages/BlogPostPage";
 import { getBlogPostBySlug, getBlogPosts } from "@/lib/catalog";
+import { SITE_URL } from "@/lib/seo";
 
 export const revalidate = 300;
 
@@ -36,5 +37,26 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
   const others = all.filter((candidate) => candidate.slug !== post.slug).slice(0, 3);
 
-  return <BlogPostPage post={post} others={others} />;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title.ru,
+    description: post.excerpt.ru,
+    image: `${SITE_URL}${post.image}`,
+    datePublished: post.publishedAt,
+    author: { "@type": "Organization", name: "GVIDON TOUR" },
+    publisher: {
+      "@type": "Organization",
+      name: "GVIDON TOUR",
+      logo: { "@type": "ImageObject", url: `${SITE_URL}/icon.svg` },
+    },
+    mainEntityOfPage: `${SITE_URL}/blog/${post.slug}`,
+  };
+
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <BlogPostPage post={post} others={others} />
+    </>
+  );
 }

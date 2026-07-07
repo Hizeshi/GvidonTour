@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import TourDetailPage from "@/components/pages/TourDetailPage";
 import { getTourBySlug, getTours } from "@/lib/catalog";
+import { SITE_URL } from "@/lib/seo";
 
 export const revalidate = 300;
 
@@ -39,5 +40,26 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   const sameCity = others.filter((candidate) => candidate.city === tour.city);
   const similar = [...sameCity, ...others.filter((candidate) => candidate.city !== tour.city)].slice(0, 3);
 
-  return <TourDetailPage tour={tour} similar={similar} />;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "TouristTrip",
+    name: tour.title.ru,
+    description: tour.desc.ru,
+    image: `${SITE_URL}${tour.image}`,
+    touristType: "Leisure",
+    offers: {
+      "@type": "Offer",
+      price: tour.priceFrom,
+      priceCurrency: "KZT",
+      url: `${SITE_URL}/tours/${tour.slug}`,
+    },
+    provider: { "@type": "TravelAgency", name: "GVIDON TOUR", url: SITE_URL },
+  };
+
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <TourDetailPage tour={tour} similar={similar} />
+    </>
+  );
 }
