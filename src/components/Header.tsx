@@ -6,8 +6,9 @@ import { useEffect, useState } from "react";
 import { ChevronDown, Moon, Sun } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
 import { useTheme } from "@/lib/ThemeContext";
-import { LANGS, NAV_ROUTES, TOURS_MENU_LINKS, type NavKey } from "@/lib/content";
+import { NAV_ROUTES, TOURS_MENU_LINKS, type NavKey } from "@/lib/content";
 import { cx, ui } from "@/lib/ui";
+import LangSwitcher from "./LangSwitcher";
 import Logo from "./Logo";
 
 const NAV_KEYS: NavKey[] = ["home", "about", "tours", "gallery", "services", "agencies", "blog", "contacts"];
@@ -16,12 +17,13 @@ const navBase =
   "relative cursor-pointer py-1 text-sm font-semibold tracking-[0.02em] transition-colors after:absolute after:-bottom-0.5 after:left-0 after:h-[1.5px] after:w-0 after:bg-gold after:transition-[width] after:duration-300 hover:after:w-full";
 
 export default function Header() {
-  const { lang, setLang, t } = useLang();
+  const { t } = useLang();
   const { theme, toggle } = useTheme();
   const pathname = usePathname();
   const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [toursOpen, setToursOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > window.innerHeight - 90);
@@ -32,6 +34,7 @@ export default function Header() {
 
   useEffect(() => {
     setOpen(false);
+    setToursOpen(false);
   }, [pathname]);
 
   const solid = !isHome || scrolled || open;
@@ -55,11 +58,11 @@ export default function Header() {
         )}
       >
         <div className={cx(ui.wrap, "flex items-center justify-between gap-6")}>
-          <Link href="/" className="flex items-center gap-[13px]" aria-label="GVIDON TOUR">
+          <Link href="/" className="-ml-1.5 flex items-center gap-[13px] md:-ml-2" aria-label="GVIDON TOUR">
             <div className="h-[42px] w-[42px] flex-none [&_svg]:block [&_svg]:h-full [&_svg]:w-full">
               <Logo />
             </div>
-            <div>
+            <div className="hidden sm:block">
               <div className={cx("whitespace-nowrap text-lg font-extrabold leading-none tracking-[0.22em]", headText)}>
                 GVIDON TOUR
               </div>
@@ -110,7 +113,7 @@ export default function Header() {
             })}
           </nav>
 
-          <div className="flex items-center gap-[18px]">
+          <div className="flex items-center gap-[10px]">
             <button
               type="button"
               className={iconBtn}
@@ -119,27 +122,10 @@ export default function Header() {
             >
               <span className="lic">{theme === "dark" ? <Sun /> : <Moon />}</span>
             </button>
-            <div className="flex items-center gap-0.5 text-xs font-bold tracking-[0.08em]">
-              {LANGS.map((code) => (
-                <button
-                  key={code}
-                  type="button"
-                  className={cx(
-                    "cursor-pointer rounded px-2 py-[5px] transition-colors",
-                    lang === code ? "bg-gold text-onaccent" : cx(navInactive)
-                  )}
-                  onClick={() => setLang(code)}
-                >
-                  {code.toUpperCase()}
-                </button>
-              ))}
-            </div>
-            <Link href="/contacts" className={cx(ui.btnGold, "max-md:hidden")}>
-              {t.hero.cta2}
-            </Link>
+            <LangSwitcher tone={navInactive} />
             <button
               type="button"
-              className="flex h-11 w-11 cursor-pointer flex-col items-center justify-center gap-[5px] lg:hidden"
+              className="flex h-11 w-11 flex-none cursor-pointer flex-col items-center justify-center gap-[5px] lg:hidden"
               aria-label={t.nav.home}
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
@@ -154,40 +140,66 @@ export default function Header() {
 
       <nav
         className={cx(
-          "fixed inset-x-0 top-0 z-40 flex flex-col gap-1 border-b border-gold/20 bg-surface/98 px-[26px] pb-[34px] pt-24 backdrop-blur-2xl transition-transform duration-[400ms] lg:hidden",
+          "fixed inset-x-0 top-0 z-40 flex flex-col gap-2 border-b border-gold/20 bg-surface/98 px-[26px] pb-[34px] pt-24 backdrop-blur-2xl transition-transform duration-[400ms] lg:hidden",
           open ? "translate-y-0" : "-translate-y-[102%]"
         )}
       >
         {NAV_KEYS.map((key) => {
           const active = pathname === NAV_ROUTES[key];
-          return (
-            <div key={key}>
-              <Link
-                href={NAV_ROUTES[key]}
-                className={cx(
-                  navBase,
-                  "py-[11px] text-lg",
-                  active ? "text-gold after:w-full" : "text-content/80 hover:text-content"
-                )}
-                onClick={() => setOpen(false)}
-              >
-                {t.nav[key]}
-              </Link>
-              {key === "tours" && (
-                <div className="mb-1.5 ml-3.5 flex flex-col gap-0.5 border-l border-content/15 pl-3.5">
-                  {TOURS_MENU_LINKS.map((link) => (
-                    <Link
-                      key={link.key}
-                      href={link.href}
-                      className="cursor-pointer py-2 text-[14.5px] font-semibold text-content/60 transition-colors hover:text-gold"
-                      onClick={() => setOpen(false)}
+          const rowCls = cx(
+            navBase,
+            "py-3 text-lg",
+            active ? "text-gold after:w-full" : "text-content/80 hover:text-content"
+          );
+          if (key === "tours") {
+            return (
+              <div key={key}>
+                <div className="flex items-center justify-between">
+                  <Link href={NAV_ROUTES[key]} className={rowCls} onClick={() => setOpen(false)}>
+                    {t.nav[key]}
+                  </Link>
+                  <button
+                    type="button"
+                    aria-label={t.nav[key]}
+                    aria-expanded={toursOpen}
+                    onClick={() => setToursOpen((v) => !v)}
+                    className="flex h-9 w-9 cursor-pointer items-center justify-center text-content/55"
+                  >
+                    <span
+                      className={cx("lic text-[16px] transition-transform duration-300", toursOpen && "rotate-180")}
                     >
-                      {t.toursMenu[link.key]}
-                    </Link>
-                  ))}
+                      <ChevronDown />
+                    </span>
+                  </button>
                 </div>
-              )}
-            </div>
+                <div
+                  className={cx(
+                    "grid transition-all duration-300",
+                    toursOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                  )}
+                >
+                  <div className="overflow-hidden">
+                    <div className="mb-1.5 ml-3.5 flex flex-col gap-0.5 border-l border-content/15 pl-3.5">
+                      {TOURS_MENU_LINKS.map((link) => (
+                        <Link
+                          key={link.key}
+                          href={link.href}
+                          className="cursor-pointer py-2 text-[14.5px] font-semibold text-content/60 transition-colors hover:text-gold"
+                          onClick={() => setOpen(false)}
+                        >
+                          {t.toursMenu[link.key]}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          }
+          return (
+            <Link key={key} href={NAV_ROUTES[key]} className={rowCls} onClick={() => setOpen(false)}>
+              {t.nav[key]}
+            </Link>
           );
         })}
       </nav>

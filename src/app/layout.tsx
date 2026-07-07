@@ -7,6 +7,7 @@ import { EMAIL, PHONE } from "@/lib/content";
 import { jsonLdScript, SITE_URL } from "@/lib/seo";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import FloatingCta from "@/components/FloatingCta";
 
 const ORGANIZATION_JSONLD = {
   "@context": "https://schema.org",
@@ -97,6 +98,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Header />
               {children}
               <Footer />
+              <FloatingCta />
             </div>
           </LanguageProvider>
         </ThemeProvider>
