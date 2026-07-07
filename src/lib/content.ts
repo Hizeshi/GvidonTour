@@ -517,6 +517,14 @@ export const TOUR_IMAGES: { src: string; pos?: string }[] = [
   { src: "/images/tour-mangystau.jpg" },
 ];
 
+/** Home hero slider — {src, capIndex} pairs into Dict.caps for localized alt text. */
+export const HERO_SLIDES: { src: string; capIndex: number; pos?: string }[] = [
+  { src: "/images/hero-astana.jpg", capIndex: 0 },
+  { src: "/images/gal-bozzhyra.jpg", capIndex: 3 },
+  { src: "/images/gal-charyn.jpg", capIndex: 1 },
+  { src: "/images/cta-steppe.jpg", capIndex: 8 },
+];
+
 /** Gallery slider images (first six captions of Dict.caps). */
 export const SLIDER_IMAGES: string[] = [
   "/images/hero-astana.jpg",

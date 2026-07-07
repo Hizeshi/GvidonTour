@@ -58,7 +58,9 @@ function fallbackTours(): CatalogTour[] {
 
 function fallbackGallery(): CatalogGalleryItem[] {
   return GRID_IMAGES.map((img, i) => ({
+    kind: "PHOTO" as const,
     src: img.src,
+    videoUrl: null,
     caption: {
       ru: CONTENT.ru.caps[i],
       en: CONTENT.en.caps[i],
@@ -111,7 +113,9 @@ export async function getGalleryItems(): Promise<CatalogGalleryItem[]> {
     });
     if (rows.length === 0) return fallbackGallery();
     return rows.map((r) => ({
+      kind: r.kind,
       src: r.src,
+      videoUrl: r.videoUrl,
       caption: r.caption as LText,
       span: r.span,
     }));

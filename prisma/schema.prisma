@@ -77,7 +77,8 @@ model Review {
 model GalleryItem {
   id        String    @id @default(cuid())
   kind      MediaKind @default(PHOTO)
-  src       String
+  src       String // always an image: the photo itself, or the video's poster/thumbnail
+  videoUrl  String? // set when kind = VIDEO; playable src (mp4) or YouTube/Vimeo URL
   caption   Json
   span      String?
   sortOrder Int       @default(0)

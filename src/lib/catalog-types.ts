@@ -46,7 +46,9 @@ export interface CatalogTour {
 }
 
 export interface CatalogGalleryItem {
-  src: string;
+  kind: "PHOTO" | "VIDEO";
+  src: string; // photo, or video poster/thumbnail when kind === "VIDEO"
+  videoUrl: string | null;
   caption: LText;
   span: string | null;
 }
