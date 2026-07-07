@@ -22,7 +22,7 @@ export default function PageHead({ eyebrow, title, intro }: PageHeadProps) {
         <Reveal className={cx(ui.divider, "mx-auto")} delay={1} immediate />
         <Reveal
           as="p"
-          className={cx(ui.lead, "mx-auto max-w-[62ch] text-cream/60")}
+          className={cx(ui.lead, "mx-auto max-w-[62ch] text-content/60")}
           delay={2}
           immediate
         >

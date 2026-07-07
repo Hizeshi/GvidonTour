@@ -42,7 +42,7 @@ export default function HomeHero() {
       </div>
       <div className="absolute inset-0 z-[1] bg-[linear-gradient(180deg,rgba(0,16,36,0.62)_0%,rgba(0,16,36,0.32)_38%,rgba(0,16,36,0.86)_88%,#00152F_100%)]" />
       <div className="absolute inset-0 z-[1] bg-[radial-gradient(120%_80%_at_18%_90%,rgba(0,21,47,0.7),transparent_60%)]" />
-      <div className={cx(ui.wrap, "relative z-[2] pb-[9vh]")}>
+      <div className={cx(ui.wrap, "relative z-[2] pb-[9vh] text-ondark")}>
         <Reveal className={ui.eyebrow} immediate>
           {t.hero.eyebrow}
         </Reveal>
@@ -59,7 +59,7 @@ export default function HomeHero() {
         </Reveal>
         <Reveal
           as="p"
-          className="mt-6 max-w-[54ch] text-[clamp(16px,1.35vw,20px)] text-cream/85"
+          className="mt-6 max-w-[54ch] text-[clamp(16px,1.35vw,20px)] text-ondark/85"
           delay={2}
           immediate
         >
@@ -77,7 +77,7 @@ export default function HomeHero() {
           </Link>
         </Reveal>
       </div>
-      <div className="absolute bottom-[26px] left-1/2 z-[3] flex -translate-x-1/2 flex-col items-center gap-[9px] text-[10.5px] uppercase tracking-[0.26em] text-cream/60 [@media(max-height:760px)]:hidden">
+      <div className="absolute bottom-[26px] left-1/2 z-[3] flex -translate-x-1/2 flex-col items-center gap-[9px] text-[10.5px] uppercase tracking-[0.26em] text-ondark/60 [@media(max-height:760px)]:hidden">
         <span>{t.hero.scroll}</span>
         <span className="h-[46px] w-px animate-scrolln bg-gradient-to-b from-gold/90 to-transparent" />
       </div>

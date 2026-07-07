@@ -3,18 +3,21 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Moon, Sun } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
+import { useTheme } from "@/lib/ThemeContext";
 import { LANGS, NAV_ROUTES, type NavKey } from "@/lib/content";
 import { cx, ui } from "@/lib/ui";
 import Logo from "./Logo";
 
 const NAV_KEYS: NavKey[] = ["home", "about", "tours", "gallery", "services", "contacts"];
 
-const navLink =
-  "relative cursor-pointer py-1 text-sm font-semibold tracking-[0.02em] transition-colors after:absolute after:-bottom-0.5 after:left-0 after:h-[1.5px] after:w-0 after:bg-gold after:transition-[width] after:duration-300 hover:text-white hover:after:w-full";
+const navBase =
+  "relative cursor-pointer py-1 text-sm font-semibold tracking-[0.02em] transition-colors after:absolute after:-bottom-0.5 after:left-0 after:h-[1.5px] after:w-0 after:bg-gold after:transition-[width] after:duration-300 hover:after:w-full";
 
 export default function Header() {
   const { lang, setLang, t } = useLang();
+  const { theme, toggle } = useTheme();
   const pathname = usePathname();
   const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
@@ -32,16 +35,23 @@ export default function Header() {
   }, [pathname]);
 
   const solid = !isHome || scrolled || open;
-  const burgerBar = "block h-0.5 w-[22px] bg-cream transition-all duration-300";
+
+  // Over the hero photo the header text must stay light; once solid it follows
+  // the active theme.
+  const headText = solid ? "text-content" : "text-ondark";
+  const navInactive = solid ? "text-content/80 hover:text-content" : "text-ondark/80 hover:text-ondark";
+  const iconBtn = cx(
+    "flex h-9 w-9 cursor-pointer items-center justify-center rounded-full text-[18px] transition-colors",
+    solid ? "text-content/70 hover:text-gold" : "text-ondark/70 hover:text-gold"
+  );
+  const burgerBar = cx("block h-0.5 w-[22px] transition-all duration-300", solid ? "bg-content" : "bg-ondark");
 
   return (
     <>
       <header
         className={cx(
           "fixed inset-x-0 top-0 z-50 border-b py-[22px] transition-all duration-[450ms]",
-          solid
-            ? "border-gold/15 bg-[rgba(0,16,36,0.92)] py-3.5 backdrop-blur-[14px]"
-            : "border-transparent"
+          solid ? "border-gold/15 bg-surface/95 py-3.5 backdrop-blur-[14px]" : "border-transparent"
         )}
       >
         <div className={cx(ui.wrap, "flex items-center justify-between gap-6")}>
@@ -50,7 +60,7 @@ export default function Header() {
               <Logo />
             </div>
             <div>
-              <div className="whitespace-nowrap text-lg font-extrabold leading-none tracking-[0.22em]">
+              <div className={cx("whitespace-nowrap text-lg font-extrabold leading-none tracking-[0.22em]", headText)}>
                 GVIDON TOUR
               </div>
               <div className="mt-1 hidden max-w-[170px] text-[8.5px] uppercase tracking-[0.2em] text-gold/85 md:block">
@@ -66,7 +76,7 @@ export default function Header() {
                 <Link
                   key={key}
                   href={NAV_ROUTES[key]}
-                  className={cx(navLink, active ? "text-gold after:w-full" : "text-cream/80")}
+                  className={cx(navBase, active ? "text-gold after:w-full" : navInactive)}
                 >
                   {t.nav[key]}
                 </Link>
@@ -74,7 +84,15 @@ export default function Header() {
             })}
           </nav>
 
-          <div className="flex items-center gap-[22px]">
+          <div className="flex items-center gap-[18px]">
+            <button
+              type="button"
+              className={iconBtn}
+              aria-label={theme === "dark" ? "Светлая тема" : "Тёмная тема"}
+              onClick={toggle}
+            >
+              <span className="lic">{theme === "dark" ? <Sun /> : <Moon />}</span>
+            </button>
             <div className="flex items-center gap-0.5 text-xs font-bold tracking-[0.08em]">
               {LANGS.map((code) => (
                 <button
@@ -82,7 +100,7 @@ export default function Header() {
                   type="button"
                   className={cx(
                     "cursor-pointer rounded px-2 py-[5px] transition-colors",
-                    lang === code ? "bg-gold text-navy" : "text-cream/50 hover:text-white"
+                    lang === code ? "bg-gold text-onaccent" : cx(navInactive)
                   )}
                   onClick={() => setLang(code)}
                 >
@@ -110,7 +128,7 @@ export default function Header() {
 
       <nav
         className={cx(
-          "fixed inset-x-0 top-0 z-40 flex flex-col gap-1 border-b border-gold/20 bg-[rgba(0,13,31,0.98)] px-[26px] pb-[34px] pt-24 backdrop-blur-2xl transition-transform duration-[400ms] lg:hidden",
+          "fixed inset-x-0 top-0 z-40 flex flex-col gap-1 border-b border-gold/20 bg-surface/98 px-[26px] pb-[34px] pt-24 backdrop-blur-2xl transition-transform duration-[400ms] lg:hidden",
           open ? "translate-y-0" : "-translate-y-[102%]"
         )}
       >
@@ -121,9 +139,9 @@ export default function Header() {
               key={key}
               href={NAV_ROUTES[key]}
               className={cx(
-                navLink,
+                navBase,
                 "py-[11px] text-lg",
-                active ? "text-gold after:w-full" : "text-cream/80"
+                active ? "text-gold after:w-full" : "text-content/80 hover:text-content"
               )}
               onClick={() => setOpen(false)}
             >

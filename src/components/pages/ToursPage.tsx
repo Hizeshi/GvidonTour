@@ -26,7 +26,7 @@ interface Filters {
 }
 
 const select =
-  "w-full cursor-pointer appearance-none rounded-[2px] border border-cream/20 bg-white/[0.04] px-4 py-3 text-[14px] text-cream transition-colors focus:border-gold focus:outline-none [&_option]:text-ink";
+  "w-full cursor-pointer appearance-none rounded-[2px] border border-content/20 bg-content/[0.04] px-4 py-3 text-[14px] text-content transition-colors focus:border-gold focus:outline-none [&_option]:text-onaccent";
 
 function matchPrice(priceFrom: number, bucket: string) {
   if (bucket === "low") return priceFrom < 100_000;
@@ -165,8 +165,8 @@ export default function ToursPage({ tours, categories }: ToursPageProps) {
               onClick={reset}
               disabled={!hasActiveFilters}
               className={cx(
-                "inline-flex cursor-pointer items-center justify-center gap-2 rounded-[2px] border border-cream/30 px-5 py-3 text-[13px] font-bold tracking-[0.04em] text-cream transition-all duration-300 hover:border-gold hover:text-gold",
-                !hasActiveFilters && "cursor-default opacity-40 hover:border-cream/30 hover:text-cream"
+                "inline-flex cursor-pointer items-center justify-center gap-2 rounded-[2px] border border-content/30 px-5 py-3 text-[13px] font-bold tracking-[0.04em] text-content transition-all duration-300 hover:border-gold hover:text-gold",
+                !hasActiveFilters && "cursor-default opacity-40 hover:border-content/30 hover:text-content"
               )}
             >
               <span className="lic">
@@ -184,13 +184,13 @@ export default function ToursPage({ tours, categories }: ToursPageProps) {
             </div>
           ) : (
             <Reveal
-              className="mx-auto max-w-[560px] rounded border border-cream/10 bg-white/[0.02] px-8 py-16 text-center"
+              className="mx-auto max-w-[560px] rounded border border-content/10 bg-content/[0.02] px-8 py-16 text-center"
               immediate
             >
               <span className="lic mx-auto text-[44px] text-gold/70">
                 <SearchX />
               </span>
-              <p className="mt-5 text-[16px] leading-relaxed text-cream/70">{t.catalog.empty}</p>
+              <p className="mt-5 text-[16px] leading-relaxed text-content/70">{t.catalog.empty}</p>
               <div className="mt-8 flex justify-center">
                 <Link href="/contacts" className={ui.btnGold}>
                   {t.catalog.emptyCta}

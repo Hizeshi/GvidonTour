@@ -10,9 +10,9 @@ export default function ValuesGrid({ tone = "dark" }: { tone?: "dark" | "cream" 
   const { t } = useLang();
   const card =
     tone === "cream"
-      ? "border-ink/10 bg-white hover:border-gold/60"
-      : "border-cream/10 bg-gradient-to-b from-white/[0.035] to-transparent hover:border-gold/50 hover:from-gold/[0.07]";
-  const desc = tone === "cream" ? "text-ink/60" : "text-cream/60";
+      ? "border-altcontent/10 bg-altpanel hover:border-gold/60"
+      : "border-content/10 bg-gradient-to-b from-content/[0.035] to-transparent hover:border-gold/50 hover:from-gold/[0.07]";
+  const desc = tone === "cream" ? "text-altcontent/60" : "text-content/60";
 
   return (
     <div className="mt-[60px] grid grid-cols-1 gap-[30px] sm:grid-cols-2 lg:grid-cols-3">

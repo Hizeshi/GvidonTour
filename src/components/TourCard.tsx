@@ -30,7 +30,7 @@ export default function TourCard({ tour, details, delay = 0 }: TourCardProps) {
     <div
       ref={ref}
       className={cx(
-        "group flex flex-col overflow-hidden rounded border border-cream/10 bg-navy-2 transition-all duration-[450ms] hover:-translate-y-2 hover:border-gold/40 hover:shadow-[0_28px_50px_-28px_rgba(0,0,0,0.7)]",
+        "group flex flex-col overflow-hidden rounded border border-content/10 bg-panel transition-all duration-[450ms] hover:-translate-y-2 hover:border-gold/40 hover:shadow-[0_28px_50px_-28px_rgba(0,0,0,0.7)]",
         `reveal${delay ? ` d${delay}` : ""}${cls}`
       )}
     >
@@ -55,12 +55,12 @@ export default function TourCard({ tour, details, delay = 0 }: TourCardProps) {
       </Link>
       <div className="flex flex-1 flex-col p-[26px] pb-[22px]">
         <h3 className={cx(ui.serif, "mb-3 text-[22px] leading-[1.16]")}>{tour.title[lang]}</h3>
-        <p className="flex-1 text-[14.5px] leading-[1.55] text-cream/60">{tour.desc[lang]}</p>
-        <div className="mt-[22px] flex items-center justify-between border-t border-cream/10 pt-[18px]">
+        <p className="flex-1 text-[14.5px] leading-[1.55] text-content/60">{tour.desc[lang]}</p>
+        <div className="mt-[22px] flex items-center justify-between border-t border-content/10 pt-[18px]">
           <span className="text-[17px] font-bold text-gold">{tour.priceText[lang]}</span>
           <Link
             href={`/tours/${tour.slug}`}
-            className="flex items-center gap-[7px] text-[13px] font-bold tracking-[0.04em] text-cream transition-all duration-300 hover:gap-3 hover:text-gold"
+            className="flex items-center gap-[7px] text-[13px] font-bold tracking-[0.04em] text-content transition-all duration-300 hover:gap-3 hover:text-gold"
           >
             {details}
             <span className="lic">

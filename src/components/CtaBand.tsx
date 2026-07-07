@@ -21,10 +21,10 @@ export default function CtaBand({ compact = false, withEyebrow = false }: { comp
         />
       </div>
       <div className="absolute inset-0 z-[1] bg-[linear-gradient(rgba(0,16,36,0.82),rgba(0,16,36,0.9))]" />
-      <Reveal className="relative z-[2] mx-auto max-w-[680px] px-[22px]">
+      <Reveal className="relative z-[2] mx-auto max-w-[680px] px-[22px] text-ondark">
         {withEyebrow && <div className={ui.eyebrow}>{t.slogan}</div>}
         <h2 className={cx(ui.serif, "mt-4 text-[clamp(32px,4vw,52px)]")}>{t.ctaBand.title}</h2>
-        <p className={cx(ui.lead, "text-cream/60")}>{t.ctaBand.sub}</p>
+        <p className={cx(ui.lead, "text-ondark/60")}>{t.ctaBand.sub}</p>
         <div className="mt-[38px] flex flex-wrap justify-center gap-4">
           <Link href="/contacts" className={ui.btnGold}>
             {t.ctaBand.btn}

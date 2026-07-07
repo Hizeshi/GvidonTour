@@ -2,8 +2,12 @@ import type { Metadata, Viewport } from "next";
 import { Manrope, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { LanguageProvider } from "@/lib/LanguageContext";
+import { ThemeProvider } from "@/lib/ThemeContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+
+// Runs before paint: applies the saved theme so there is no light/dark flash.
+const NO_FLASH = `(function(){try{if(localStorage.getItem("gv_theme")==="light")document.documentElement.classList.add("light")}catch(e){}})()`;
 
 const manrope = Manrope({
   subsets: ["latin", "latin-ext", "cyrillic", "cyrillic-ext"],
@@ -49,15 +53,20 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ru" className={`${manrope.variable} ${playfair.variable}`}>
+    <html lang="ru" className={`${manrope.variable} ${playfair.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: NO_FLASH }} />
+      </head>
       <body>
-        <LanguageProvider>
-          <div className="min-h-screen">
-            <Header />
-            {children}
-            <Footer />
-          </div>
-        </LanguageProvider>
+        <ThemeProvider>
+          <LanguageProvider>
+            <div className="min-h-screen">
+              <Header />
+              {children}
+              <Footer />
+            </div>
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

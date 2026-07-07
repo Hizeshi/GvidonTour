@@ -21,8 +21,8 @@ export default function AboutPage() {
             <h2 className={cx(ui.serif, "mb-7 mt-3.5 text-[clamp(28px,3vw,42px)]")}>
               {t.about.storyTitle}
             </h2>
-            <p className="mb-5 text-[17px] leading-[1.7] text-cream/80">{t.about.p1}</p>
-            <p className="mb-5 text-[17px] leading-[1.7] text-cream/80">{t.about.p2}</p>
+            <p className="mb-5 text-[17px] leading-[1.7] text-content/80">{t.about.p1}</p>
+            <p className="mb-5 text-[17px] leading-[1.7] text-content/80">{t.about.p2}</p>
           </Reveal>
           <Reveal className="relative h-[300px] overflow-hidden rounded md:h-[480px]" delay={1}>
             <Image
@@ -44,23 +44,23 @@ export default function AboutPage() {
                 <div className="font-serif text-[54px] font-semibold leading-none text-gold">
                   {s.n}
                 </div>
-                <div className="mt-2.5 text-sm tracking-[0.02em] text-cream/60">{s.l}</div>
+                <div className="mt-2.5 text-sm tracking-[0.02em] text-content/60">{s.l}</div>
               </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      <section className={cx(ui.sec, "bg-cream-2 text-ink")}>
+      <section className={cx(ui.sec, "bg-alt text-altcontent")}>
         <div className={ui.wrap}>
           <Reveal className="max-w-[760px]">
             <div className={ui.eyebrow}>{t.about.dirEyebrow}</div>
           </Reveal>
           <div className="mt-[46px] grid grid-cols-1 items-center gap-[38px] md:grid-cols-[300px_1fr] md:gap-[54px]">
-            <Reveal className="relative flex h-[300px] items-center justify-center overflow-hidden rounded bg-gradient-to-br from-navy-2 to-[#00132B] md:h-[380px]">
+            <Reveal className="relative flex h-[300px] items-center justify-center overflow-hidden rounded bg-gradient-to-br from-panel to-[#00132B] md:h-[380px]">
               <div className="font-serif text-8xl leading-none text-gold/85">
                 Т.В.
-                <small className="mt-[18px] block text-center font-sans text-[11px] uppercase tracking-[0.3em] text-cream/45">
+                <small className="mt-[18px] block text-center font-sans text-[11px] uppercase tracking-[0.3em] text-content/45">
                   GVIDON TOUR
                 </small>
               </div>

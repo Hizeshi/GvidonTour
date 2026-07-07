@@ -10,7 +10,7 @@ import PageHead from "@/components/PageHead";
 import Reveal from "@/components/Reveal";
 
 const gnav =
-  "absolute top-1/2 z-[5] flex h-[54px] w-[54px] -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-cream/25 bg-[rgba(0,16,36,0.5)] text-[22px] text-white backdrop-blur-[6px] transition-colors hover:border-gold hover:bg-gold hover:text-navy";
+  "absolute top-1/2 z-[5] flex h-[54px] w-[54px] -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-ondark/25 bg-[rgba(0,16,36,0.5)] text-[22px] text-white backdrop-blur-[6px] transition-colors hover:border-gold hover:bg-gold hover:text-onaccent";
 
 export default function GalleryPage({ items }: { items: CatalogGalleryItem[] }) {
   const { t, lang } = useLang();
@@ -30,7 +30,7 @@ export default function GalleryPage({ items }: { items: CatalogGalleryItem[] }) 
 
       <section className={cx(ui.sec, "pt-[30px]")}>
         <div className={ui.wrap}>
-          <Reveal className="relative mt-[54px] h-[min(64vh,620px)] overflow-hidden rounded-[5px] bg-navy-2">
+          <Reveal className="relative mt-[54px] h-[min(64vh,620px)] overflow-hidden rounded-[5px] bg-panel">
             {slides.map((item, i) => (
               <div
                 key={item.src}
@@ -86,7 +86,7 @@ export default function GalleryPage({ items }: { items: CatalogGalleryItem[] }) 
                   aria-label={item.caption[lang]}
                   className={cx(
                     "h-[9px] cursor-pointer rounded-full p-0 transition-all duration-300",
-                    i === slide ? "w-[26px] rounded-[5px] bg-gold" : "w-[9px] bg-cream/35"
+                    i === slide ? "w-[26px] rounded-[5px] bg-gold" : "w-[9px] bg-ondark/35"
                   )}
                   onClick={() => setSlide(i)}
                 />
@@ -101,7 +101,7 @@ export default function GalleryPage({ items }: { items: CatalogGalleryItem[] }) 
             {items.map((item, i) => (
               <div
                 key={item.src + i}
-                className={cx("group relative overflow-hidden rounded bg-navy-2", item.span ?? undefined)}
+                className={cx("group relative overflow-hidden rounded bg-panel", item.span ?? undefined)}
               >
                 <Image
                   src={item.src}

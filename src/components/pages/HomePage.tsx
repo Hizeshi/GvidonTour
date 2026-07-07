@@ -25,7 +25,7 @@ export default function HomePage({ tours, categories, directions }: HomePageProp
     <main>
       <HomeHero />
 
-      <section className={cx(ui.sec, "bg-cream-2 text-ink")}>
+      <section className={cx(ui.sec, "bg-alt text-altcontent")}>
         <div className={ui.wrap}>
           <Reveal className="max-w-[760px]">
             <div className={ui.eyebrow}>{t.valuesHead.eyebrow}</div>
@@ -47,7 +47,7 @@ export default function HomePage({ tours, categories, directions }: HomePageProp
         </div>
       </section>
 
-      <section className={cx(ui.sec, "bg-cream-2 text-ink")}>
+      <section className={cx(ui.sec, "bg-alt text-altcontent")}>
         <div className={ui.wrap}>
           <Reveal className="max-w-[760px]">
             <div className={ui.eyebrow}>{t.homeDirs.eyebrow}</div>

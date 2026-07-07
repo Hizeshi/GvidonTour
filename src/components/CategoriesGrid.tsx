@@ -17,7 +17,7 @@ export default function CategoriesGrid({ categories }: { categories: CatalogCate
           <Link
             href={`/tours?category=${c.slug}`}
             className={cx(
-              "group flex items-center gap-5 rounded border border-cream/10 bg-gradient-to-b from-white/[0.035] to-transparent px-6 py-5",
+              "group flex items-center gap-5 rounded border border-content/10 bg-gradient-to-b from-content/[0.035] to-transparent px-6 py-5",
               "transition-all duration-[400ms] hover:-translate-y-1 hover:border-gold/50 hover:from-gold/[0.07]"
             )}
           >
@@ -25,7 +25,7 @@ export default function CategoriesGrid({ categories }: { categories: CatalogCate
               <IconByName name={c.icon} />
             </span>
             <span className="flex-1 text-[17px] font-bold">{c.name[lang]}</span>
-            <span className="lic text-cream/40 transition-all duration-300 group-hover:translate-x-1 group-hover:text-gold">
+            <span className="lic text-content/40 transition-all duration-300 group-hover:translate-x-1 group-hover:text-gold">
               <ArrowRight />
             </span>
           </Link>

@@ -9,12 +9,12 @@ import Logo from "./Logo";
 const NAV_KEYS: NavKey[] = ["home", "about", "tours", "gallery", "services", "contacts"];
 
 const footLink =
-  "block cursor-pointer py-1.5 text-[14.5px] text-cream/70 transition-colors hover:text-gold";
+  "block cursor-pointer py-1.5 text-[14.5px] text-content/70 transition-colors hover:text-gold";
 
 export default function Footer() {
   const { t } = useLang();
   return (
-    <footer className="border-t border-gold/15 bg-navy-3 pb-[34px] pt-[74px]">
+    <footer className="border-t border-gold/15 bg-footer pb-[34px] pt-[74px]">
       <div className={ui.wrap}>
         <div className="grid grid-cols-1 gap-[34px] md:grid-cols-[1.5fr_1fr_1fr] md:gap-[54px]">
           <div>
@@ -31,7 +31,7 @@ export default function Footer() {
                 </div>
               </div>
             </Link>
-            <p className="mt-[22px] max-w-[38ch] text-[14.5px] leading-relaxed text-cream/55">
+            <p className="mt-[22px] max-w-[38ch] text-[14.5px] leading-relaxed text-content/55">
               {t.about.intro}
             </p>
           </div>
@@ -61,7 +61,7 @@ export default function Footer() {
             </a>
           </div>
         </div>
-        <div className="mt-[54px] flex flex-wrap items-center justify-between gap-3.5 border-t border-cream/10 pt-[26px] text-[13px] text-cream/45">
+        <div className="mt-[54px] flex flex-wrap items-center justify-between gap-3.5 border-t border-content/10 pt-[26px] text-[13px] text-content/45">
           <span>© 2026 GVIDON TOUR. {t.footer.rights}</span>
           <span className="font-serif text-[15px] italic text-gold/85">{t.slogan}</span>
         </div>

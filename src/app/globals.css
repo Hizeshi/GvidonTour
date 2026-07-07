@@ -1,14 +1,23 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy: #00152f;
-  --color-navy-2: #0a2547;
-  --color-navy-3: #000d1f;
-  --color-ink: #15263f;
+  /* Brand constants — identical in both themes. */
   --color-gold: #e29f5b;
   --color-gold-2: #ebc08a;
-  --color-cream: #f3eee6;
-  --color-cream-2: #f4efe6;
+  --color-onaccent: #00152f; /* dark text on gold buttons */
+  --color-ondark: #f3eee6; /* light text over photos / hero */
+
+  /* Semantic surface tokens (dark-theme defaults).
+     The whole theme stays dark: alternating sections are a subtly lighter
+     navy band, NOT a light one. html.light flips every token to a fully
+     light palette below. */
+  --color-surface: #00152f; /* page / base section background */
+  --color-content: #f3eee6; /* primary text on surface */
+  --color-panel: #0a2547; /* cards on surface */
+  --color-footer: #000d1f; /* footer background */
+  --color-alt: #062347; /* alternating section — lighter navy, still dark */
+  --color-altcontent: #f3eee6; /* text on alternating sections */
+  --color-altpanel: #0e2e55; /* cards on alternating sections */
 
   --font-sans: var(--font-manrope), "PT Sans", system-ui, sans-serif;
   --font-serif: var(--font-playfair), "PT Serif", Georgia, serif;
@@ -42,15 +51,50 @@
   }
 }
 
+/* Light theme: fully light palette. Alternating sections are a clean white
+   band over the warm off-white base — no dark sections. */
+html.light {
+  --color-surface: #f6f1e7;
+  --color-content: #16233b;
+  --color-panel: #ffffff;
+  --color-footer: #ebe4d5;
+  --color-alt: #ffffff;
+  --color-altcontent: #16233b;
+  --color-altpanel: #f4eee2;
+  color-scheme: light;
+}
+:root {
+  color-scheme: dark;
+}
+
+/* Kazakhstan route-map widget — themed so it stays light in the light theme. */
+.kazmap {
+  background: radial-gradient(120% 130% at 50% 30%, #0a2547, #00132b);
+  color: var(--color-ondark);
+}
+html.light .kazmap {
+  background: radial-gradient(120% 130% at 50% 30%, #ffffff, #efe7d6);
+  color: var(--color-content);
+}
+.kazmap-label {
+  background: rgba(0, 16, 36, 0.85);
+}
+html.light .kazmap-label {
+  background: rgba(255, 255, 255, 0.92);
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
   }
   body {
-    @apply overflow-x-hidden bg-navy font-sans text-base leading-[1.6] text-cream antialiased;
+    @apply overflow-x-hidden bg-surface font-sans text-base leading-[1.6] text-content antialiased;
+    transition:
+      background-color 0.4s ease,
+      color 0.4s ease;
   }
   ::selection {
-    @apply bg-gold/85 text-navy;
+    @apply bg-gold/85 text-onaccent;
   }
   :focus-visible {
     outline: 2px solid var(--color-gold);

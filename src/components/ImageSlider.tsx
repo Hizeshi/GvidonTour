@@ -6,7 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cx } from "@/lib/ui";
 
 const gnav =
-  "absolute top-1/2 z-[5] flex h-[50px] w-[50px] -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-cream/25 bg-[rgba(0,16,36,0.5)] text-[22px] text-white backdrop-blur-[6px] transition-colors hover:border-gold hover:bg-gold hover:text-navy";
+  "absolute top-1/2 z-[5] flex h-[50px] w-[50px] -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-ondark/25 bg-[rgba(0,16,36,0.5)] text-[22px] text-white backdrop-blur-[6px] transition-colors hover:border-gold hover:bg-gold hover:text-onaccent";
 
 interface ImageSliderProps {
   images: string[];
@@ -26,7 +26,7 @@ export default function ImageSlider({ images, alt, className, autoPlayMs = 6000 
   }, [count, autoPlayMs]);
 
   return (
-    <div className={cx("relative overflow-hidden rounded-[5px] bg-navy-2", className)}>
+    <div className={cx("relative overflow-hidden rounded-[5px] bg-panel", className)}>
       {images.map((src, i) => (
         <div
           key={src + i}
@@ -76,7 +76,7 @@ export default function ImageSlider({ images, alt, className, autoPlayMs = 6000 
                 aria-label={`${i + 1}`}
                 className={cx(
                   "h-[9px] cursor-pointer rounded-full p-0 transition-all duration-300",
-                  i === slide ? "w-[26px] rounded-[5px] bg-gold" : "w-[9px] bg-cream/40"
+                  i === slide ? "w-[26px] rounded-[5px] bg-gold" : "w-[9px] bg-ondark/40"
                 )}
                 onClick={() => setSlide(i)}
               />

@@ -10,8 +10,8 @@ import KazMap from "@/components/KazMap";
 import PageHead from "@/components/PageHead";
 import Reveal from "@/components/Reveal";
 
-const infoRow = "flex items-start gap-[18px] border-b border-cream/10 py-[22px]";
-const infoLabel = "text-xs uppercase tracking-[0.12em] text-cream/50";
+const infoRow = "flex items-start gap-[18px] border-b border-content/10 py-[22px]";
+const infoLabel = "text-xs uppercase tracking-[0.12em] text-content/50";
 const infoValue = "mt-[3px] text-base font-semibold";
 const infoIcon = "lic mt-0.5 text-[22px] text-gold";
 
@@ -42,7 +42,7 @@ export default function ContactsPage({ tourTitles }: { tourTitles: LText[] }) {
                   <h3 className={cx(ui.serif, "mb-2 mt-[18px] text-[26px]")}>
                     {t.contacts.successTitle}
                   </h3>
-                  <p className="text-cream/60">{t.contacts.success}</p>
+                  <p className="text-content/60">{t.contacts.success}</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit}>
@@ -72,7 +72,7 @@ export default function ContactsPage({ tourTitles }: { tourTitles: LText[] }) {
                     </label>
                     <select
                       id="cf-tour"
-                      className={cx(ui.finput, "cursor-pointer appearance-none [&_option]:text-ink")}
+                      className={cx(ui.finput, "cursor-pointer appearance-none [&_option]:text-onaccent")}
                       name="tour"
                       defaultValue={tourOptions[0]}
                     >
