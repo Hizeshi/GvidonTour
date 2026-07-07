@@ -13,7 +13,7 @@ export default function FloatingCta() {
   return (
     <Link
       href="/contacts"
-      className="group fixed bottom-6 right-6 z-40 flex h-14 items-center rounded-full bg-gold pl-[13px] pr-[13px] text-onaccent shadow-[0_14px_34px_-10px_rgba(226,159,91,0.6)] transition-[padding] duration-300 hover:pr-6 md:bottom-8 md:right-8"
+      className="group fixed bottom-5 right-4 z-40 flex h-14 items-center rounded-full bg-gold pl-[13px] pr-[13px] text-onaccent shadow-[0_14px_34px_-10px_rgba(226,159,91,0.6)] transition-[padding] duration-300 hover:pr-6 md:bottom-8"
     >
       <span className="lic relative flex-none text-[24px]">
         <span className="absolute inset-0 rounded-full animate-pulse-dot" />

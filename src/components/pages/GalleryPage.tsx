@@ -80,7 +80,7 @@ export default function GalleryPage({ items }: { items: CatalogGalleryItem[] }) 
             </button>
             <button
               type="button"
-              className={cx(gnav, "right-6")}
+              className={cx(gnav, "right-6 max-sm:right-20")}
               aria-label="Next"
               onClick={() => setSlide((s) => (s + 1) % slideCount)}
             >

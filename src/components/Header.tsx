@@ -128,7 +128,12 @@ export default function Header() {
               className="flex h-11 w-11 flex-none cursor-pointer flex-col items-center justify-center gap-[5px] lg:hidden"
               aria-label={t.nav.home}
               aria-expanded={open}
-              onClick={() => setOpen((v) => !v)}
+              onClick={() =>
+                setOpen((v) => {
+                  if (v) setToursOpen(false);
+                  return !v;
+                })
+              }
             >
               <span className={cx(burgerBar, open && "translate-y-[7px] rotate-45")} />
               <span className={cx(burgerBar, open && "opacity-0")} />
