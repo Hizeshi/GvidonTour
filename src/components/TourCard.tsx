@@ -34,7 +34,7 @@ export default function TourCard({ tour, details, delay = 0 }: TourCardProps) {
         `reveal${delay ? ` d${delay}` : ""}${cls}`
       )}
     >
-      <Link href="/contacts" className="relative block h-[236px] overflow-hidden">
+      <Link href={`/tours/${tour.slug}`} className="relative block h-[236px] overflow-hidden">
         <span className={cx(badge, "left-3.5 top-3.5 text-[11px] font-bold uppercase tracking-[0.14em] text-gold")}>
           {tour.region[lang]}
         </span>
@@ -59,7 +59,7 @@ export default function TourCard({ tour, details, delay = 0 }: TourCardProps) {
         <div className="mt-[22px] flex items-center justify-between border-t border-cream/10 pt-[18px]">
           <span className="text-[17px] font-bold text-gold">{tour.priceText[lang]}</span>
           <Link
-            href="/contacts"
+            href={`/tours/${tour.slug}`}
             className="flex items-center gap-[7px] text-[13px] font-bold tracking-[0.04em] text-cream transition-all duration-300 hover:gap-3 hover:text-gold"
           >
             {details}

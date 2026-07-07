@@ -1,6 +1,6 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../src/generated/prisma/client";
+import { Prisma, PrismaClient } from "../src/generated/prisma/client";
 import {
   CATEGORY_DATA,
   CONTENT,
@@ -10,6 +10,7 @@ import {
   TOUR_IMAGES,
   TOUR_META,
 } from "../src/lib/content";
+import { TOUR_DETAILS } from "../src/lib/tour-details";
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg({
@@ -36,6 +37,7 @@ async function main() {
       imagePos: img.pos ?? null,
       featured: meta.featured ?? false,
       sortOrder: i,
+      details: (TOUR_DETAILS[meta.slug] ?? Prisma.JsonNull) as Prisma.InputJsonValue,
     };
     await prisma.tour.upsert({
       where: { slug: meta.slug },

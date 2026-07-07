@@ -6,6 +6,29 @@ import type { Lang } from "./content";
 
 export type LText = Record<Lang, string>;
 
+export interface ProgramStep {
+  time: string;
+  text: LText;
+}
+
+export interface PriceRow {
+  group: LText;
+  price: string;
+}
+
+/** Rich content for the tour/excursion detail page, stored in Tour.details (Json). */
+export interface TourDetails {
+  route?: LText;
+  startPlace?: LText;
+  about?: LText;
+  gallery?: string[];
+  program?: ProgramStep[];
+  included?: LText[];
+  notIncluded?: LText[];
+  tips?: LText[];
+  priceTable?: PriceRow[];
+}
+
 export interface CatalogTour {
   slug: string;
   region: LText;
@@ -19,6 +42,7 @@ export interface CatalogTour {
   priceFrom: number;
   city: string | null;
   category: string | null;
+  details: TourDetails | null;
 }
 
 export interface CatalogGalleryItem {

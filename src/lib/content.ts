@@ -56,6 +56,24 @@ export interface Dict {
   };
   ctaBand: { title: string; sub: string; btn: string };
   toursPage: { eyebrow: string; title: string; intro: string; details: string };
+  tourPage: {
+    back: string;
+    route: string;
+    startPlace: string;
+    duration: string;
+    about: string;
+    program: string;
+    included: string;
+    notIncluded: string;
+    tips: string;
+    priceTitle: string;
+    priceGroup: string;
+    pricePer: string;
+    priceNote: string;
+    bookTitle: string;
+    request: string;
+    similar: string;
+  };
   tours: TourEntry[];
   gallery: { eyebrow: string; title: string; intro: string };
   caps: string[];
@@ -131,6 +149,24 @@ export const CONTENT: Record<Lang, Dict> = {
       title: "Откройте Казахстан",
       intro: "Авторские программы по всей стране — от однодневных вылазок до больших экспедиций по самым красивым местам Казахстана.",
       details: "Подробнее",
+    },
+    tourPage: {
+      back: "Все туры",
+      route: "Маршрут",
+      startPlace: "Место начала",
+      duration: "Длительность",
+      about: "Описание",
+      program: "Программа по дням",
+      included: "Что входит",
+      notIncluded: "Что не входит",
+      tips: "Рекомендации туристам",
+      priceTitle: "Стоимость",
+      priceGroup: "Размер группы",
+      pricePer: "Цена",
+      priceNote: "Точная стоимость зависит от дат, состава группы и уровня проживания. Оставьте заявку — рассчитаем индивидуально.",
+      bookTitle: "Забронировать тур",
+      request: "Оставить заявку",
+      similar: "Похожие маршруты",
     },
     tours: [
       { region: "Астана", title: "Астана — город будущего", dur: "2 дня", price: "от 120 000 ₸", desc: "Байтерек, Хан Шатыр, Дворец мира и согласия и вечерняя набережная Ишима." },
@@ -247,6 +283,24 @@ export const CONTENT: Record<Lang, Dict> = {
       intro: "Signature programmes across the country — from one-day escapes to grand expeditions through the most beautiful places in Kazakhstan.",
       details: "Details",
     },
+    tourPage: {
+      back: "All tours",
+      route: "Route",
+      startPlace: "Starting point",
+      duration: "Duration",
+      about: "About",
+      program: "Day-by-day programme",
+      included: "What's included",
+      notIncluded: "What's not included",
+      tips: "Traveller tips",
+      priceTitle: "Price",
+      priceGroup: "Group size",
+      pricePer: "Price",
+      priceNote: "The exact price depends on dates, group size and accommodation level. Send a request and we will quote you individually.",
+      bookTitle: "Book this tour",
+      request: "Send a request",
+      similar: "Similar routes",
+    },
     tours: [
       { region: "Astana", title: "Astana — city of the future", dur: "2 days", price: "from 120,000 ₸", desc: "Baiterek, Khan Shatyr, the Palace of Peace and the evening Ishim embankment." },
       { region: "Almaty", title: "Almaty & the Alatau mountains", dur: "3 days", price: "from 180,000 ₸", desc: "Medeu, Shymbulak, Kok-Tobe and the evening lights of the southern capital." },
@@ -361,6 +415,24 @@ export const CONTENT: Record<Lang, Dict> = {
       title: "Қазақстанды ашыңыз",
       intro: "Ел бойынша авторлық бағдарламалар — бір күндік серуендерден Қазақстанның ең әдемі жерлеріне үлкен экспедицияларға дейін.",
       details: "Толығырақ",
+    },
+    tourPage: {
+      back: "Барлық турлар",
+      route: "Маршрут",
+      startPlace: "Басталу орны",
+      duration: "Ұзақтығы",
+      about: "Сипаттама",
+      program: "Күндер бойынша бағдарлама",
+      included: "Не кіреді",
+      notIncluded: "Не кірмейді",
+      tips: "Туристерге кеңестер",
+      priceTitle: "Бағасы",
+      priceGroup: "Топ мөлшері",
+      pricePer: "Бағасы",
+      priceNote: "Нақты бағасы күндерге, топ құрамына және тұру деңгейіне байланысты. Өтінім қалдырыңыз — жеке есептейміз.",
+      bookTitle: "Турды брондау",
+      request: "Өтінім қалдыру",
+      similar: "Ұқсас маршруттар",
     },
     tours: [
       { region: "Астана", title: "Астана — болашақ қаласы", dur: "2 күн", price: "120 000 ₸-ден", desc: "Бәйтерек, Хан Шатыр, Бейбітшілік сарайы және Есіл жағалауы." },

@@ -13,7 +13,9 @@ import type {
   CatalogGalleryItem,
   CatalogTour,
   LText,
+  TourDetails,
 } from "./catalog-types";
+import { TOUR_DETAILS } from "./tour-details";
 import { prisma } from "./db";
 
 export type {
@@ -22,6 +24,7 @@ export type {
   CatalogGalleryItem,
   CatalogTour,
   LText,
+  TourDetails,
 } from "./catalog-types";
 
 /** Static content assembled from the i18n dictionary — used when the DB is
@@ -45,6 +48,7 @@ function fallbackTours(): CatalogTour[] {
       priceFrom: meta.priceFrom,
       city: meta.city,
       category: null,
+      details: TOUR_DETAILS[meta.slug] ?? null,
     };
   });
 }
@@ -82,11 +86,18 @@ export async function getTours(): Promise<CatalogTour[]> {
       priceFrom: r.priceFrom,
       city: r.city,
       category: r.category?.slug ?? null,
+      details: (r.details as TourDetails | null) ?? TOUR_DETAILS[r.slug] ?? null,
     }));
   } catch (err) {
     console.error("[catalog] DB unavailable, serving static tours:", err);
     return fallbackTours();
   }
+}
+
+/** Single tour by slug, for the detail page. */
+export async function getTourBySlug(slug: string): Promise<CatalogTour | null> {
+  const tours = await getTours();
+  return tours.find((tour) => tour.slug === slug) ?? null;
 }
 
 export async function getGalleryItems(): Promise<CatalogGalleryItem[]> {
