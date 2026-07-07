@@ -4,7 +4,7 @@ import "./globals.css";
 import { LanguageProvider } from "@/lib/LanguageContext";
 import { ThemeProvider } from "@/lib/ThemeContext";
 import { EMAIL, PHONE } from "@/lib/content";
-import { SITE_URL } from "@/lib/seo";
+import { jsonLdScript, SITE_URL } from "@/lib/seo";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -87,7 +87,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: NO_FLASH }} />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSONLD) }}
+          dangerouslySetInnerHTML={{ __html: jsonLdScript(ORGANIZATION_JSONLD) }}
         />
       </head>
       <body>

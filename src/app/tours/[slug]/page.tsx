@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import TourDetailPage from "@/components/pages/TourDetailPage";
 import { getTourBySlug, getTours } from "@/lib/catalog";
-import { SITE_URL } from "@/lib/seo";
+import { jsonLdScript, SITE_URL } from "@/lib/seo";
 
 export const revalidate = 300;
 
@@ -58,7 +58,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }} />
       <TourDetailPage tour={tour} similar={similar} />
     </>
   );
