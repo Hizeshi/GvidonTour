@@ -15,7 +15,7 @@ export default function ValuesGrid({ tone = "dark" }: { tone?: "dark" | "cream" 
   const desc = tone === "cream" ? "text-ink/60" : "text-cream/60";
 
   return (
-    <div className="mt-[60px] grid grid-cols-1 gap-[30px] sm:grid-cols-2 lg:grid-cols-4">
+    <div className="mt-[60px] grid grid-cols-1 gap-[30px] sm:grid-cols-2 lg:grid-cols-3">
       {t.values.map((v, i) => (
         <Reveal
           key={v.icon}

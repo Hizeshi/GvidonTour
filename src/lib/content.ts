@@ -33,7 +33,27 @@ export interface Dict {
   hero: { eyebrow: string; title: string; sub: string; cta1: string; cta2: string; scroll: string };
   valuesHead: { eyebrow: string; title: string };
   values: ValueEntry[];
+  homeCats: { eyebrow: string; title: string };
+  homeDirs: { eyebrow: string; title: string };
   featured: { eyebrow: string; title: string; viewAll: string };
+  catalog: {
+    book: string;
+    bookMsg: string;
+    fCity: string;
+    fCategory: string;
+    fPrice: string;
+    fDays: string;
+    fAll: string;
+    fReset: string;
+    priceLow: string;
+    priceMid: string;
+    priceHigh: string;
+    days1: string;
+    days23: string;
+    days4: string;
+    empty: string;
+    emptyCta: string;
+  };
   ctaBand: { title: string; sub: string; btn: string };
   toursPage: { eyebrow: string; title: string; intro: string; details: string };
   tours: TourEntry[];
@@ -73,12 +93,34 @@ export const CONTENT: Record<Lang, Dict> = {
     },
     valuesHead: { eyebrow: "Почему GVIDON TOUR", title: "Ваш надёжный партнёр в Казахстане" },
     values: [
-      { icon: "landmark", t: "Богатая культура", d: "Древние города Великого Шёлкового пути, мавзолеи и живые традиции кочевников." },
-      { icon: "heart-handshake", t: "Гостеприимство", d: "Казахское гостеприимство — в основе каждого маршрута и каждой встречи." },
-      { icon: "route", t: "Разнообразные маршруты", d: "От футуристичных городов до каньонов, степей и горных озёр." },
-      { icon: "badge-check", t: "Профессионализм", d: "Лицензированные гиды, продуманная логистика и забота о деталях." },
+      { icon: "user-check", t: "Опытные гиды", d: "Лицензированные гиды с многолетним опытом работы по всем регионам страны." },
+      { icon: "badge-check", t: "Лицензированный туроператор", d: "Официальная лицензия и полное юридическое сопровождение поездок." },
+      { icon: "heart-handshake", t: "Индивидуальный подход", d: "Маршруты под ваши интересы, сроки и состав группы." },
+      { icon: "map", t: "Работаем по всему Казахстану", d: "От Астаны и Алматы до Мангистау и Туркестана — все 14 регионов." },
+      { icon: "handshake", t: "Надёжные партнёры", d: "Проверенные отели, перевозчики и площадки в каждом городе." },
+      { icon: "headphones", t: "Круглосуточная поддержка", d: "На связи 24/7 — до, во время и после путешествия." },
     ],
-    featured: { eyebrow: "Популярные направления", title: "Избранные маршруты", viewAll: "Все туры" },
+    homeCats: { eyebrow: "Виды туризма", title: "Категории туров" },
+    homeDirs: { eyebrow: "Популярные направления", title: "Куда поехать в Казахстане" },
+    featured: { eyebrow: "Готовые туры", title: "Избранные маршруты", viewAll: "Все туры" },
+    catalog: {
+      book: "Забронировать",
+      bookMsg: "Здравствуйте! Хочу забронировать тур «{title}».",
+      fCity: "Город",
+      fCategory: "Категория",
+      fPrice: "Стоимость",
+      fDays: "Длительность",
+      fAll: "Все",
+      fReset: "Сбросить",
+      priceLow: "до 100 000 ₸",
+      priceMid: "100–200 тыс. ₸",
+      priceHigh: "от 200 000 ₸",
+      days1: "1 день",
+      days23: "2–3 дня",
+      days4: "4+ дней",
+      empty: "По выбранным фильтрам туров пока нет. Оставьте заявку — и мы соберём маршрут специально для вас.",
+      emptyCta: "Оставить заявку",
+    },
     ctaBand: {
       title: "Готовы открыть Казахстан?",
       sub: "Расскажите о своих пожеланиях — и мы составим маршрут специально для вас.",
@@ -166,12 +208,34 @@ export const CONTENT: Record<Lang, Dict> = {
     },
     valuesHead: { eyebrow: "Why GVIDON TOUR", title: "Your trusted partner in Kazakhstan" },
     values: [
-      { icon: "landmark", t: "Rich culture", d: "Ancient Silk Road cities, mausoleums and living nomadic traditions." },
-      { icon: "heart-handshake", t: "Hospitality", d: "Kazakh hospitality is at the heart of every route and every welcome." },
-      { icon: "route", t: "Diverse routes", d: "From futuristic cities to canyons, steppes and mountain lakes." },
-      { icon: "badge-check", t: "Professionalism", d: "Licensed guides, smooth logistics and care for every detail." },
+      { icon: "user-check", t: "Experienced guides", d: "Licensed guides with years of experience across every region of the country." },
+      { icon: "badge-check", t: "Licensed tour operator", d: "Official licence and full legal support for your trips." },
+      { icon: "heart-handshake", t: "Personal approach", d: "Routes built around your interests, dates and group." },
+      { icon: "map", t: "All across Kazakhstan", d: "From Astana and Almaty to Mangystau and Turkestan — all 14 regions." },
+      { icon: "handshake", t: "Reliable partners", d: "Trusted hotels, carriers and venues in every city." },
+      { icon: "headphones", t: "24/7 support", d: "Always in touch — before, during and after your journey." },
     ],
-    featured: { eyebrow: "Popular destinations", title: "Featured journeys", viewAll: "All tours" },
+    homeCats: { eyebrow: "Tourism types", title: "Tour categories" },
+    homeDirs: { eyebrow: "Popular destinations", title: "Where to go in Kazakhstan" },
+    featured: { eyebrow: "Ready-made tours", title: "Featured journeys", viewAll: "All tours" },
+    catalog: {
+      book: "Book now",
+      bookMsg: "Hello! I would like to book the tour “{title}”.",
+      fCity: "City",
+      fCategory: "Category",
+      fPrice: "Price",
+      fDays: "Duration",
+      fAll: "All",
+      fReset: "Reset",
+      priceLow: "under 100,000 ₸",
+      priceMid: "100–200 thousand ₸",
+      priceHigh: "from 200,000 ₸",
+      days1: "1 day",
+      days23: "2–3 days",
+      days4: "4+ days",
+      empty: "No tours match the selected filters yet. Send a request — and we will craft a route just for you.",
+      emptyCta: "Send a request",
+    },
     ctaBand: {
       title: "Ready to discover Kazakhstan?",
       sub: "Tell us your wishes — and we will craft a route just for you.",
@@ -259,12 +323,34 @@ export const CONTENT: Record<Lang, Dict> = {
     },
     valuesHead: { eyebrow: "Неге GVIDON TOUR", title: "Қазақстандағы сенімді серіктесіңіз" },
     values: [
-      { icon: "landmark", t: "Бай мәдениет", d: "Ұлы Жібек жолының ежелгі қалалары, кесенелер және тірі көшпелі дәстүрлер." },
-      { icon: "heart-handshake", t: "Қонақжайлылық", d: "Қазақ қонақжайлылығы — әр маршрут пен әр кездесудің негізі." },
-      { icon: "route", t: "Әртүрлі маршруттар", d: "Болашақ қалаларынан шатқалдарға, далаға және тау көлдеріне дейін." },
-      { icon: "badge-check", t: "Кәсібилік", d: "Лицензияланған гидтер, ойластырылған логистика және әр детальге қамқорлық." },
+      { icon: "user-check", t: "Тәжірибелі гидтер", d: "Елдің барлық өңірлері бойынша көпжылдық тәжірибесі бар лицензияланған гидтер." },
+      { icon: "badge-check", t: "Лицензияланған туроператор", d: "Ресми лицензия және сапарларды толық заңды сүйемелдеу." },
+      { icon: "heart-handshake", t: "Жеке көзқарас", d: "Қызығушылығыңызға, мерзіміңізге және топ құрамына сай маршруттар." },
+      { icon: "map", t: "Бүкіл Қазақстан бойынша", d: "Астана мен Алматыдан Маңғыстау мен Түркістанға дейін — барлық 14 өңір." },
+      { icon: "handshake", t: "Сенімді серіктестер", d: "Әр қаладағы тексерілген қонақүйлер, тасымалдаушылар мен алаңдар." },
+      { icon: "headphones", t: "Тәулік бойы қолдау", d: "24/7 байланыстамыз — сапарға дейін, сапар кезінде және одан кейін." },
     ],
-    featured: { eyebrow: "Танымал бағыттар", title: "Таңдаулы маршруттар", viewAll: "Барлық турлар" },
+    homeCats: { eyebrow: "Туризм түрлері", title: "Тур санаттары" },
+    homeDirs: { eyebrow: "Танымал бағыттар", title: "Қазақстанда қайда бару" },
+    featured: { eyebrow: "Дайын турлар", title: "Таңдаулы маршруттар", viewAll: "Барлық турлар" },
+    catalog: {
+      book: "Брондау",
+      bookMsg: "Сәлеметсіз бе! «{title}» турын брондағым келеді.",
+      fCity: "Қала",
+      fCategory: "Санат",
+      fPrice: "Бағасы",
+      fDays: "Ұзақтығы",
+      fAll: "Барлығы",
+      fReset: "Тазарту",
+      priceLow: "100 000 ₸ дейін",
+      priceMid: "100–200 мың ₸",
+      priceHigh: "200 000 ₸ бастап",
+      days1: "1 күн",
+      days23: "2–3 күн",
+      days4: "4+ күн",
+      empty: "Таңдалған сүзгілер бойынша турлар әзірге жоқ. Өтінім қалдырыңыз — біз сізге арнайы маршрут құрастырамыз.",
+      emptyCta: "Өтінім қалдыру",
+    },
     ctaBand: {
       title: "Қазақстанды ашуға дайынсыз ба?",
       sub: "Тілектеріңізді айтыңыз — біз сізге арнайы маршрут жасаймыз.",
@@ -397,3 +483,50 @@ export const WHATSAPP_LINKS = [
 ];
 export const EMAIL = "gvidontour.kz@gmail.com";
 export const INSTAGRAM = "@gvidontour";
+
+export const WHATSAPP_BOOKING = "77013626725";
+
+/** Localized names shared by seed, fallbacks and the catalog filters. */
+export type LocalizedName = Record<Lang, string>;
+
+export const CITY_NAMES: Record<string, LocalizedName> = {
+  astana: { ru: "Астана", en: "Astana", kk: "Астана" },
+  almaty: { ru: "Алматы", en: "Almaty", kk: "Алматы" },
+  burabay: { ru: "Бурабай", en: "Burabay", kk: "Бурабай" },
+  charyn: { ru: "Чарын", en: "Charyn", kk: "Шарын" },
+  baikonur: { ru: "Байконур", en: "Baikonur", kk: "Байқоңыр" },
+  turkestan: { ru: "Туркестан", en: "Turkestan", kk: "Түркістан" },
+  mangystau: { ru: "Мангистау", en: "Mangystau", kk: "Маңғыстау" },
+};
+
+export const CATEGORY_DATA = [
+  { slug: "kids", icon: "backpack", name: { ru: "Детский туризм", en: "Kids tourism", kk: "Балалар туризмі" } },
+  { slug: "industrial", icon: "factory", name: { ru: "Промышленный туризм", en: "Industrial tourism", kk: "Өнеркәсіптік туризм" } },
+  { slug: "ethno", icon: "tent", name: { ru: "Этнотуры", en: "Ethno tours", kk: "Этнотурлар" } },
+  { slug: "pilgrimage", icon: "landmark", name: { ru: "Паломнические туры", en: "Pilgrimage tours", kk: "Қажылық турлар" } },
+  { slug: "vip", icon: "crown", name: { ru: "VIP", en: "VIP", kk: "VIP" } },
+  { slug: "mice", icon: "briefcase", name: { ru: "MICE", en: "MICE", kk: "MICE" } },
+];
+
+export const DIRECTION_DATA = [
+  { slug: "astana", image: "/images/tour-astana.jpg", name: CITY_NAMES.astana },
+  { slug: "almaty", image: "/images/tour-almaty.jpg", name: CITY_NAMES.almaty },
+  { slug: "burabay", image: "/images/dir-burabay.jpg", name: CITY_NAMES.burabay },
+  { slug: "charyn", image: "/images/tour-charyn.jpg", name: CITY_NAMES.charyn },
+  { slug: "baikonur", image: "/images/dir-baikonur.jpg", name: CITY_NAMES.baikonur },
+  { slug: "turkestan", image: "/images/tour-turkestan.jpg", name: CITY_NAMES.turkestan },
+];
+
+/** Presentation-only crop hints for direction card images. */
+export const DIRECTION_IMAGE_POS: Record<string, string> = {
+  astana: "50% 22%",
+};
+
+export const TOUR_META = [
+  { slug: "astana-city", days: 2, priceFrom: 120_000, city: "astana", featured: true },
+  { slug: "almaty-alatau", days: 3, priceFrom: 180_000, city: "almaty", featured: true },
+  { slug: "charyn-canyon", days: 1, priceFrom: 45_000, city: "charyn", featured: true },
+  { slug: "kolsai-kaindy", days: 2, priceFrom: 95_000, city: "almaty" },
+  { slug: "turkestan", days: 2, priceFrom: 110_000, city: "turkestan" },
+  { slug: "mangystau-bozzhyra", days: 4, priceFrom: 290_000, city: "mangystau" },
+];

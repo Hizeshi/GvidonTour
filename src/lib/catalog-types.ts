@@ -15,10 +15,26 @@ export interface CatalogTour {
   priceText: LText;
   image: string;
   imagePos: string | null;
+  days: number;
+  priceFrom: number;
+  city: string | null;
+  category: string | null;
 }
 
 export interface CatalogGalleryItem {
   src: string;
   caption: LText;
   span: string | null;
+}
+
+export interface CatalogCategory {
+  slug: string;
+  name: LText;
+  icon: string;
+}
+
+export interface CatalogDirection {
+  slug: string;
+  name: LText;
+  image: string | null;
 }

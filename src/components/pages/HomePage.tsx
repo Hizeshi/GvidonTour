@@ -3,15 +3,23 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
-import type { CatalogTour } from "@/lib/catalog-types";
+import type { CatalogCategory, CatalogDirection, CatalogTour } from "@/lib/catalog-types";
 import { cx, ui } from "@/lib/ui";
+import CategoriesGrid from "@/components/CategoriesGrid";
 import CtaBand from "@/components/CtaBand";
+import DirectionsGrid from "@/components/DirectionsGrid";
 import HomeHero from "@/components/HomeHero";
 import Reveal from "@/components/Reveal";
 import TourCard from "@/components/TourCard";
 import ValuesGrid from "@/components/ValuesGrid";
 
-export default function HomePage({ tours }: { tours: CatalogTour[] }) {
+interface HomePageProps {
+  tours: CatalogTour[];
+  categories: CatalogCategory[];
+  directions: CatalogDirection[];
+}
+
+export default function HomePage({ tours, categories, directions }: HomePageProps) {
   const { t } = useLang();
   return (
     <main>
@@ -25,6 +33,28 @@ export default function HomePage({ tours }: { tours: CatalogTour[] }) {
             <div className={ui.divider} />
           </Reveal>
           <ValuesGrid tone="cream" />
+        </div>
+      </section>
+
+      <section className={ui.sec}>
+        <div className={ui.wrap}>
+          <Reveal className="max-w-[760px]">
+            <div className={ui.eyebrow}>{t.homeCats.eyebrow}</div>
+            <h2 className={ui.sectionTitle}>{t.homeCats.title}</h2>
+            <div className={ui.divider} />
+          </Reveal>
+          <CategoriesGrid categories={categories} />
+        </div>
+      </section>
+
+      <section className={cx(ui.sec, "bg-cream-2 text-ink")}>
+        <div className={ui.wrap}>
+          <Reveal className="max-w-[760px]">
+            <div className={ui.eyebrow}>{t.homeDirs.eyebrow}</div>
+            <h2 className={ui.sectionTitle}>{t.homeDirs.title}</h2>
+            <div className={ui.divider} />
+          </Reveal>
+          <DirectionsGrid directions={directions} />
         </div>
       </section>
 

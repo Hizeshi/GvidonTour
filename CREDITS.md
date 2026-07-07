@@ -20,3 +20,5 @@ All photos are from [Wikimedia Commons](https://commons.wikimedia.org) and are u
 | gal-khanshatyr.jpg | Khan-Shatyr shopping mall.jpg | Dauren Nabijan | CC0 |
 | gal-turkestan.jpg | Mausoleum of Khoja Ahmed Yasawi in Turkistan 8.jpg | Adam Harangozó | CC BY-SA 4.0 |
 | about-yurt.jpg | Yurt at the Foot of the Cliffs, Aktobe Region, Kazakhstan.jpg | Danatleg122 | CC BY 4.0 |
+| dir-burabay.jpg | View of the Burabay lake.jpg | Kejurim | CC BY-SA 4.0 |
+| dir-baikonur.jpg | Baikonur Cosmodrome Soyuz launch pad.jpg | Bill Ingalls (NASA) | Public domain |

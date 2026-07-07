@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import ToursPage from "@/components/pages/ToursPage";
-import { getTours } from "@/lib/catalog";
+import { getCategories, getTours } from "@/lib/catalog";
 
 export const revalidate = 300;
 
@@ -11,6 +12,10 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const tours = await getTours();
-  return <ToursPage tours={tours} />;
+  const [tours, categories] = await Promise.all([getTours(), getCategories()]);
+  return (
+    <Suspense fallback={null}>
+      <ToursPage tours={tours} categories={categories} />
+    </Suspense>
+  );
 }

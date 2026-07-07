@@ -1,8 +1,28 @@
-import { CONTENT, GRID_IMAGES, GRID_SPANS, TOUR_IMAGES } from "./content";
-import type { CatalogGalleryItem, CatalogTour, LText } from "./catalog-types";
+import {
+  CATEGORY_DATA,
+  CONTENT,
+  DIRECTION_DATA,
+  GRID_IMAGES,
+  GRID_SPANS,
+  TOUR_IMAGES,
+  TOUR_META,
+} from "./content";
+import type {
+  CatalogCategory,
+  CatalogDirection,
+  CatalogGalleryItem,
+  CatalogTour,
+  LText,
+} from "./catalog-types";
 import { prisma } from "./db";
 
-export type { CatalogGalleryItem, CatalogTour, LText } from "./catalog-types";
+export type {
+  CatalogCategory,
+  CatalogDirection,
+  CatalogGalleryItem,
+  CatalogTour,
+  LText,
+} from "./catalog-types";
 
 /** Static content assembled from the i18n dictionary — used when the DB is
  *  empty or unreachable so the site never renders blank. */
@@ -11,8 +31,9 @@ function fallbackTours(): CatalogTour[] {
     const en = CONTENT.en.tours[i];
     const kk = CONTENT.kk.tours[i];
     const img = TOUR_IMAGES[i];
+    const meta = TOUR_META[i];
     return {
-      slug: `tour-${i + 1}`,
+      slug: meta.slug,
       region: { ru: ru.region, en: en.region, kk: kk.region },
       title: { ru: ru.title, en: en.title, kk: kk.title },
       desc: { ru: ru.desc, en: en.desc, kk: kk.desc },
@@ -20,6 +41,10 @@ function fallbackTours(): CatalogTour[] {
       priceText: { ru: ru.price, en: en.price, kk: kk.price },
       image: img.src,
       imagePos: img.pos ?? null,
+      days: meta.days,
+      priceFrom: meta.priceFrom,
+      city: meta.city,
+      category: null,
     };
   });
 }
@@ -41,6 +66,7 @@ export async function getTours(): Promise<CatalogTour[]> {
     const rows = await prisma.tour.findMany({
       where: { published: true },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+      include: { category: { select: { slug: true } } },
     });
     if (rows.length === 0) return fallbackTours();
     return rows.map((r) => ({
@@ -52,6 +78,10 @@ export async function getTours(): Promise<CatalogTour[]> {
       priceText: r.priceText as LText,
       image: r.image,
       imagePos: r.imagePos,
+      days: r.days,
+      priceFrom: r.priceFrom,
+      city: r.city,
+      category: r.category?.slug ?? null,
     }));
   } catch (err) {
     console.error("[catalog] DB unavailable, serving static tours:", err);
@@ -74,5 +104,27 @@ export async function getGalleryItems(): Promise<CatalogGalleryItem[]> {
   } catch (err) {
     console.error("[catalog] DB unavailable, serving static gallery:", err);
     return fallbackGallery();
+  }
+}
+
+export async function getCategories(): Promise<CatalogCategory[]> {
+  try {
+    const rows = await prisma.category.findMany({ orderBy: { sortOrder: "asc" } });
+    if (rows.length === 0) return CATEGORY_DATA;
+    return rows.map((r) => ({ slug: r.slug, name: r.name as LText, icon: r.icon }));
+  } catch (err) {
+    console.error("[catalog] DB unavailable, serving static categories:", err);
+    return CATEGORY_DATA;
+  }
+}
+
+export async function getDirections(): Promise<CatalogDirection[]> {
+  try {
+    const rows = await prisma.direction.findMany({ orderBy: { sortOrder: "asc" } });
+    if (rows.length === 0) return DIRECTION_DATA;
+    return rows.map((r) => ({ slug: r.slug, name: r.name as LText, image: r.image }));
+  } catch (err) {
+    console.error("[catalog] DB unavailable, serving static directions:", err);
+    return DIRECTION_DATA;
   }
 }
