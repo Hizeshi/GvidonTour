@@ -72,3 +72,12 @@ export interface CatalogReview {
   photo: string | null;
   videoUrl: string | null;
 }
+
+export interface CatalogBlogPost {
+  slug: string;
+  title: LText;
+  excerpt: LText;
+  content: LText[];
+  image: string;
+  publishedAt: string; // ISO date
+}

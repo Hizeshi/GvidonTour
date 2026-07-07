@@ -1,4 +1,5 @@
 import {
+  BLOG_META,
   CATEGORY_DATA,
   CONTENT,
   DIRECTION_DATA,
@@ -9,6 +10,7 @@ import {
   TOUR_META,
 } from "./content";
 import type {
+  CatalogBlogPost,
   CatalogCategory,
   CatalogDirection,
   CatalogGalleryItem,
@@ -21,6 +23,7 @@ import { TOUR_DETAILS } from "./tour-details";
 import { prisma } from "./db";
 
 export type {
+  CatalogBlogPost,
   CatalogCategory,
   CatalogDirection,
   CatalogGalleryItem,
@@ -175,4 +178,46 @@ export async function getReviews(): Promise<CatalogReview[]> {
     console.error("[catalog] DB unavailable, serving static reviews:", err);
     return fallbackReviews();
   }
+}
+
+function fallbackBlogPosts(): CatalogBlogPost[] {
+  return BLOG_META.map((meta, i) => {
+    const ru = CONTENT.ru.blogPosts[i];
+    const en = CONTENT.en.blogPosts[i];
+    const kk = CONTENT.kk.blogPosts[i];
+    return {
+      slug: meta.slug,
+      title: { ru: ru.title, en: en.title, kk: kk.title },
+      excerpt: { ru: ru.excerpt, en: en.excerpt, kk: kk.excerpt },
+      content: ru.content.map((_, pi) => ({ ru: ru.content[pi], en: en.content[pi], kk: kk.content[pi] })),
+      image: meta.image,
+      publishedAt: meta.publishedAt,
+    };
+  });
+}
+
+export async function getBlogPosts(): Promise<CatalogBlogPost[]> {
+  try {
+    const rows = await prisma.blogPost.findMany({
+      where: { published: true },
+      orderBy: [{ sortOrder: "asc" }, { publishedAt: "desc" }],
+    });
+    if (rows.length === 0) return fallbackBlogPosts();
+    return rows.map((r) => ({
+      slug: r.slug,
+      title: r.title as LText,
+      excerpt: r.excerpt as LText,
+      content: r.content as LText[],
+      image: r.image,
+      publishedAt: r.publishedAt.toISOString(),
+    }));
+  } catch (err) {
+    console.error("[catalog] DB unavailable, serving static blog posts:", err);
+    return fallbackBlogPosts();
+  }
+}
+
+export async function getBlogPostBySlug(slug: string): Promise<CatalogBlogPost | null> {
+  const posts = await getBlogPosts();
+  return posts.find((post) => post.slug === slug) ?? null;
 }

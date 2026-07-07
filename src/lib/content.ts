@@ -2,7 +2,7 @@ export type Lang = "ru" | "en" | "kk";
 
 export const LANGS: Lang[] = ["ru", "en", "kk"];
 
-export type NavKey = "home" | "about" | "tours" | "gallery" | "services" | "agencies" | "contacts";
+export type NavKey = "home" | "about" | "tours" | "gallery" | "services" | "agencies" | "blog" | "contacts";
 
 export const NAV_ROUTES: Record<NavKey, string> = {
   home: "/",
@@ -11,6 +11,7 @@ export const NAV_ROUTES: Record<NavKey, string> = {
   gallery: "/gallery",
   services: "/services",
   agencies: "/agencies",
+  blog: "/blog",
   contacts: "/contacts",
 };
 
@@ -49,6 +50,12 @@ export interface AgencyStep {
   d: string;
 }
 
+export interface BlogEntry {
+  title: string;
+  excerpt: string;
+  content: string[];
+}
+
 export interface Dict {
   brandTag: string;
   nav: Record<NavKey, string>;
@@ -69,6 +76,8 @@ export interface Dict {
     ctaBtn: string;
     bookMsg: string;
   };
+  blogPage: { eyebrow: string; title: string; intro: string; readMore: string; back: string; similar: string };
+  blogPosts: BlogEntry[];
   hero: { eyebrow: string; title: string; sub: string; cta1: string; cta2: string; scroll: string };
   valuesHead: { eyebrow: string; title: string };
   values: ValueEntry[];
@@ -141,7 +150,7 @@ export interface Dict {
 export const CONTENT: Record<Lang, Dict> = {
   ru: {
     brandTag: "Принимающий туроператор в Казахстане",
-    nav: { home: "Главная", about: "О компании", tours: "Туры", gallery: "Галерея", services: "Услуги", agencies: "Для агентств", contacts: "Контакты" },
+    nav: { home: "Главная", about: "О компании", tours: "Туры", gallery: "Галерея", services: "Услуги", agencies: "Для агентств", blog: "Блог", contacts: "Контакты" },
     toursMenu: { all: "Все туры", excursions: "Экскурсии", kids: "Детский туризм", mice: "MICE" },
     currencyLabel: "Курс валют",
     agencies: {
@@ -168,6 +177,56 @@ export const CONTENT: Record<Lang, Dict> = {
       ctaBtn: "Оставить заявку",
       bookMsg: "Здравствуйте! Представляю турагентство и хочу узнать об условиях партнёрства с GVIDON TOUR.",
     },
+    blogPage: {
+      eyebrow: "Блог",
+      title: "Полезные статьи о Казахстане",
+      intro: "Советы, гиды по направлениям и практическая информация для тех, кто планирует путешествие.",
+      readMore: "Читать далее",
+      back: "Все статьи",
+      similar: "Другие статьи",
+    },
+    blogPosts: [
+      {
+        title: "Топ-5 мест, которые нужно увидеть в Казахстане",
+        excerpt: "От футуристичной Астаны до марсианских пейзажей Мангистау — подборка направлений, с которых стоит начать знакомство со страной.",
+        content: [
+          "Казахстан — девятая по величине страна мира, и за один отпуск увидеть её целиком невозможно. Но если вы планируете первую поездку, есть несколько мест, которые дают самое яркое представление о разнообразии страны.",
+          "Астана поражает контрастом: футуристичные башни Хан Шатыр и Байтерек соседствуют с широкой степью, которая начинается сразу за городской чертой. Вечерняя набережная Ишима — одно из самых красивых мест для прогулки.",
+          "Чарынский каньон, часто называемый младшим братом Гранд-Каньона, впечатляет масштабом и цветом скал на закате. Кольсайские озёра и затопленный лес Каинды рядом с Алматы — для тех, кто любит горы и тишину.",
+          "Туркестан хранит дух Шёлкового пути: мавзолей Ходжи Ахмеда Ясави — объект ЮНЕСКО и одна из главных святынь Центральной Азии. А плато Бозжыра в Мангистау выглядит настолько неземным, что кажется декорацией к фантастическому фильму.",
+        ],
+      },
+      {
+        title: "Лучшее время для поездки в Мангистау",
+        excerpt: "Пустынный регион на берегу Каспия капризен к погоде. Рассказываем, в какие месяцы поездка на плато Бозжыра и Устюрт будет наиболее комфортной.",
+        content: [
+          "Мангистау — один из самых зрелищных, но и самых суровых регионов Казахстана. Здесь почти нет тени и источников воды, а разница температур между сезонами огромна, поэтому время поездки стоит планировать заранее.",
+          "Оптимальный сезон — конец апреля и май, когда степь ещё зелёная после весенних дождей, а дневная температура комфортна для многочасовых прогулок по каньонам. Второй хороший период — сентябрь и первая половина октября, когда спадает летняя жара.",
+          "Лето (июнь–август) в Мангистау изнуряюще жаркое — днём воздух прогревается выше 40°C, а укрыться от солнца в открытой степи почти негде. Такие поездки лучше планировать на раннее утро и закат, с длинным перерывом в середине дня.",
+          "Зимой регион тоже красив — меловые горы Бозжыры на фоне снега выглядят особенно контрастно, но дороги могут быть занесены, а световой день короткий. Мы всегда уточняем актуальный прогноз перед выездом и корректируем маршрут под погоду.",
+        ],
+      },
+      {
+        title: "Что взять с собой в поездку по Казахстану",
+        excerpt: "Резко континентальный климат и большие расстояния между городами — собрали список вещей, который пригодится в любом маршруте по стране.",
+        content: [
+          "Казахстан — страна контрастов не только в пейзажах, но и в климате: летом в степи может быть за +35°C, а вечером в горах — прохладно. Универсальный принцип сборов — многослойная одежда, которую легко снять или добавить.",
+          "Для летних маршрутов обязательны головной убор, солнцезащитный крем и запас воды — особенно для поездок в Мангистау и Чарынский каньон, где мало тени. Удобная закрытая обувь нужна практически везде: большинство маршрутов подразумевает ходьбу по неровной местности.",
+          "Если поездка захватывает горы — Кольсайские озёра, Шымбулак — возьмите тёплую куртку и что-то на случай дождя: погода в горах меняется быстро. Для межгородских переездов пригодятся влажные салфетки, повербанк и наличные тенге на случай, если карта не примут в отдалённых районах.",
+          "И последнее: разрешение на фото- и видеосъёмку в некоторых местах (например, на территории мавзолеев или закрытых объектов) стоит уточнять на месте у гида — мы всегда предупреждаем об этом заранее в программе тура.",
+        ],
+      },
+      {
+        title: "Виза в Казахстан: что нужно знать туристу",
+        excerpt: "Граждане многих стран могут въехать в Казахстан без визы. Разбираемся, кому она всё же нужна и как мы помогаем с оформлением.",
+        content: [
+          "Казахстан действует безвизовый режим для граждан более 90 стран, включая большинство государств Евросоюза, США, Великобританию, Японию, Южную Корею и другие — обычно на срок до 30 дней. Для въезда достаточно загранпаспорта, действительного минимум 6 месяцев после даты въезда.",
+          "Если ваша страна не входит в безвизовый список, потребуется оформить визу заранее в консульстве Казахстана или получить электронную визу через официальный портал eGov — процесс занимает от нескольких дней до пары недель в зависимости от типа визы.",
+          "Мы готовим приглашение и сопроводительные документы для туристов, которым нужна визовая поддержка, и консультируем по всем этапам оформления — от выбора типа визы до подготовки пакета документов.",
+          "На границе стоит быть готовым предъявить обратный билет и подтверждение бронирования отеля или программы тура — у нас это подтверждение мы высылаем сразу после оплаты, вместе с полным маршрутом поездки.",
+        ],
+      },
+    ],
     hero: {
       eyebrow: "Откройте Казахстан с надёжным партнёром",
       title: "Путешествие в сердце Евразии",
@@ -302,7 +361,7 @@ export const CONTENT: Record<Lang, Dict> = {
   },
   en: {
     brandTag: "Inbound tour operator in Kazakhstan",
-    nav: { home: "Home", about: "About", tours: "Tours", gallery: "Gallery", services: "Services", agencies: "For Agencies", contacts: "Contacts" },
+    nav: { home: "Home", about: "About", tours: "Tours", gallery: "Gallery", services: "Services", agencies: "For Agencies", blog: "Blog", contacts: "Contacts" },
     toursMenu: { all: "All tours", excursions: "Excursions", kids: "Kids tourism", mice: "MICE" },
     currencyLabel: "Exchange rate",
     agencies: {
@@ -329,6 +388,56 @@ export const CONTENT: Record<Lang, Dict> = {
       ctaBtn: "Send a request",
       bookMsg: "Hello! I represent a travel agency and would like to learn about partnership terms with GVIDON TOUR.",
     },
+    blogPage: {
+      eyebrow: "Blog",
+      title: "Useful articles about Kazakhstan",
+      intro: "Tips, destination guides and practical information for anyone planning a trip.",
+      readMore: "Read more",
+      back: "All articles",
+      similar: "More articles",
+    },
+    blogPosts: [
+      {
+        title: "Top 5 places to see in Kazakhstan",
+        excerpt: "From futuristic Astana to the Martian landscapes of Mangystau — a shortlist of destinations to start your acquaintance with the country.",
+        content: [
+          "Kazakhstan is the ninth-largest country in the world, and no single trip can cover it all. But if you are planning a first visit, a handful of places give the clearest sense of just how varied the country is.",
+          "Astana is a study in contrast: the futuristic towers of Khan Shatyr and Baiterek stand next to open steppe that begins right at the edge of the city. The evening Ishim embankment is one of the most beautiful places for a walk.",
+          "Charyn Canyon, often called Grand Canyon's younger sibling, impresses with its scale and the colour of its cliffs at sunset. The Kolsai Lakes and the sunken forest of Kaindy near Almaty are for anyone who loves mountains and quiet.",
+          "Turkestan keeps the spirit of the Silk Road alive: the Mausoleum of Khoja Ahmed Yasawi is a UNESCO site and one of Central Asia's most important shrines. And the Bozzhyra plateau in Mangystau looks so otherworldly it could be a film set.",
+        ],
+      },
+      {
+        title: "The best time to visit Mangystau",
+        excerpt: "This desert region on the Caspian shore is unforgiving in extreme weather. Here's when a trip to the Bozzhyra plateau and Ustyurt is most comfortable.",
+        content: [
+          "Mangystau is one of the most spectacular yet harshest regions of Kazakhstan. There is almost no shade or water source, and the temperature swings between seasons are extreme, so it pays to plan the timing of a trip in advance.",
+          "The best season is late April and May, when the steppe is still green after the spring rains and daytime temperatures are comfortable for hours of walking through the canyons. The second good window is September and the first half of October, once the summer heat has passed.",
+          "Summer (June–August) in Mangystau is exhaustingly hot — daytime air temperatures climb above 40°C, and there is almost nowhere to escape the sun on the open steppe. Trips in this period are best planned around early morning and sunset, with a long midday break.",
+          "Winter has its own beauty — the chalk mountains of Bozzhyra look especially striking against snow — but roads can be snowed in and daylight hours are short. We always check the current forecast before departure and adjust the route to the weather.",
+        ],
+      },
+      {
+        title: "What to pack for a trip to Kazakhstan",
+        excerpt: "A sharply continental climate and long distances between cities — here's a packing list that works for almost any route through the country.",
+        content: [
+          "Kazakhstan is a country of contrasts not only in its landscapes but in its climate: summer in the steppe can top +35°C, while evenings in the mountains turn cool. The universal packing principle is layered clothing you can add or remove easily.",
+          "For summer routes, a hat, sunscreen and a water supply are essential — especially for trips to Mangystau and Charyn Canyon, where shade is scarce. Comfortable closed-toe shoes are needed almost everywhere, since most routes involve walking on uneven ground.",
+          "If your trip includes the mountains — the Kolsai Lakes, Shymbulak — bring a warm jacket and something for rain, since mountain weather changes quickly. For journeys between cities, wet wipes, a power bank and some cash in tenge are useful in case cards aren't accepted in remote areas.",
+          "One last note: permission to photograph or film in some places (mausoleums, restricted sites) is best confirmed on-site with your guide — we always flag this in advance in the tour programme.",
+        ],
+      },
+      {
+        title: "Kazakhstan visa: what tourists need to know",
+        excerpt: "Citizens of many countries can enter Kazakhstan visa-free. Here's who still needs a visa and how we help with the paperwork.",
+        content: [
+          "Kazakhstan has a visa-free regime for citizens of more than 90 countries, including most of the EU, the US, the UK, Japan, South Korea and others — usually for stays of up to 30 days. A passport valid for at least 6 months after the entry date is all that's required.",
+          "If your country isn't on the visa-free list, you'll need to apply for a visa in advance at a Kazakhstan consulate or get an e-visa through the official eGov portal — the process takes anywhere from a few days to a couple of weeks depending on the visa type.",
+          "We prepare invitation letters and supporting documents for travellers who need visa support, and advise on every step of the process — from choosing the right visa type to assembling the document package.",
+          "At the border, be ready to show a return ticket and confirmation of your hotel booking or tour programme — we send this confirmation right after payment, together with the full itinerary.",
+        ],
+      },
+    ],
     hero: {
       eyebrow: "Discover Kazakhstan with a trusted partner",
       title: "A journey to the heart of Eurasia",
@@ -463,7 +572,7 @@ export const CONTENT: Record<Lang, Dict> = {
   },
   kk: {
     brandTag: "Қазақстандағы қабылдаушы туроператор",
-    nav: { home: "Басты бет", about: "Компания", tours: "Турлар", gallery: "Галерея", services: "Қызметтер", agencies: "Агенттіктерге", contacts: "Байланыс" },
+    nav: { home: "Басты бет", about: "Компания", tours: "Турлар", gallery: "Галерея", services: "Қызметтер", agencies: "Агенттіктерге", blog: "Блог", contacts: "Байланыс" },
     toursMenu: { all: "Барлық турлар", excursions: "Экскурсиялар", kids: "Балалар туризмі", mice: "MICE" },
     currencyLabel: "Валюта бағамы",
     agencies: {
@@ -490,6 +599,56 @@ export const CONTENT: Record<Lang, Dict> = {
       ctaBtn: "Өтінім қалдыру",
       bookMsg: "Сәлеметсіз бе! Мен турагенттікті білдіремін және GVIDON TOUR-мен серіктестік шарттары туралы білгім келеді.",
     },
+    blogPage: {
+      eyebrow: "Блог",
+      title: "Қазақстан туралы пайдалы мақалалар",
+      intro: "Сапарды жоспарлап жатқандарға арналған кеңестер, бағыттар бойынша нұсқаулықтар және практикалық ақпарат.",
+      readMore: "Толығырақ оқу",
+      back: "Барлық мақалалар",
+      similar: "Басқа мақалалар",
+    },
+    blogPosts: [
+      {
+        title: "Қазақстанда көруге тұрарлық үздік 5 орын",
+        excerpt: "Болашақ қаласы Астанадан Маңғыстаудың ғаламшарлық пейзаждарына дейін — елмен танысуды бастауға болатын бағыттар.",
+        content: [
+          "Қазақстан — әлемдегі тоғызыншы үлкен ел, және оны бір демалыста толық көру мүмкін емес. Бірақ бірінші сапарды жоспарлап отырсаңыз, елдің әртүрлілігін ең жарқын көрсететін бірнеше орын бар.",
+          "Астана қарама-қайшылығымен таң қалдырады: Хан Шатыр мен Бәйтеректің футуристік мұнаралары қала шетінен басталатын кең даламен көршілес. Есіл жағалауындағы кешкі серуен — ең әдемі орындардың бірі.",
+          "Гранд-Каньонның кіші бауыры деп аталатын Шарын шатқалы кешкі күнде жартастардың түсі мен ауқымымен таңғалдырады. Алматыға жақын Көлсай көлдері мен су басқан Қайыңды орманы — тау мен тыныштықты жақсы көретіндерге арналған.",
+          "Түркістан Жібек жолының рухын сақтайды: Қожа Ахмет Ясауи кесенесі — ЮНЕСКО нысаны және Орталық Азияның басты қасиетті орындарының бірі. Ал Маңғыстаудағы Бозжыра үстірті соншалықты бөтен әлемдей көрінеді, тіпті фантастикалық фильмнің декорациясы сияқты.",
+        ],
+      },
+      {
+        title: "Маңғыстауға баруға ең қолайлы уақыт",
+        excerpt: "Каспий жағалауындағы шөлейт өңір ауа райына қатты тәуелді. Бозжыра үстірті мен Үстіртке саяхат қай айларда ыңғайлы болатынын айтамыз.",
+        content: [
+          "Маңғыстау — Қазақстанның ең әсерлі, әрі ең қатал өңірлерінің бірі. Мұнда көлеңке мен су көзі дерлік жоқ, ал маусымдар арасындағы температура айырмашылығы үлкен, сондықтан сапар уақытын алдын ала жоспарлаған жөн.",
+          "Ең қолайлы маусым — сәуірдің соңы мен мамыр, көктемгі жаңбырдан кейін дала әлі жасыл, ал күндізгі температура шатқалдар бойымен ұзақ серуендеуге қолайлы. Екінші жақсы кезең — қыркүйек пен қазанның бірінші жартысы, жаздың ыстығы басылғанда.",
+          "Маңғыстаудағы жаз (маусым–тамыз) шаршатарлықтай ыстық — күндіз ауа температурасы 40°C-тан асады, ал ашық далада күннен жасыратын жер дерлік жоқ. Мұндай сапарларды таңертең мен күн батарда, түс кезінде ұзақ үзіліспен жоспарлаған дұрыс.",
+          "Қыста да өңір әдемі — Бозжыраның бор таулары қар аясында ерекше көрінеді, бірақ жолдар қармен жабылып қалуы мүмкін, ал күндізгі жарық қысқа. Біз әрқашан жол алдында ауа райын нақтылап, маршрутты соған сай түзетеміз.",
+        ],
+      },
+      {
+        title: "Қазақстан бойынша сапарға не алу керек",
+        excerpt: "Күрт континенттік климат пен қалалар арасындағы үлкен қашықтық — елдің кез келген маршрутына қажет заттар тізімін жинадық.",
+        content: [
+          "Қазақстан — тек пейзаждарында ғана емес, климатында да қайшылықтар елі: жазда далада +35°C-тан асуы мүмкін, ал кешке таулар салқын болады. Заттарды жинаудың әмбебап принципі — оңай шешуге не қосуға болатын қабатты киім.",
+          "Жазғы маршруттар үшін бас киім, күннен қорғайтын крем және су қоры міндетті — әсіресе көлеңке аз Маңғыстау мен Шарын шатқалына сапарларда. Ыңғайлы жабық аяқ киім дерлік барлық жерде қажет: маршруттардың көбі бедері біркелкі емес жерлермен жүруді талап етеді.",
+          "Егер сапар тауларды — Көлсай көлдері, Шымбұлақты — қамтыса, жылы куртка және жаңбырға арналған зат алыңыз: таудағы ауа райы жылдам өзгереді. Қалалар арасындағы сапарларда дымқыл майлықтар, повербанк және шалғай аймақтарда карта қабылданбауы мүмкін болғандықтан қолма-қол теңге пайдалы болады.",
+          "Соңғысы: кейбір орындарда (кесенелер аумағында немесе жабық нысандарда) фото-бейне түсіруге рұқсатты жергілікті жерде гидтен нақтылаған жөн — біз мұны әрқашан тур бағдарламасында алдын ала ескертеміз.",
+        ],
+      },
+      {
+        title: "Қазақстанға виза: турист не білуі керек",
+        excerpt: "Көптеген елдердің азаматтары Қазақстанға визасыз кіре алады. Кімге әлі де виза керек және біз рәсімдеуге қалай көмектесеміз.",
+        content: [
+          "Қазақстанда 90-нан астам елдің азаматтары үшін визасыз режим қолданылады, оның ішінде Еуроодақтың көпшілігі, АҚШ, Ұлыбритания, Жапония, Оңтүстік Корея және басқалар — әдетте 30 күнге дейін. Кіру үшін кіру күнінен кейін кемінде 6 ай жарамды шетелдік төлқұжат жеткілікті.",
+          "Егер еліңіз визасыз тізімге кірмесе, Қазақстан консулдығында алдын ала виза рәсімдеу немесе ресми eGov порталы арқылы электронды виза алу қажет — процесс виза түріне байланысты бірнеше күннен бірнеше аптаға дейін созылады.",
+          "Біз виза қолдауы қажет туристер үшін шақыру хаты мен қосымша құжаттарды дайындаймыз және рәсімдеудің әр кезеңі бойынша кеңес береміз — виза түрін таңдаудан құжаттар топтамасын жинауға дейін.",
+          "Шекарада кері билет пен қонақүй брондау немесе тур бағдарламасының растамасын көрсетуге дайын болыңыз — біз бұл растаманы төлемнен кейін бүкіл сапар маршрутымен бірге дереу жібереміз.",
+        ],
+      },
+    ],
     hero: {
       eyebrow: "Қазақстанды сенімді серіктеспен ашыңыз",
       title: "Еуразияның жүрегіне саяхат",
@@ -779,4 +938,13 @@ export const TOUR_META = [
   { slug: "kolsai-kaindy", days: 2, priceFrom: 95_000, city: "almaty" },
   { slug: "turkestan", days: 2, priceFrom: 110_000, city: "turkestan" },
   { slug: "mangystau-bozzhyra", days: 4, priceFrom: 290_000, city: "mangystau" },
+];
+
+/** Demo blog posts — the client replaces these with real articles via the DB.
+ *  Aligned with Dict.blogPosts by index. */
+export const BLOG_META = [
+  { slug: "top-5-places-kazakhstan", image: "/images/gal-bozzhyra.jpg", publishedAt: "2026-03-10" },
+  { slug: "best-time-mangystau", image: "/images/tour-mangystau.jpg", publishedAt: "2026-02-18" },
+  { slug: "packing-guide-kazakhstan", image: "/images/about-yurt.jpg", publishedAt: "2026-01-25" },
+  { slug: "kazakhstan-visa-guide", image: "/images/hero-astana.jpg", publishedAt: "2026-01-05" },
 ];

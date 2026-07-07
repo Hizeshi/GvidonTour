@@ -2,6 +2,7 @@ import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Prisma, PrismaClient } from "../src/generated/prisma/client";
 import {
+  BLOG_META,
   CATEGORY_DATA,
   CONTENT,
   DIRECTION_DATA,
@@ -87,15 +88,36 @@ async function main() {
     })),
   });
 
-  const [tours, categories, directions, gallery, reviews] = await Promise.all([
+  for (const [i, meta] of BLOG_META.entries()) {
+    const ru = CONTENT.ru.blogPosts[i];
+    const en = CONTENT.en.blogPosts[i];
+    const kk = CONTENT.kk.blogPosts[i];
+    const content = ru.content.map((_, pi) => ({ ru: ru.content[pi], en: en.content[pi], kk: kk.content[pi] }));
+    const data = {
+      title: { ru: ru.title, en: en.title, kk: kk.title },
+      excerpt: { ru: ru.excerpt, en: en.excerpt, kk: kk.excerpt },
+      content: content as Prisma.InputJsonValue,
+      image: meta.image,
+      publishedAt: new Date(meta.publishedAt),
+      sortOrder: i,
+    };
+    await prisma.blogPost.upsert({
+      where: { slug: meta.slug },
+      update: data,
+      create: { slug: meta.slug, ...data },
+    });
+  }
+
+  const [tours, categories, directions, gallery, reviews, blogPosts] = await Promise.all([
     prisma.tour.count(),
     prisma.category.count(),
     prisma.direction.count(),
     prisma.galleryItem.count(),
     prisma.review.count(),
+    prisma.blogPost.count(),
   ]);
   console.log(
-    `Seeded: ${tours} tours, ${categories} categories, ${directions} directions, ${gallery} gallery items, ${reviews} reviews`
+    `Seeded: ${tours} tours, ${categories} categories, ${directions} directions, ${gallery} gallery items, ${reviews} reviews, ${blogPosts} blog posts`
   );
 }
 

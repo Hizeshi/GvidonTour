@@ -7,7 +7,7 @@ import { cx, ui } from "@/lib/ui";
 import CurrencyTicker from "./CurrencyTicker";
 import Logo from "./Logo";
 
-const NAV_KEYS: NavKey[] = ["home", "about", "tours", "gallery", "services", "agencies", "contacts"];
+const NAV_KEYS: NavKey[] = ["home", "about", "tours", "gallery", "services", "agencies", "blog", "contacts"];
 
 const footLink =
   "block cursor-pointer py-1.5 text-[14.5px] text-content/70 transition-colors hover:text-gold";

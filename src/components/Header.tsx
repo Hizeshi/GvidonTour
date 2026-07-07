@@ -10,7 +10,7 @@ import { LANGS, NAV_ROUTES, TOURS_MENU_LINKS, type NavKey } from "@/lib/content"
 import { cx, ui } from "@/lib/ui";
 import Logo from "./Logo";
 
-const NAV_KEYS: NavKey[] = ["home", "about", "tours", "gallery", "services", "agencies", "contacts"];
+const NAV_KEYS: NavKey[] = ["home", "about", "tours", "gallery", "services", "agencies", "blog", "contacts"];
 
 const navBase =
   "relative cursor-pointer py-1 text-sm font-semibold tracking-[0.02em] transition-colors after:absolute after:-bottom-0.5 after:left-0 after:h-[1.5px] after:w-0 after:bg-gold after:transition-[width] after:duration-300 hover:after:w-full";

@@ -91,3 +91,15 @@ model Achievement {
   image     String
   sortOrder Int    @default(0)
 }
+
+model BlogPost {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       Json
+  excerpt     Json
+  content     Json // array of localized paragraphs: [{ru,en,kk}, ...]
+  image       String
+  publishedAt DateTime @default(now())
+  sortOrder   Int      @default(0)
+  published   Boolean  @default(true)
+}
