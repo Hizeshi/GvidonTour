@@ -8,6 +8,7 @@ import { useLang } from "@/lib/LanguageContext";
 import { HERO_SLIDES } from "@/lib/content";
 import { cx, ui } from "@/lib/ui";
 import Reveal from "./Reveal";
+import { useSwipe } from "./useSwipe";
 
 const SLIDE_MS = 7000;
 
@@ -38,8 +39,17 @@ export default function HomeHero() {
     return () => clearInterval(timer);
   }, []);
 
+  const swipe = useSwipe({
+    onSwipeLeft: () => setSlide((s) => (s + 1) % HERO_SLIDES.length),
+    onSwipeRight: () => setSlide((s) => (s + HERO_SLIDES.length - 1) % HERO_SLIDES.length),
+  });
+
   return (
-    <section className="relative flex h-screen min-h-[640px] items-end overflow-hidden" ref={heroRef}>
+    <section
+      className="relative flex h-screen min-h-[640px] items-end overflow-hidden"
+      ref={heroRef}
+      {...swipe}
+    >
       <div className="absolute inset-x-0 -top-[10%] -bottom-[10%] z-0 will-change-transform" ref={bgRef}>
         {HERO_SLIDES.map((s, i) => (
           <div

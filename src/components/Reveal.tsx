@@ -1,6 +1,6 @@
 "use client";
 
-import { createElement, type CSSProperties, type ElementType, type ReactNode } from "react";
+import { createElement, type CSSProperties, type ElementType, type ReactNode, type TouchEventHandler } from "react";
 import { useReveal } from "./useReveal";
 
 interface RevealProps {
@@ -10,6 +10,8 @@ interface RevealProps {
   immediate?: boolean;
   as?: ElementType;
   style?: CSSProperties;
+  onTouchStart?: TouchEventHandler;
+  onTouchEnd?: TouchEventHandler;
 }
 
 export default function Reveal({
@@ -19,10 +21,12 @@ export default function Reveal({
   immediate = false,
   as = "div",
   style,
+  onTouchStart,
+  onTouchEnd,
 }: RevealProps) {
   const { ref, cls } = useReveal<HTMLElement>(immediate);
   const dcls = delay ? ` d${delay}` : "";
-  const props = { ref, className: `${className} reveal${dcls}${cls}`.trim(), style };
+  const props = { ref, className: `${className} reveal${dcls}${cls}`.trim(), style, onTouchStart, onTouchEnd };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return createElement(as, props as any, children);
 }

@@ -9,6 +9,7 @@ import { cx, ui } from "@/lib/ui";
 import Lightbox from "@/components/Lightbox";
 import PageHead from "@/components/PageHead";
 import Reveal from "@/components/Reveal";
+import { useSwipe } from "@/components/useSwipe";
 
 const gnav =
   "absolute top-1/2 z-[5] flex h-[54px] w-[54px] -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-ondark/25 bg-[rgba(0,16,36,0.5)] text-[22px] text-white backdrop-blur-[6px] transition-colors hover:border-gold hover:bg-gold hover:text-onaccent";
@@ -26,13 +27,21 @@ export default function GalleryPage({ items }: { items: CatalogGalleryItem[] }) 
     return () => clearInterval(timer);
   }, [slideCount, lightboxIndex]);
 
+  const swipe = useSwipe({
+    onSwipeLeft: () => setSlide((s) => (s + 1) % slideCount),
+    onSwipeRight: () => setSlide((s) => (s + slideCount - 1) % slideCount),
+  });
+
   return (
     <main>
       <PageHead eyebrow={t.gallery.eyebrow} title={t.gallery.title} intro={t.gallery.intro} />
 
       <section className={cx(ui.sec, "pt-[30px]")}>
         <div className={ui.wrap}>
-          <Reveal className="relative mt-[54px] h-[min(64vh,620px)] overflow-hidden rounded-[5px] bg-panel">
+          <Reveal
+            className="relative mt-[54px] h-[min(64vh,620px)] overflow-hidden rounded-[5px] bg-panel"
+            {...swipe}
+          >
             {slides.map((item, i) => (
               <button
                 key={item.src}
