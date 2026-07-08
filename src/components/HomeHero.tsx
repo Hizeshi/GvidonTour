@@ -100,7 +100,7 @@ export default function HomeHero() {
       </div>
 
       {HERO_SLIDES.length > 1 && (
-        <div className="absolute bottom-8 right-20 z-[3] flex gap-[9px]">
+        <div className="absolute bottom-8 left-1/2 z-[3] flex -translate-x-1/2 gap-[9px] sm:left-auto sm:right-20 sm:translate-x-0">
           {HERO_SLIDES.map((s, i) => (
             <button
               key={s.src}

@@ -62,7 +62,7 @@ export default function BlogPostPage({ post, others }: BlogPostPageProps) {
       </section>
 
       {others.length > 0 && (
-        <section className={cx(ui.sec, "bg-alt pt-0 text-altcontent")}>
+        <section className={cx(ui.sec, "bg-alt pt-16 text-altcontent")}>
           <div className={ui.wrap}>
             <Reveal className="max-w-[760px]">
               <h2 className={ui.sectionTitle}>{t.blogPage.similar}</h2>

@@ -247,7 +247,7 @@ export default function TourDetailPage({ tour, similar }: TourDetailPageProps) {
 
       {/* similar tours */}
       {similar.length > 0 && (
-        <section className={cx(ui.sec, "bg-alt pt-0 text-altcontent")}>
+        <section className={cx(ui.sec, "bg-alt pt-16 text-altcontent")}>
           <div className={ui.wrap}>
             <Reveal className="max-w-[760px]">
               <h2 className={ui.sectionTitle}>{t.tourPage.similar}</h2>

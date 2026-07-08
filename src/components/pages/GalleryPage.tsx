@@ -88,7 +88,7 @@ export default function GalleryPage({ items }: { items: CatalogGalleryItem[] }) 
                 <ChevronRight />
               </span>
             </button>
-            <div className="absolute bottom-[46px] right-[42px] z-[5] flex gap-[9px]">
+            <div className="absolute right-4 top-4 z-[5] flex gap-[9px] rounded-full bg-[rgba(0,16,36,0.45)] px-2.5 py-1.5 backdrop-blur-[3px] sm:bottom-[46px] sm:right-[42px] sm:top-auto sm:rounded-none sm:bg-transparent sm:px-0 sm:py-0 sm:backdrop-blur-none">
               {slides.map((item, i) => (
                 <button
                   key={item.src}
