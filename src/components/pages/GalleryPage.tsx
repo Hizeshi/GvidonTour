@@ -70,7 +70,7 @@ export default function GalleryPage({ items }: { items: CatalogGalleryItem[] }) 
             ))}
             <button
               type="button"
-              className={cx(gnav, "left-6")}
+              className={cx(gnav, "left-6 max-sm:hidden")}
               aria-label="Previous"
               onClick={() => setSlide((s) => (s + slideCount - 1) % slideCount)}
             >
@@ -80,7 +80,7 @@ export default function GalleryPage({ items }: { items: CatalogGalleryItem[] }) 
             </button>
             <button
               type="button"
-              className={cx(gnav, "right-6 max-sm:right-20")}
+              className={cx(gnav, "right-6 max-sm:hidden")}
               aria-label="Next"
               onClick={() => setSlide((s) => (s + 1) % slideCount)}
             >

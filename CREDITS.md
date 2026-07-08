@@ -19,6 +19,7 @@ All photos are from [Wikimedia Commons](https://commons.wikimedia.org) and are u
 | gal-bao.jpg | Big Almaty Lake from pass.jpg | BitLord~ruwiki | CC BY-SA 4.0 |
 | gal-khanshatyr.jpg | Khan-Shatyr shopping mall.jpg | Dauren Nabijan | CC0 |
 | gal-turkestan.jpg | Mausoleum of Khoja Ahmed Yasawi in Turkistan 8.jpg | Adam Harangozó | CC BY-SA 4.0 |
+| gal-baiterek.jpg | Central Downtown Astana 2.jpg (hosted on en.wikipedia.org, not Commons) | Ken and Nyetta (Ken Fairfax) | CC BY 2.0 |
 | about-yurt.jpg | Yurt at the Foot of the Cliffs, Aktobe Region, Kazakhstan.jpg | Danatleg122 | CC BY 4.0 |
 | dir-burabay.jpg | View of the Burabay lake.jpg | Kejurim | CC BY-SA 4.0 |
 | dir-baikonur.jpg | Baikonur Cosmodrome Soyuz launch pad.jpg | Bill Ingalls (NASA) | Public domain |

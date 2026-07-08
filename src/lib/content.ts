@@ -813,7 +813,7 @@ export const SLIDER_IMAGES: string[] = [
 
 /** Gallery grid images, aligned with all nine captions of Dict.caps. */
 export const GRID_IMAGES: { src: string; pos?: string }[] = [
-  { src: "/images/tour-astana.jpg", pos: "50% 22%" },
+  { src: "/images/gal-baiterek.jpg" },
   { src: "/images/gal-charyn.jpg" },
   { src: "/images/gal-kolsai.jpg" },
   { src: "/images/gal-bozzhyra.jpg" },
