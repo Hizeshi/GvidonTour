@@ -10,14 +10,19 @@ import type { NextConfig } from "next";
  *   CurrencyTicker); frame-src allows YouTube/Vimeo embeds (Lightbox video
  *   items) — both fall back to 'self' via default-src otherwise and would be
  *   silently blocked.
+ * - img-src/media-src allow the Supabase Storage host: admin-uploaded photos
+ *   and videos are served from the public "media" bucket there.
  * - Everything else is served same-origin: fonts are self-hosted by
  *   next/font, all photos live in /public.
  */
+const SUPABASE_HOST = "https://hkozmvhdzuegihwhmeyl.supabase.co";
+
 const csp = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline'",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data:",
+  `img-src 'self' data: ${SUPABASE_HOST}`,
+  `media-src 'self' ${SUPABASE_HOST}`,
   "font-src 'self'",
   "connect-src 'self' https://open.er-api.com",
   "frame-src https://www.youtube.com https://player.vimeo.com",
@@ -46,6 +51,21 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "hkozmvhdzuegihwhmeyl.supabase.co",
+        pathname: "/storage/v1/object/public/**",
+      },
+    ],
+  },
+  experimental: {
+    serverActions: {
+      // Media uploads go through a server action; default limit is 1 MB.
+      bodySizeLimit: "10mb",
+    },
+  },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },

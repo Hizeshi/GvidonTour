@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Inbox, LayoutDashboard, LogOut, type LucideIcon } from "lucide-react";
+import { FolderOpen, Inbox, LayoutDashboard, LogOut, type LucideIcon } from "lucide-react";
 import { getSession } from "@/lib/auth";
 import { cx } from "@/lib/ui";
 import Logo from "@/components/Logo";
@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 const NAV: { href: string; label: string; icon: LucideIcon; soon?: boolean }[] = [
   { href: "/admin", label: "Обзор", icon: LayoutDashboard },
   { href: "/admin/requests", label: "Заявки", icon: Inbox },
+  { href: "/admin/media", label: "Медиа", icon: FolderOpen },
 ];
 
 // Sections arriving in the next stages — shown greyed out so staff can see
