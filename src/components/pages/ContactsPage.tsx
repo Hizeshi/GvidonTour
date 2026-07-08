@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useActionState } from "react";
 import { AtSign, CheckCircle2, Clock, Mail, MapPin, Phone, Send } from "lucide-react";
+import { submitLead } from "@/app/(site)/contacts/actions";
 import { useLang } from "@/lib/LanguageContext";
 import type { LText } from "@/lib/catalog-types";
 import { EMAIL, INSTAGRAM, PHONE, PHONE_2, PHONE_2_HREF, PHONE_HREF } from "@/lib/content";
@@ -17,14 +18,10 @@ const infoIcon = "lic mt-0.5 text-[22px] text-gold";
 
 export default function ContactsPage({ tourTitles }: { tourTitles: LText[] }) {
   const { t, lang } = useLang();
-  const [sent, setSent] = useState(false);
+  const [state, formAction, pending] = useActionState(submitLead, null);
+  const sent = state?.ok === true;
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setSent(true);
-  };
-
-  const tourOptions = [t.contacts.tour, ...tourTitles.map((title) => title[lang])];
+  const tourOptions = tourTitles.map((title) => title[lang]);
 
   return (
     <main>
@@ -45,7 +42,16 @@ export default function ContactsPage({ tourTitles }: { tourTitles: LText[] }) {
                   <p className="text-content/60">{t.contacts.success}</p>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit}>
+                <form action={formAction}>
+                  {/* Honeypot: hidden from humans, bots fill it and get ignored. */}
+                  <input
+                    type="text"
+                    name="website"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    aria-hidden="true"
+                    className="absolute -left-[9999px] h-0 w-0 opacity-0"
+                  />
                   <div className="grid grid-cols-1 gap-[18px] sm:grid-cols-2">
                     <div className="mb-5">
                       <label className={ui.flabel} htmlFor="cf-name">
@@ -74,10 +80,13 @@ export default function ContactsPage({ tourTitles }: { tourTitles: LText[] }) {
                       id="cf-tour"
                       className={cx(ui.finput, "cursor-pointer appearance-none [&_option]:text-onaccent")}
                       name="tour"
-                      defaultValue={tourOptions[0]}
+                      defaultValue=""
                     >
+                      <option value="">{t.contacts.tour}</option>
                       {tourOptions.map((o) => (
-                        <option key={o}>{o}</option>
+                        <option key={o} value={o}>
+                          {o}
+                        </option>
                       ))}
                     </select>
                   </div>
@@ -91,7 +100,14 @@ export default function ContactsPage({ tourTitles }: { tourTitles: LText[] }) {
                       name="message"
                     />
                   </div>
-                  <button type="submit" className={cx(ui.btnGold, "w-full justify-center")}>
+                  {state?.ok === false && (
+                    <p className="mb-4 text-[13.5px] font-semibold text-red-400">{t.contacts.error}</p>
+                  )}
+                  <button
+                    type="submit"
+                    disabled={pending}
+                    className={cx(ui.btnGold, "w-full justify-center", pending && "pointer-events-none opacity-60")}
+                  >
                     {t.contacts.send}
                     <span className="lic">
                       <Send />

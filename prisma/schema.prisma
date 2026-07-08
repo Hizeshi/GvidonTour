@@ -92,6 +92,23 @@ model Achievement {
   sortOrder Int    @default(0)
 }
 
+enum LeadStatus {
+  NEW
+  DONE
+}
+
+/** Booking/contact request from the public site form. */
+model Lead {
+  id        String     @id @default(cuid())
+  name      String
+  phone     String?
+  email     String?
+  tour      String? // free-text tour title the visitor picked
+  message   String?
+  status    LeadStatus @default(NEW)
+  createdAt DateTime   @default(now())
+}
+
 model AdminUser {
   id           String   @id @default(cuid())
   login        String   @unique
