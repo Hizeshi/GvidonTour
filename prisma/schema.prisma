@@ -92,6 +92,14 @@ model Achievement {
   sortOrder Int    @default(0)
 }
 
+model AdminUser {
+  id           String   @id @default(cuid())
+  login        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+}
+
 model BlogPost {
   id          String   @id @default(cuid())
   slug        String   @unique

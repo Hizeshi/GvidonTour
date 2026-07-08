@@ -5,9 +5,6 @@ import { LanguageProvider } from "@/lib/LanguageContext";
 import { ThemeProvider } from "@/lib/ThemeContext";
 import { EMAIL, PHONE } from "@/lib/content";
 import { jsonLdScript, SITE_URL } from "@/lib/seo";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import FloatingCta from "@/components/FloatingCta";
 
 const ORGANIZATION_JSONLD = {
   "@context": "https://schema.org",
@@ -93,14 +90,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <ThemeProvider>
-          <LanguageProvider>
-            <div className="min-h-screen">
-              <Header />
-              {children}
-              <Footer />
-              <FloatingCta />
-            </div>
-          </LanguageProvider>
+          <LanguageProvider>{children}</LanguageProvider>
         </ThemeProvider>
       </body>
     </html>
