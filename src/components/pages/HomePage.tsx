@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
 import type {
+  CatalogAchievement,
   CatalogCategory,
   CatalogDirection,
   CatalogReview,
@@ -25,9 +26,10 @@ interface HomePageProps {
   categories: CatalogCategory[];
   directions: CatalogDirection[];
   reviews: CatalogReview[];
+  achievements: CatalogAchievement[];
 }
 
-export default function HomePage({ tours, categories, directions, reviews }: HomePageProps) {
+export default function HomePage({ tours, categories, directions, reviews, achievements }: HomePageProps) {
   const { t } = useLang();
   return (
     <main>
@@ -109,7 +111,7 @@ export default function HomePage({ tours, categories, directions, reviews }: Hom
             <h2 className={ui.sectionTitle}>{t.homeAch.title}</h2>
             <div className={ui.divider} />
           </Reveal>
-          <AchievementsStrip />
+          <AchievementsStrip achievements={achievements} />
           <Reveal className="mt-8 text-[13.5px] text-content/50">{t.homeAch.note}</Reveal>
         </div>
       </section>

@@ -1,4 +1,5 @@
 import {
+  ACHIEVEMENT_DATA,
   BLOG_META,
   CATEGORY_DATA,
   CONTENT,
@@ -10,6 +11,7 @@ import {
   TOUR_META,
 } from "./content";
 import type {
+  CatalogAchievement,
   CatalogBlogPost,
   CatalogCategory,
   CatalogDirection,
@@ -23,6 +25,7 @@ import { TOUR_DETAILS } from "./tour-details";
 import { prisma } from "./db";
 
 export type {
+  CatalogAchievement,
   CatalogBlogPost,
   CatalogCategory,
   CatalogDirection,
@@ -177,6 +180,21 @@ export async function getReviews(): Promise<CatalogReview[]> {
   } catch (err) {
     console.error("[catalog] DB unavailable, serving static reviews:", err);
     return fallbackReviews();
+  }
+}
+
+function fallbackAchievements(): CatalogAchievement[] {
+  return ACHIEVEMENT_DATA.map((a) => ({ title: a.name, image: null, icon: a.icon }));
+}
+
+export async function getAchievements(): Promise<CatalogAchievement[]> {
+  try {
+    const rows = await prisma.achievement.findMany({ orderBy: { sortOrder: "asc" } });
+    if (rows.length === 0) return fallbackAchievements();
+    return rows.map((r) => ({ title: r.title as LText, image: r.image, icon: null }));
+  } catch (err) {
+    console.error("[catalog] DB unavailable, serving static achievements:", err);
+    return fallbackAchievements();
   }
 }
 

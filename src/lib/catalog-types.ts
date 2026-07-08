@@ -73,6 +73,12 @@ export interface CatalogReview {
   videoUrl: string | null;
 }
 
+export interface CatalogAchievement {
+  title: LText;
+  image: string | null; // real photo, once the client provides one
+  icon: string | null; // fallback icon name for the static placeholder tiles
+}
+
 export interface CatalogBlogPost {
   slug: string;
   title: LText;

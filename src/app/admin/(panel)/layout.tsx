@@ -1,7 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { FolderOpen, Inbox, LayoutDashboard, LogOut, Route, type LucideIcon } from "lucide-react";
+import {
+  Award,
+  FolderOpen,
+  Image as ImageIcon,
+  Inbox,
+  LayoutDashboard,
+  LogOut,
+  MessageSquare,
+  Newspaper,
+  Route,
+  type LucideIcon,
+} from "lucide-react";
 import { getSession } from "@/lib/auth";
 import { cx } from "@/lib/ui";
 import Logo from "@/components/Logo";
@@ -17,11 +28,13 @@ const NAV: { href: string; label: string; icon: LucideIcon; soon?: boolean }[] =
   { href: "/admin/requests", label: "Заявки", icon: Inbox },
   { href: "/admin/media", label: "Медиа", icon: FolderOpen },
   { href: "/admin/tours", label: "Туры", icon: Route },
+  { href: "/admin/gallery", label: "Галерея", icon: ImageIcon },
+  { href: "/admin/reviews", label: "Отзывы", icon: MessageSquare },
+  { href: "/admin/blog", label: "Блог", icon: Newspaper },
+  { href: "/admin/achievements", label: "Достижения", icon: Award },
 ];
 
-// Sections arriving in the next stages — shown greyed out so staff can see
-// the shape of the finished panel.
-const SOON = ["Галерея", "Отзывы", "Блог", "Достижения"];
+const SOON: string[] = [];
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession();
