@@ -22,6 +22,15 @@ const EXT_BY_TYPE: Record<string, string> = {
 };
 
 export async function POST(request: Request) {
+  // Server Actions get an origin check from Next.js for free; this plain
+  // endpoint does its own. SameSite=lax on the cookie already blocks
+  // cross-site POSTs in modern browsers — this is a second layer.
+  const origin = request.headers.get("origin");
+  const host = request.headers.get("host");
+  if (origin && host && new URL(origin).host !== host) {
+    return NextResponse.json({ ok: false, error: "Недопустимый источник запроса" }, { status: 403 });
+  }
+
   if (!(await getSession())) {
     return NextResponse.json({ ok: false, error: "Сессия истекла — войдите заново" }, { status: 401 });
   }

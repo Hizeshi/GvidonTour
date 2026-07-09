@@ -16,6 +16,10 @@ const WINDOW_MS = 10 * 60 * 1000;
 const MAX_FAILURES = 5;
 const failures = new Map<string, { count: number; since: number }>();
 
+// Compared against when the login doesn't exist, so unknown and known
+// logins take the same time to reject (no user enumeration via timing).
+const DUMMY_HASH = "$2b$12$v0w.9yqSVBAwEXZp5Lzk5uVJePHB7eBQT0.KbnuTFS2GPj46X.tdO";
+
 export async function loginAction(_prev: LoginState | null, formData: FormData): Promise<LoginState> {
   const login = String(formData.get("login") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
@@ -33,7 +37,8 @@ export async function loginAction(_prev: LoginState | null, formData: FormData):
     return { error: "База данных недоступна, попробуйте позже" };
   }
 
-  if (!user || !(await bcrypt.compare(password, user.passwordHash))) {
+  const passwordOk = await bcrypt.compare(password, user?.passwordHash ?? DUMMY_HASH);
+  if (!user || !passwordOk) {
     const cur = failures.get(login);
     if (cur && Date.now() - cur.since < WINDOW_MS) cur.count += 1;
     else failures.set(login, { count: 1, since: Date.now() });

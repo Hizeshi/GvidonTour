@@ -40,7 +40,7 @@ export async function getSession(): Promise<AdminSession | null> {
   const token = (await cookies()).get(SESSION_COOKIE)?.value;
   if (!token) return null;
   try {
-    const { payload } = await jwtVerify(token, secretKey());
+    const { payload } = await jwtVerify(token, secretKey(), { algorithms: ["HS256"] });
     return {
       userId: payload.sub ?? "",
       login: typeof payload.login === "string" ? payload.login : "",
