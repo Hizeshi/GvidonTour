@@ -21,6 +21,28 @@ const prisma = new PrismaClient({
 });
 
 async function main() {
+  const [existingTours, existingCategories, existingDirections, existingGallery, existingReviews, existingBlogPosts] =
+    await Promise.all([
+      prisma.tour.count(),
+      prisma.category.count(),
+      prisma.direction.count(),
+      prisma.galleryItem.count(),
+      prisma.review.count(),
+      prisma.blogPost.count(),
+    ]);
+  const hasData =
+    existingTours + existingCategories + existingDirections + existingGallery + existingReviews + existingBlogPosts >
+    0;
+  if (hasData && process.env.SEED_FORCE !== "1") {
+    console.error(
+      "[seed] В базе уже есть данные (туры/категории/направления/галерея/отзывы/блог).\n" +
+        "Повторный запуск seed сотрёт правки, сделанные через админку, и вернёт демо-контент.\n" +
+        "Ничего не изменено. Если это действительно нужно (например, чистая база на новом сервере),\n" +
+        "запустите: SEED_FORCE=1 npm run db:seed (bash) или $env:SEED_FORCE=1; npm run db:seed (PowerShell)."
+    );
+    process.exit(1);
+  }
+
   for (const [i, meta] of TOUR_META.entries()) {
     const ru = CONTENT.ru.tours[i];
     const en = CONTENT.en.tours[i];
