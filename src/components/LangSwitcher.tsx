@@ -26,7 +26,6 @@ export default function LangSwitcher({ tone }: { tone: string }) {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        aria-label="Language"
         className={cx(
           "flex cursor-pointer items-center gap-1 rounded px-2 py-[5px] text-xs font-bold tracking-[0.08em] transition-colors",
           tone

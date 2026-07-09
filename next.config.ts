@@ -52,6 +52,11 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
+    // AVIF first (25-40% smaller than WebP for photos); WebP as fallback.
+    formats: ["image/avif", "image/webp"],
+    // Photos are effectively immutable (new uploads get new names), so let
+    // optimized variants live in the CDN cache for 31 days.
+    minimumCacheTTL: 2678400,
     remotePatterns: [
       {
         protocol: "https",

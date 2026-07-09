@@ -17,6 +17,20 @@ export default function HomeHero() {
   const heroRef = useRef<HTMLElement | null>(null);
   const bgRef = useRef<HTMLDivElement | null>(null);
   const [slide, setSlide] = useState(0);
+  // Only the first slide is rendered during initial load; the hidden ones
+  // (full-viewport images each) mount shortly after so they don't compete
+  // with the LCP image for bandwidth.
+  const [warm, setWarm] = useState(false);
+
+  useEffect(() => {
+    const id = setTimeout(() => setWarm(true), 2500);
+    return () => clearTimeout(id);
+  }, []);
+
+  const goTo = (n: number) => {
+    setWarm(true);
+    setSlide(n);
+  };
 
   useEffect(() => {
     let raf = 0;
@@ -40,8 +54,8 @@ export default function HomeHero() {
   }, []);
 
   const swipe = useSwipe({
-    onSwipeLeft: () => setSlide((s) => (s + 1) % HERO_SLIDES.length),
-    onSwipeRight: () => setSlide((s) => (s + HERO_SLIDES.length - 1) % HERO_SLIDES.length),
+    onSwipeLeft: () => goTo((slide + 1) % HERO_SLIDES.length),
+    onSwipeRight: () => goTo((slide + HERO_SLIDES.length - 1) % HERO_SLIDES.length),
   });
 
   return (
@@ -59,15 +73,17 @@ export default function HomeHero() {
               i === slide ? "opacity-100" : "opacity-0"
             )}
           >
-            <Image
-              src={s.src}
-              alt={t.caps[s.capIndex]}
-              fill
-              priority={i === 0}
-              sizes="100vw"
-              className="animate-kenburns object-cover"
-              style={{ objectPosition: s.pos ?? "50% 50%" }}
-            />
+            {(i === 0 || warm) && (
+              <Image
+                src={s.src}
+                alt={t.caps[s.capIndex]}
+                fill
+                priority={i === 0}
+                sizes="100vw"
+                className="animate-kenburns object-cover"
+                style={{ objectPosition: s.pos ?? "50% 50%" }}
+              />
+            )}
           </div>
         ))}
       </div>
@@ -110,18 +126,24 @@ export default function HomeHero() {
       </div>
 
       {HERO_SLIDES.length > 1 && (
-        <div className="absolute bottom-8 left-1/2 z-[3] flex -translate-x-1/2 gap-[9px] sm:left-auto sm:right-20 sm:translate-x-0">
+        <div className="absolute bottom-[22px] left-1/2 z-[3] flex -translate-x-1/2 sm:left-auto sm:right-20 sm:translate-x-0">
           {HERO_SLIDES.map((s, i) => (
             <button
               key={s.src}
               type="button"
-              aria-label={`${i + 1}`}
-              onClick={() => setSlide(i)}
-              className={cx(
-                "h-[9px] cursor-pointer rounded-full p-0 transition-all duration-300",
-                i === slide ? "w-[26px] rounded-[5px] bg-gold" : "w-[9px] bg-ondark/40 hover:bg-ondark/70"
-              )}
-            />
+              aria-label={`${t.caps[s.capIndex]} (${i + 1})`}
+              onClick={() => goTo(i)}
+              className="group/dot flex h-6 min-w-6 cursor-pointer items-center justify-center p-0"
+            >
+              <span
+                className={cx(
+                  "h-[9px] rounded-full transition-all duration-300",
+                  i === slide
+                    ? "w-[26px] rounded-[5px] bg-gold"
+                    : "w-[9px] bg-ondark/40 group-hover/dot:bg-ondark/70"
+                )}
+              />
+            </button>
           ))}
         </div>
       )}

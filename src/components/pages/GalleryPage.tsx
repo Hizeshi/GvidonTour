@@ -97,18 +97,22 @@ export default function GalleryPage({ items }: { items: CatalogGalleryItem[] }) 
                 <ChevronRight />
               </span>
             </button>
-            <div className="absolute right-4 top-4 z-[5] flex gap-[9px] rounded-full bg-[rgba(0,16,36,0.45)] px-2.5 py-1.5 backdrop-blur-[3px] sm:bottom-[46px] sm:right-[42px] sm:top-auto sm:rounded-none sm:bg-transparent sm:px-0 sm:py-0 sm:backdrop-blur-none">
+            <div className="absolute right-4 top-4 z-[5] flex rounded-full bg-[rgba(0,16,36,0.45)] px-1.5 backdrop-blur-[3px] sm:bottom-[40px] sm:right-[42px] sm:top-auto sm:rounded-none sm:bg-transparent sm:px-0 sm:backdrop-blur-none">
               {slides.map((item, i) => (
                 <button
                   key={item.src}
                   type="button"
                   aria-label={item.caption[lang]}
-                  className={cx(
-                    "h-[9px] cursor-pointer rounded-full p-0 transition-all duration-300",
-                    i === slide ? "w-[26px] rounded-[5px] bg-gold" : "w-[9px] bg-ondark/35"
-                  )}
+                  className="flex h-6 min-w-6 cursor-pointer items-center justify-center p-0"
                   onClick={() => setSlide(i)}
-                />
+                >
+                  <span
+                    className={cx(
+                      "h-[9px] rounded-full transition-all duration-300",
+                      i === slide ? "w-[26px] rounded-[5px] bg-gold" : "w-[9px] bg-ondark/35"
+                    )}
+                  />
+                </button>
               ))}
             </div>
           </Reveal>

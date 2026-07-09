@@ -68,18 +68,22 @@ export default function ImageSlider({ images, alt, className, autoPlayMs = 6000 
               <ChevronRight />
             </span>
           </button>
-          <div className="absolute bottom-4 left-1/2 z-[5] flex -translate-x-1/2 gap-[9px]">
+          <div className="absolute bottom-2 left-1/2 z-[5] flex -translate-x-1/2">
             {images.map((src, i) => (
               <button
                 key={src + i}
                 type="button"
                 aria-label={`${i + 1}`}
-                className={cx(
-                  "h-[9px] cursor-pointer rounded-full p-0 transition-all duration-300",
-                  i === slide ? "w-[26px] rounded-[5px] bg-gold" : "w-[9px] bg-ondark/40"
-                )}
+                className="flex h-6 min-w-6 cursor-pointer items-center justify-center p-0"
                 onClick={() => setSlide(i)}
-              />
+              >
+                <span
+                  className={cx(
+                    "h-[9px] rounded-full transition-all duration-300",
+                    i === slide ? "w-[26px] rounded-[5px] bg-gold" : "w-[9px] bg-ondark/40"
+                  )}
+                />
+              </button>
             ))}
           </div>
         </>

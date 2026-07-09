@@ -65,7 +65,7 @@ export default function Footer() {
         <div className="mt-[54px] border-t border-content/10 pt-[26px]">
           <CurrencyTicker />
         </div>
-        <div className="mt-[22px] flex flex-wrap items-center justify-between gap-3.5 text-[13px] text-content/45">
+        <div className="mt-[22px] flex flex-wrap items-center justify-between gap-3.5 text-[13px] text-content/60">
           <span>© 2026 GVIDON TOUR. {t.footer.rights}</span>
           <span className="font-serif text-[15px] italic text-gold/85">{t.slogan}</span>
         </div>

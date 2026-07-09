@@ -18,8 +18,17 @@ export default function AchievementsStrip({ achievements }: { achievements: Cata
           delay={(i % 4) as 0 | 1 | 2 | 3}
         >
           {a.image ? (
+            // Plain <img>: the admin can paste a URL from any host, and next/image
+            // throws at runtime for hostnames missing from images.remotePatterns.
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={a.image} alt="" className="h-14 w-14 rounded-full object-cover" />
+            <img
+              src={a.image}
+              alt=""
+              width={56}
+              height={56}
+              loading="lazy"
+              className="h-14 w-14 rounded-full object-cover"
+            />
           ) : (
             <span className="flex h-14 w-14 items-center justify-center rounded-full border border-gold/40 text-[26px] text-gold">
               <IconByName name={a.icon ?? "award"} />
