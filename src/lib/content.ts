@@ -84,7 +84,23 @@ export interface Dict {
   homeCats: { eyebrow: string; title: string };
   homeDirs: { eyebrow: string; title: string };
   homeReviews: { eyebrow: string; title: string; video: string; more: string };
-  reviewsPage: { eyebrow: string; title: string; intro: string };
+  reviewsPage: {
+    eyebrow: string;
+    title: string;
+    intro: string;
+    submitTitle: string;
+    name: string;
+    rating: string;
+    text: string;
+    photo: string;
+    send: string;
+    success: string;
+    errorInvalid: string;
+    errorLimit: string;
+    errorCaptcha: string;
+    errorGeneric: string;
+    unavailable: string;
+  };
   homeAch: { eyebrow: string; title: string; note: string };
   featured: { eyebrow: string; title: string; viewAll: string };
   catalog: {
@@ -253,6 +269,18 @@ export const CONTENT: Record<Lang, Dict> = {
       eyebrow: "Отзывы гостей",
       title: "Что говорят наши гости",
       intro: "Честные впечатления путешественников, которые уже открыли Казахстан вместе с нами.",
+      submitTitle: "Оставить отзыв",
+      name: "Ваше имя",
+      rating: "Оценка",
+      text: "Текст отзыва",
+      photo: "Ваше фото (необязательно)",
+      send: "Отправить отзыв",
+      success: "Спасибо! Отзыв отправлен и появится на сайте после проверки модератором.",
+      errorInvalid: "Заполните имя (от 2 символов) и текст отзыва (от 10 символов)",
+      errorLimit: "Слишком много отзывов с вашего адреса сегодня. Попробуйте завтра.",
+      errorCaptcha: "Не удалось подтвердить, что вы не робот. Попробуйте ещё раз.",
+      errorGeneric: "Не удалось отправить отзыв, попробуйте позже.",
+      unavailable: "Форма отзывов временно недоступна. Напишите нам напрямую — контакты на странице «Контакты».",
     },
     homeAch: { eyebrow: "Достижения", title: "Нам доверяют", note: "Лицензии, сертификаты и награды — доступны в офисе по запросу." },
     featured: { eyebrow: "Готовые туры", title: "Избранные маршруты", viewAll: "Все туры" },
@@ -471,6 +499,18 @@ export const CONTENT: Record<Lang, Dict> = {
       eyebrow: "Guest reviews",
       title: "What our guests say",
       intro: "Honest impressions from travelers who have already discovered Kazakhstan with us.",
+      submitTitle: "Leave a review",
+      name: "Your name",
+      rating: "Rating",
+      text: "Review text",
+      photo: "Your photo (optional)",
+      send: "Send review",
+      success: "Thank you! Your review has been sent and will appear on the site after moderation.",
+      errorInvalid: "Fill in your name (2+ characters) and review text (10+ characters)",
+      errorLimit: "Too many reviews from your address today. Please try again tomorrow.",
+      errorCaptcha: "Could not confirm you're not a robot. Please try again.",
+      errorGeneric: "Could not send your review, please try again later.",
+      unavailable: "The review form is temporarily unavailable. Please contact us directly — see the Contacts page.",
     },
     homeAch: { eyebrow: "Achievements", title: "Trusted by travellers", note: "Licences, certificates and awards — available at the office on request." },
     featured: { eyebrow: "Ready-made tours", title: "Featured journeys", viewAll: "All tours" },
@@ -689,6 +729,18 @@ export const CONTENT: Record<Lang, Dict> = {
       eyebrow: "Қонақтар пікірлері",
       title: "Қонақтарымыз не дейді",
       intro: "Қазақстанды бізбен бірге ашқан саяхатшылардың шынайы әсерлері.",
+      submitTitle: "Пікір қалдыру",
+      name: "Атыңыз",
+      rating: "Баға",
+      text: "Пікір мәтіні",
+      photo: "Сіздің фотоңыз (міндетті емес)",
+      send: "Пікірді жіберу",
+      success: "Рахмет! Пікіріңіз жіберілді, модератор тексергеннен кейін сайтта пайда болады.",
+      errorInvalid: "Атыңызды (2 таңбадан) және пікір мәтінін (10 таңбадан) толтырыңыз",
+      errorLimit: "Бүгін сіздің мекенжайыңыздан тым көп пікір келді. Ертең қайталап көріңіз.",
+      errorCaptcha: "Сіздің робот еместігіңізді растай алмадық. Қайталап көріңіз.",
+      errorGeneric: "Пікірді жіберу мүмкін болмады, кейінірек қайталап көріңіз.",
+      unavailable: "Пікір қалдыру формасы уақытша қолжетімсіз. Бізбен тікелей байланысыңыз — «Байланыс» бетінде.",
     },
     homeAch: { eyebrow: "Жетістіктер", title: "Бізге сенеді", note: "Лицензиялар, сертификаттар мен марапаттар — сұраныс бойынша кеңседе қолжетімді." },
     featured: { eyebrow: "Дайын турлар", title: "Таңдаулы маршруттар", viewAll: "Барлық турлар" },

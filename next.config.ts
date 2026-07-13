@@ -8,8 +8,9 @@ import type { NextConfig } from "next";
  *   nonce-based CSP would require dynamic rendering (middleware).
  * - connect-src allows open.er-api.com (client-side exchange-rate fetch in
  *   CurrencyTicker); frame-src allows YouTube/Vimeo embeds (Lightbox video
- *   items) — both fall back to 'self' via default-src otherwise and would be
- *   silently blocked.
+ *   items, blog video blocks) and Cloudflare Turnstile (review-form
+ *   captcha) — all fall back to 'self' via default-src otherwise and would
+ *   be silently blocked. script-src also allows Turnstile's widget script.
  * - img-src/media-src allow the Supabase Storage host: admin-uploaded photos
  *   and videos are served from the public "media" bucket there.
  * - Everything else is served same-origin: fonts are self-hosted by
@@ -19,13 +20,13 @@ const SUPABASE_HOST = "https://hkozmvhdzuegihwhmeyl.supabase.co";
 
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com",
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: ${SUPABASE_HOST}`,
   `media-src 'self' ${SUPABASE_HOST}`,
   "font-src 'self'",
-  "connect-src 'self' https://open.er-api.com",
-  "frame-src https://www.youtube.com https://player.vimeo.com",
+  "connect-src 'self' https://open.er-api.com https://challenges.cloudflare.com",
+  "frame-src https://www.youtube.com https://player.vimeo.com https://challenges.cloudflare.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

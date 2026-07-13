@@ -23,6 +23,7 @@ export interface SaveResult {
 function revalidateReviewPaths() {
   revalidatePath("/admin/reviews");
   revalidatePath("/");
+  revalidatePath("/reviews");
 }
 
 export async function saveReview(id: string | null, payload: ReviewFormPayload): Promise<SaveResult> {

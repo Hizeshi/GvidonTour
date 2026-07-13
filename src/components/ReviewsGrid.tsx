@@ -54,7 +54,7 @@ export default function ReviewsGrid({ reviews, expandable = true }: ReviewsGridP
             </div>
 
             <p className="mt-5 flex-1 text-[15.5px] leading-relaxed text-content/80">
-              “{review.text[lang]}”
+              “{review.text[lang] || review.text.ru || review.text.en || review.text.kk}”
             </p>
 
             {review.videoUrl && (
@@ -72,9 +72,18 @@ export default function ReviewsGrid({ reviews, expandable = true }: ReviewsGridP
             )}
 
             <div className="mt-6 flex items-center gap-3 border-t border-content/10 pt-5">
-              <span className="flex h-11 w-11 flex-none items-center justify-center rounded-full border border-gold/40 text-[15px] font-bold text-gold">
-                {initials(review.author)}
-              </span>
+              {review.photo ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={review.photo}
+                  alt=""
+                  className="h-11 w-11 flex-none rounded-full border border-gold/40 object-cover"
+                />
+              ) : (
+                <span className="flex h-11 w-11 flex-none items-center justify-center rounded-full border border-gold/40 text-[15px] font-bold text-gold">
+                  {initials(review.author)}
+                </span>
+              )}
               <span className="text-[15px] font-semibold text-content">{review.author}</span>
             </div>
           </Reveal>
