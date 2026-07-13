@@ -83,7 +83,8 @@ export interface Dict {
   values: ValueEntry[];
   homeCats: { eyebrow: string; title: string };
   homeDirs: { eyebrow: string; title: string };
-  homeReviews: { eyebrow: string; title: string; video: string };
+  homeReviews: { eyebrow: string; title: string; video: string; more: string };
+  reviewsPage: { eyebrow: string; title: string; intro: string };
   homeAch: { eyebrow: string; title: string; note: string };
   featured: { eyebrow: string; title: string; viewAll: string };
   catalog: {
@@ -242,7 +243,17 @@ export const CONTENT: Record<Lang, Dict> = {
     ],
     homeCats: { eyebrow: "Виды туризма", title: "Категории туров" },
     homeDirs: { eyebrow: "Популярные направления", title: "Куда поехать в Казахстане" },
-    homeReviews: { eyebrow: "Отзывы", title: "Что говорят наши гости", video: "Смотреть видеоотзыв" },
+    homeReviews: {
+      eyebrow: "Отзывы",
+      title: "Что говорят наши гости",
+      video: "Смотреть видеоотзыв",
+      more: "Читать больше",
+    },
+    reviewsPage: {
+      eyebrow: "Отзывы гостей",
+      title: "Что говорят наши гости",
+      intro: "Честные впечатления путешественников, которые уже открыли Казахстан вместе с нами.",
+    },
     homeAch: { eyebrow: "Достижения", title: "Нам доверяют", note: "Лицензии, сертификаты и награды — доступны в офисе по запросу." },
     featured: { eyebrow: "Готовые туры", title: "Избранные маршруты", viewAll: "Все туры" },
     catalog: {
@@ -450,7 +461,17 @@ export const CONTENT: Record<Lang, Dict> = {
     ],
     homeCats: { eyebrow: "Tourism types", title: "Tour categories" },
     homeDirs: { eyebrow: "Popular destinations", title: "Where to go in Kazakhstan" },
-    homeReviews: { eyebrow: "Reviews", title: "What our guests say", video: "Watch video review" },
+    homeReviews: {
+      eyebrow: "Reviews",
+      title: "What our guests say",
+      video: "Watch video review",
+      more: "Read more",
+    },
+    reviewsPage: {
+      eyebrow: "Guest reviews",
+      title: "What our guests say",
+      intro: "Honest impressions from travelers who have already discovered Kazakhstan with us.",
+    },
     homeAch: { eyebrow: "Achievements", title: "Trusted by travellers", note: "Licences, certificates and awards — available at the office on request." },
     featured: { eyebrow: "Ready-made tours", title: "Featured journeys", viewAll: "All tours" },
     catalog: {
@@ -658,7 +679,17 @@ export const CONTENT: Record<Lang, Dict> = {
     ],
     homeCats: { eyebrow: "Туризм түрлері", title: "Тур санаттары" },
     homeDirs: { eyebrow: "Танымал бағыттар", title: "Қазақстанда қайда бару" },
-    homeReviews: { eyebrow: "Пікірлер", title: "Қонақтарымыз не дейді", video: "Бейнепікірді көру" },
+    homeReviews: {
+      eyebrow: "Пікірлер",
+      title: "Қонақтарымыз не дейді",
+      video: "Бейнепікірді көру",
+      more: "Көбірек оқу",
+    },
+    reviewsPage: {
+      eyebrow: "Қонақтар пікірлері",
+      title: "Қонақтарымыз не дейді",
+      intro: "Қазақстанды бізбен бірге ашқан саяхатшылардың шынайы әсерлері.",
+    },
     homeAch: { eyebrow: "Жетістіктер", title: "Бізге сенеді", note: "Лицензиялар, сертификаттар мен марапаттар — сұраныс бойынша кеңседе қолжетімді." },
     featured: { eyebrow: "Дайын турлар", title: "Таңдаулы маршруттар", viewAll: "Барлық турлар" },
     catalog: {
