@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
 import type { CatalogBlogPost } from "@/lib/catalog-types";
+import { toEmbedUrl } from "@/lib/video-embed";
 import { cx, ui } from "@/lib/ui";
 import BlogCard, { formatBlogDate } from "@/components/BlogCard";
 import Reveal from "@/components/Reveal";
@@ -51,12 +52,59 @@ export default function BlogPostPage({ post, others }: BlogPostPageProps) {
             />
           </Reveal>
 
-          <Reveal className="mt-10 space-y-6">
-            {post.content.map((paragraph, i) => (
-              <p key={i} className="text-[17px] leading-[1.75] text-content/82">
-                {paragraph[lang]}
-              </p>
-            ))}
+          <Reveal className="mt-10 space-y-8">
+            {post.content.map((block, i) => {
+              if (block.type === "text") {
+                return (
+                  <p key={i} className="text-[17px] leading-[1.75] text-content/82">
+                    {block.text[lang]}
+                  </p>
+                );
+              }
+              if (block.type === "image") {
+                return (
+                  <figure key={i}>
+                    <div className="relative aspect-video overflow-hidden rounded">
+                      <Image
+                        src={block.url}
+                        alt={block.caption[lang] || post.title[lang]}
+                        fill
+                        sizes="(max-width: 820px) 100vw, 820px"
+                        className="object-cover"
+                      />
+                    </div>
+                    {block.caption[lang] && (
+                      <figcaption className="mt-2.5 text-center text-[13px] text-content/50">
+                        {block.caption[lang]}
+                      </figcaption>
+                    )}
+                  </figure>
+                );
+              }
+              const embed = toEmbedUrl(block.url);
+              return (
+                <figure key={i}>
+                  <div className="relative aspect-video overflow-hidden rounded bg-panel">
+                    {embed.type === "iframe" ? (
+                      <iframe
+                        src={embed.src}
+                        title={block.caption[lang] || post.title[lang]}
+                        allow="autoplay; encrypted-media; picture-in-picture"
+                        allowFullScreen
+                        className="h-full w-full"
+                      />
+                    ) : (
+                      <video src={embed.src} controls className="h-full w-full" />
+                    )}
+                  </div>
+                  {block.caption[lang] && (
+                    <figcaption className="mt-2.5 text-center text-[13px] text-content/50">
+                      {block.caption[lang]}
+                    </figcaption>
+                  )}
+                </figure>
+              );
+            })}
           </Reveal>
         </div>
       </section>

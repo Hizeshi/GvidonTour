@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { normalizeBlogContent } from "@/lib/blog-blocks";
 import { prisma } from "@/lib/db";
 import { cx, ui } from "@/lib/ui";
 import type { LText } from "@/lib/catalog-types";
@@ -23,7 +24,7 @@ export default async function EditBlogPostPage({ params }: { params: Promise<{ i
           slug: post.slug,
           title: post.title as LText,
           excerpt: post.excerpt as LText,
-          content: post.content as LText[],
+          content: normalizeBlogContent(post.content),
           image: post.image,
           publishedAt: post.publishedAt.toISOString().slice(0, 10),
           sortOrder: post.sortOrder,

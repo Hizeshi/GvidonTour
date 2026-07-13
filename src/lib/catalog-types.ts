@@ -79,11 +79,20 @@ export interface CatalogAchievement {
   icon: string | null; // fallback icon name for the static placeholder tiles
 }
 
+// A blog post body is a freely-ordered list of blocks the admin arranges
+// (text/photo/video), not fixed paragraphs. Older posts saved before the
+// block editor existed stored a bare LText[] — normalizeBlogContent() in
+// blog-blocks.ts reads those back as a series of text blocks.
+export type BlogBlock =
+  | { type: "text"; text: LText }
+  | { type: "image"; url: string; caption: LText }
+  | { type: "video"; url: string; caption: LText };
+
 export interface CatalogBlogPost {
   slug: string;
   title: LText;
   excerpt: LText;
-  content: LText[];
+  content: BlogBlock[];
   image: string;
   publishedAt: string; // ISO date
 }

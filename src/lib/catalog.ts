@@ -21,6 +21,7 @@ import type {
   LText,
   TourDetails,
 } from "./catalog-types";
+import { normalizeBlogContent } from "./blog-blocks";
 import { TOUR_DETAILS } from "./tour-details";
 import { prisma } from "./db";
 
@@ -207,7 +208,10 @@ function fallbackBlogPosts(): CatalogBlogPost[] {
       slug: meta.slug,
       title: { ru: ru.title, en: en.title, kk: kk.title },
       excerpt: { ru: ru.excerpt, en: en.excerpt, kk: kk.excerpt },
-      content: ru.content.map((_, pi) => ({ ru: ru.content[pi], en: en.content[pi], kk: kk.content[pi] })),
+      content: ru.content.map((_, pi) => ({
+        type: "text" as const,
+        text: { ru: ru.content[pi], en: en.content[pi], kk: kk.content[pi] },
+      })),
       image: meta.image,
       publishedAt: meta.publishedAt,
     };
@@ -225,7 +229,7 @@ export async function getBlogPosts(): Promise<CatalogBlogPost[]> {
       slug: r.slug,
       title: r.title as LText,
       excerpt: r.excerpt as LText,
-      content: r.content as LText[],
+      content: normalizeBlogContent(r.content),
       image: r.image,
       publishedAt: r.publishedAt.toISOString(),
     }));

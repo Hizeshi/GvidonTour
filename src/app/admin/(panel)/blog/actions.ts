@@ -3,14 +3,15 @@
 import { revalidatePath } from "next/cache";
 import { Prisma } from "@/generated/prisma/client";
 import { getSession } from "@/lib/auth";
+import { isBlockEmpty } from "@/lib/blog-blocks";
 import { prisma } from "@/lib/db";
-import type { LText } from "@/lib/catalog-types";
+import type { BlogBlock, LText } from "@/lib/catalog-types";
 
 export interface BlogPostFormPayload {
   slug: string;
   title: LText;
   excerpt: LText;
-  content: LText[];
+  content: BlogBlock[];
   image: string;
   publishedAt: string; // yyyy-mm-dd
   sortOrder: number;
@@ -44,7 +45,7 @@ export async function saveBlogPost(id: string | null, payload: BlogPostFormPaylo
     slug,
     title: payload.title,
     excerpt: payload.excerpt,
-    content: payload.content.filter((p) => p.ru.trim() || p.en.trim() || p.kk.trim()) as unknown as Prisma.InputJsonValue,
+    content: payload.content.filter((b) => !isBlockEmpty(b)) as unknown as Prisma.InputJsonValue,
     image: payload.image.trim(),
     publishedAt,
     sortOrder: Math.round(payload.sortOrder) || 0,

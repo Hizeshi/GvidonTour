@@ -4,8 +4,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ExternalLink, Save } from "lucide-react";
-import type { LText } from "@/lib/catalog-types";
-import { addBtn, emptyLText, LTextField, LTextListEditor } from "@/components/admin/AdminFormFields";
+import type { BlogBlock, LText } from "@/lib/catalog-types";
+import { addBtn, emptyLText, LTextField } from "@/components/admin/AdminFormFields";
+import BlogBlockEditor from "@/components/admin/BlogBlockEditor";
 import { cx, ui } from "@/lib/ui";
 import { saveBlogPost, type BlogPostFormPayload } from "./actions";
 
@@ -29,7 +30,7 @@ interface BlogPostFormInitial {
   slug: string;
   title: LText;
   excerpt: LText;
-  content: LText[];
+  content: BlogBlock[];
   image: string;
   publishedAt: string; // yyyy-mm-dd
   sortOrder: number;
@@ -41,7 +42,7 @@ export default function BlogPostForm({ postId, initial }: { postId: string | nul
   const [slug, setSlug] = useState(initial?.slug ?? "");
   const [title, setTitle] = useState<LText>(initial?.title ?? emptyLText());
   const [excerpt, setExcerpt] = useState<LText>(initial?.excerpt ?? emptyLText());
-  const [content, setContent] = useState<LText[]>(initial?.content ?? []);
+  const [content, setContent] = useState<BlogBlock[]>(initial?.content ?? []);
   const [image, setImage] = useState(initial?.image ?? "");
   const [publishedAt, setPublishedAt] = useState(initial?.publishedAt ?? new Date().toISOString().slice(0, 10));
   const [sortOrder, setSortOrder] = useState(initial?.sortOrder ?? 0);
@@ -140,13 +141,20 @@ export default function BlogPostForm({ postId, initial }: { postId: string | nul
       </section>
 
       <section className="rounded-[5px] border border-content/12 bg-panel p-5">
-        <LTextListEditor
-          label="Текст статьи (по абзацам)"
-          items={content}
-          onChange={setContent}
-          addLabel="Добавить абзац"
-          multiline
-        />
+        <div className="mb-3.5 flex items-center justify-between">
+          <span className={ui.flabel}>Содержимое статьи</span>
+          <Link
+            href="/admin/media"
+            target="_blank"
+            className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-content/60 hover:text-gold"
+          >
+            Медиа за ссылкой
+            <span className="lic">
+              <ExternalLink />
+            </span>
+          </Link>
+        </div>
+        <BlogBlockEditor blocks={content} onChange={setContent} />
       </section>
 
       {error && (

@@ -5,20 +5,11 @@ import { useEffect } from "react";
 import { ChevronLeft, ChevronRight, PlayCircle, X } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
 import type { CatalogGalleryItem } from "@/lib/catalog-types";
+import { toEmbedUrl } from "@/lib/video-embed";
 import { cx } from "@/lib/ui";
 
 const navBtn =
   "absolute top-1/2 z-[5] flex h-[50px] w-[50px] -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-white/25 bg-[rgba(0,16,36,0.55)] text-[22px] text-white backdrop-blur-[6px] transition-colors hover:border-gold hover:bg-gold hover:text-onaccent";
-
-/** Turns a YouTube/Vimeo page URL into its embeddable iframe src.
- *  Direct media file URLs (mp4 etc.) pass through unchanged for <video>. */
-function toEmbedUrl(url: string): { type: "iframe" | "video"; src: string } {
-  const yt = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|shorts\/|embed\/))([\w-]{6,})/);
-  if (yt) return { type: "iframe", src: `https://www.youtube.com/embed/${yt[1]}?autoplay=1` };
-  const vimeo = url.match(/vimeo\.com\/(\d+)/);
-  if (vimeo) return { type: "iframe", src: `https://player.vimeo.com/video/${vimeo[1]}?autoplay=1` };
-  return { type: "video", src: url };
-}
 
 interface LightboxProps {
   items: CatalogGalleryItem[];
@@ -47,7 +38,7 @@ export default function Lightbox({ items, index, onClose, onNavigate }: Lightbox
   }, [index, count, onClose, onNavigate]);
 
   if (!item) return null;
-  const embed = item.videoUrl ? toEmbedUrl(item.videoUrl) : null;
+  const embed = item.videoUrl ? toEmbedUrl(item.videoUrl, { autoplay: true }) : null;
 
   return (
     <div

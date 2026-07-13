@@ -114,7 +114,10 @@ async function main() {
     const ru = CONTENT.ru.blogPosts[i];
     const en = CONTENT.en.blogPosts[i];
     const kk = CONTENT.kk.blogPosts[i];
-    const content = ru.content.map((_, pi) => ({ ru: ru.content[pi], en: en.content[pi], kk: kk.content[pi] }));
+    const content = ru.content.map((_, pi) => ({
+      type: "text",
+      text: { ru: ru.content[pi], en: en.content[pi], kk: kk.content[pi] },
+    }));
     const data = {
       title: { ru: ru.title, en: en.title, kk: kk.title },
       excerpt: { ru: ru.excerpt, en: en.excerpt, kk: kk.excerpt },
