@@ -54,7 +54,7 @@ export default async function AdminReviewsPage() {
                     <Link href={`/admin/reviews/${review.id}`} className="truncate text-[15px] font-bold hover:text-gold">
                       {review.author}
                     </Link>
-                    <span className="lic flex-none text-[13px] text-gold">
+                    <span className="flex-none text-[13px] tracking-[1px] text-gold">
                       {"★".repeat(review.rating)}
                     </span>
                   </div>
