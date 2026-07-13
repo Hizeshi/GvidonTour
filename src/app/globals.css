@@ -137,6 +137,72 @@ html.light .kazmap-label {
   .d2 { transition-delay: 0.2s; }
   .d3 { transition-delay: 0.3s; }
 
+  /* Dual-thumb range slider (RangeSlider.tsx): two stacked native range
+     inputs, each transparent except its thumb, sharing one visual track. */
+  .range-input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    margin: 0;
+    background: transparent;
+    pointer-events: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .range-input::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+    height: 100%;
+    background: transparent;
+  }
+  .range-input::-moz-range-track {
+    height: 100%;
+    background: transparent;
+    border: none;
+  }
+  .range-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    pointer-events: auto;
+    width: 20px;
+    height: 20px;
+    border-radius: 9999px;
+    background: var(--color-gold);
+    border: 3px solid var(--color-surface);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+  .range-input::-moz-range-thumb {
+    pointer-events: auto;
+    width: 20px;
+    height: 20px;
+    border-radius: 9999px;
+    background: var(--color-gold);
+    border: 3px solid var(--color-surface);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+  .range-input:hover::-webkit-slider-thumb,
+  .range-input:active::-webkit-slider-thumb {
+    transform: scale(1.15);
+  }
+  .range-input:hover::-moz-range-thumb,
+  .range-input:active::-moz-range-thumb {
+    transform: scale(1.15);
+  }
+  .range-input:focus-visible {
+    outline: none;
+  }
+  .range-input:focus-visible::-webkit-slider-thumb {
+    outline: 2px solid var(--color-content);
+    outline-offset: 2px;
+  }
+  .range-input:focus-visible::-moz-range-thumb {
+    outline: 2px solid var(--color-content);
+    outline-offset: 2px;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .reveal {
       opacity: 1;

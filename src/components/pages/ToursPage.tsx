@@ -10,6 +10,7 @@ import { CITY_NAMES } from "@/lib/content";
 import { cx, ui } from "@/lib/ui";
 import CtaBand from "@/components/CtaBand";
 import PageHead from "@/components/PageHead";
+import RangeSlider from "@/components/RangeSlider";
 import Reveal from "@/components/Reveal";
 import TourCard from "@/components/TourCard";
 
@@ -18,28 +19,40 @@ interface ToursPageProps {
   categories: CatalogCategory[];
 }
 
+type NumRange = [number, number];
+
 interface Filters {
   city: string;
   category: string;
-  price: string;
-  days: string;
+  price: NumRange;
+  days: NumRange;
 }
 
 const select =
   "w-full cursor-pointer appearance-none rounded-[2px] border border-content/20 bg-content/[0.04] px-4 py-3 text-[14px] text-content transition-colors focus:border-gold focus:outline-none [&_option]:text-onaccent";
 
-function matchPrice(priceFrom: number, bucket: string) {
-  if (bucket === "low") return priceFrom < 100_000;
-  if (bucket === "mid") return priceFrom >= 100_000 && priceFrom < 200_000;
-  if (bucket === "high") return priceFrom >= 200_000;
-  return true;
+const PRICE_STEP = 1000;
+
+function clamp(n: number, lo: number, hi: number) {
+  return Math.min(Math.max(n, lo), hi);
 }
 
-function matchDays(days: number, bucket: string) {
-  if (bucket === "1") return days === 1;
-  if (bucket === "23") return days >= 2 && days <= 3;
-  if (bucket === "4") return days >= 4;
-  return true;
+/** Parses a "min-max" URL param, clamped into bounds; a single number
+ *  ("1", from the header's "?days=1" excursions deep link) is treated as
+ *  an exact-match range. Falls back to the full bounds if missing/malformed. */
+function parseRange(raw: string | null, bounds: NumRange): NumRange {
+  if (raw) {
+    const parts = raw.split("-").map(Number);
+    if (parts.length === 1 && Number.isFinite(parts[0])) {
+      const n = clamp(parts[0], bounds[0], bounds[1]);
+      return [n, n];
+    }
+    if (parts.length === 2 && parts.every(Number.isFinite)) {
+      const [a, b] = parts;
+      return [clamp(Math.min(a, b), bounds[0], bounds[1]), clamp(Math.max(a, b), bounds[0], bounds[1])];
+    }
+  }
+  return bounds;
 }
 
 export default function ToursPage({ tours, categories }: ToursPageProps) {
@@ -47,27 +60,54 @@ export default function ToursPage({ tours, categories }: ToursPageProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [filters, setFilters] = useState<Filters>({
+  // Slider bounds come from the actual catalog so they never let a visitor
+  // pick a range that would always be empty (or always be everything).
+  const priceBounds: NumRange = useMemo(() => {
+    if (tours.length === 0) return [0, 300_000];
+    const values = tours.map((tour) => tour.priceFrom);
+    const lo = Math.floor(Math.min(...values) / PRICE_STEP) * PRICE_STEP;
+    const hi = Math.ceil(Math.max(...values) / PRICE_STEP) * PRICE_STEP;
+    return [lo, hi];
+  }, [tours]);
+
+  const daysBounds: NumRange = useMemo(() => {
+    if (tours.length === 0) return [1, 7];
+    const values = tours.map((tour) => tour.days);
+    return [Math.min(...values), Math.max(...values)];
+  }, [tours]);
+
+  const [filters, setFilters] = useState<Filters>(() => ({
     city: searchParams.get("city") ?? "",
     category: searchParams.get("category") ?? "",
-    price: searchParams.get("price") ?? "",
-    days: searchParams.get("days") ?? "",
-  });
+    price: parseRange(searchParams.get("price"), priceBounds),
+    days: parseRange(searchParams.get("days"), daysBounds),
+  }));
 
-  const setFilter = (key: keyof Filters, value: string) => {
-    const next = { ...filters, [key]: value };
+  const applyFilters = (next: Filters) => {
     setFilters(next);
     const qs = new URLSearchParams();
-    for (const [k, v] of Object.entries(next)) if (v) qs.set(k, v);
+    if (next.city) qs.set("city", next.city);
+    if (next.category) qs.set("category", next.category);
+    if (next.price[0] !== priceBounds[0] || next.price[1] !== priceBounds[1]) {
+      qs.set("price", `${next.price[0]}-${next.price[1]}`);
+    }
+    if (next.days[0] !== daysBounds[0] || next.days[1] !== daysBounds[1]) {
+      qs.set("days", `${next.days[0]}-${next.days[1]}`);
+    }
     router.replace(`/tours${qs.size ? `?${qs}` : ""}`, { scroll: false });
   };
 
-  const reset = () => {
-    setFilters({ city: "", category: "", price: "", days: "" });
-    router.replace("/tours", { scroll: false });
-  };
+  const setFilter = (key: "city" | "category", value: string) => applyFilters({ ...filters, [key]: value });
 
-  const hasActiveFilters = Object.values(filters).some(Boolean);
+  const reset = () => applyFilters({ city: "", category: "", price: priceBounds, days: daysBounds });
+
+  const hasActiveFilters =
+    Boolean(filters.city) ||
+    Boolean(filters.category) ||
+    filters.price[0] !== priceBounds[0] ||
+    filters.price[1] !== priceBounds[1] ||
+    filters.days[0] !== daysBounds[0] ||
+    filters.days[1] !== daysBounds[1];
 
   // Cities present in the catalog plus one arriving via deep link (e.g. from
   // a direction card) so the select never shows an unnamed value.
@@ -77,12 +117,18 @@ export default function ToursPage({ tours, categories }: ToursPageProps) {
     return Object.keys(CITY_NAMES).filter((slug) => present.has(slug));
   }, [tours, filters.city]);
 
+  const priceFmt = useMemo(() => new Intl.NumberFormat(lang === "en" ? "en-US" : "ru-RU"), [lang]);
+  const fmtPrice = (n: number) => `${priceFmt.format(n)} ₸`;
+  const fmtDays = (n: number) => `${n} ${n === 1 ? t.catalog.dayOne : t.catalog.dayOther}`;
+
   const filtered = tours.filter(
     (tour) =>
       (!filters.city || tour.city === filters.city) &&
       (!filters.category || tour.category === filters.category) &&
-      matchPrice(tour.priceFrom, filters.price) &&
-      matchDays(tour.days, filters.days)
+      tour.priceFrom >= filters.price[0] &&
+      tour.priceFrom <= filters.price[1] &&
+      tour.days >= filters.days[0] &&
+      tour.days <= filters.days[1]
   );
 
   return (
@@ -129,36 +175,37 @@ export default function ToursPage({ tours, categories }: ToursPageProps) {
               </select>
             </div>
             <div>
-              <label className={ui.flabel} htmlFor="f-price">
-                {t.catalog.fPrice}
-              </label>
-              <select
-                id="f-price"
-                className={select}
+              <div className="mb-[9px] flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
+                <span className={cx(ui.flabel, "mb-0")}>{t.catalog.fPrice}</span>
+                <span className="whitespace-nowrap text-[12px] font-bold text-gold">
+                  {fmtPrice(filters.price[0])} – {fmtPrice(filters.price[1])}
+                </span>
+              </div>
+              <RangeSlider
+                min={priceBounds[0]}
+                max={priceBounds[1]}
+                step={PRICE_STEP}
                 value={filters.price}
-                onChange={(e) => setFilter("price", e.target.value)}
-              >
-                <option value="">{t.catalog.fAll}</option>
-                <option value="low">{t.catalog.priceLow}</option>
-                <option value="mid">{t.catalog.priceMid}</option>
-                <option value="high">{t.catalog.priceHigh}</option>
-              </select>
+                onChange={(price) => applyFilters({ ...filters, price })}
+                minLabel={t.catalog.fPrice}
+                maxLabel={t.catalog.fPrice}
+              />
             </div>
             <div>
-              <label className={ui.flabel} htmlFor="f-days">
-                {t.catalog.fDays}
-              </label>
-              <select
-                id="f-days"
-                className={select}
+              <div className="mb-[9px] flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
+                <span className={cx(ui.flabel, "mb-0")}>{t.catalog.fDays}</span>
+                <span className="whitespace-nowrap text-[12px] font-bold text-gold">
+                  {fmtDays(filters.days[0])} – {fmtDays(filters.days[1])}
+                </span>
+              </div>
+              <RangeSlider
+                min={daysBounds[0]}
+                max={daysBounds[1]}
                 value={filters.days}
-                onChange={(e) => setFilter("days", e.target.value)}
-              >
-                <option value="">{t.catalog.fAll}</option>
-                <option value="1">{t.catalog.days1}</option>
-                <option value="23">{t.catalog.days23}</option>
-                <option value="4">{t.catalog.days4}</option>
-              </select>
+                onChange={(days) => applyFilters({ ...filters, days })}
+                minLabel={t.catalog.fDays}
+                maxLabel={t.catalog.fDays}
+              />
             </div>
             <button
               type="button"

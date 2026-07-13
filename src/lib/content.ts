@@ -95,12 +95,8 @@ export interface Dict {
     fDays: string;
     fAll: string;
     fReset: string;
-    priceLow: string;
-    priceMid: string;
-    priceHigh: string;
-    days1: string;
-    days23: string;
-    days4: string;
+    dayOne: string;
+    dayOther: string;
     empty: string;
     emptyCta: string;
   };
@@ -258,12 +254,8 @@ export const CONTENT: Record<Lang, Dict> = {
       fDays: "Длительность",
       fAll: "Все",
       fReset: "Сбросить",
-      priceLow: "до 100 000 ₸",
-      priceMid: "100–200 тыс. ₸",
-      priceHigh: "от 200 000 ₸",
-      days1: "1 день",
-      days23: "2–3 дня",
-      days4: "4+ дней",
+      dayOne: "дн.",
+      dayOther: "дн.",
       empty: "По выбранным фильтрам туров пока нет. Оставьте заявку — и мы соберём маршрут специально для вас.",
       emptyCta: "Оставить заявку",
     },
@@ -470,12 +462,8 @@ export const CONTENT: Record<Lang, Dict> = {
       fDays: "Duration",
       fAll: "All",
       fReset: "Reset",
-      priceLow: "under 100,000 ₸",
-      priceMid: "100–200 thousand ₸",
-      priceHigh: "from 200,000 ₸",
-      days1: "1 day",
-      days23: "2–3 days",
-      days4: "4+ days",
+      dayOne: "day",
+      dayOther: "days",
       empty: "No tours match the selected filters yet. Send a request — and we will craft a route just for you.",
       emptyCta: "Send a request",
     },
@@ -682,12 +670,8 @@ export const CONTENT: Record<Lang, Dict> = {
       fDays: "Ұзақтығы",
       fAll: "Барлығы",
       fReset: "Тазарту",
-      priceLow: "100 000 ₸ дейін",
-      priceMid: "100–200 мың ₸",
-      priceHigh: "200 000 ₸ бастап",
-      days1: "1 күн",
-      days23: "2–3 күн",
-      days4: "4+ күн",
+      dayOne: "күн",
+      dayOther: "күн",
       empty: "Таңдалған сүзгілер бойынша турлар әзірге жоқ. Өтінім қалдырыңыз — біз сізге арнайы маршрут құрастырамыз.",
       emptyCta: "Өтінім қалдыру",
     },
