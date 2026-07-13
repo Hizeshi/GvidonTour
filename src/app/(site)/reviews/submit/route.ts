@@ -2,6 +2,7 @@ import { randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { uploadMedia } from "@/lib/storage";
+import { notifyReviewPendingViaTelegram } from "@/lib/telegram";
 import { verifyTurnstile } from "@/lib/turnstile";
 import type { Lang } from "@/lib/content";
 
@@ -95,6 +96,9 @@ export async function POST(request: Request) {
     console.error("[reviews/submit] DB write failed:", err);
     return NextResponse.json({ ok: false, error: "db" }, { status: 500 });
   }
+
+  // Review is safely stored; notification failure must not surface to the visitor.
+  await notifyReviewPendingViaTelegram({ author, rating, text });
 
   return NextResponse.json({ ok: true });
 }
