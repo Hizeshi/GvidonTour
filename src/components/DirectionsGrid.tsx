@@ -35,8 +35,8 @@ function DirectionCard({ direction, delay }: { direction: CatalogDirection; dela
       )}
       <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(0,16,36,0.78),transparent_55%)] transition-colors duration-300 group-hover:bg-[linear-gradient(0deg,rgba(0,16,36,0.85),rgba(0,16,36,0.15))]" />
       <div className="absolute inset-x-0 bottom-0 flex items-center justify-between p-5">
-        <span className={cx(ui.serif, "text-[24px] text-content")}>{direction.name[lang]}</span>
-        <span className="lic text-content/60 transition-all duration-300 group-hover:translate-x-1 group-hover:text-gold">
+        <span className={cx(ui.serif, "text-[24px] text-ondark")}>{direction.name[lang]}</span>
+        <span className="lic text-ondark/60 transition-all duration-300 group-hover:translate-x-1 group-hover:text-gold">
           <ArrowRight />
         </span>
       </div>

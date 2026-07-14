@@ -57,6 +57,9 @@ const ICONS: Record<string, LucideIcon> = {
   "file-signature": FileSignature,
 };
 
+/** All icon names available to the category picker in the admin panel. */
+export const ICON_NAMES = Object.keys(ICONS);
+
 export default function IconByName({ name }: { name: string }) {
   const Icon = ICONS[name];
   if (!Icon) return null;

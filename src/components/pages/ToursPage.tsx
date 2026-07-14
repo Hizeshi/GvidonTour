@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { RotateCcw, SearchX } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
-import type { CatalogCategory, CatalogTour } from "@/lib/catalog-types";
+import type { CatalogCategory, CatalogDirection, CatalogTour, LText } from "@/lib/catalog-types";
 import { CITY_NAMES } from "@/lib/content";
 import { cx, ui } from "@/lib/ui";
 import CtaBand from "@/components/CtaBand";
@@ -17,6 +17,7 @@ import TourCard from "@/components/TourCard";
 interface ToursPageProps {
   tours: CatalogTour[];
   categories: CatalogCategory[];
+  directions: CatalogDirection[];
 }
 
 type NumRange = [number, number];
@@ -55,10 +56,18 @@ function parseRange(raw: string | null, bounds: NumRange): NumRange {
   return bounds;
 }
 
-export default function ToursPage({ tours, categories }: ToursPageProps) {
+export default function ToursPage({ tours, categories, directions }: ToursPageProps) {
   const { t, lang } = useLang();
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  // City names come from the DB directions (with the static CITY_NAMES map as
+  // a fallback), so cities added via the admin panel show up here correctly.
+  const cityNames = useMemo(() => {
+    const map: Record<string, LText> = { ...CITY_NAMES };
+    for (const d of directions) map[d.slug] = d.name;
+    return map;
+  }, [directions]);
 
   // Slider bounds come from the actual catalog so they never let a visitor
   // pick a range that would always be empty (or always be everything).
@@ -114,8 +123,8 @@ export default function ToursPage({ tours, categories }: ToursPageProps) {
   const cityOptions = useMemo(() => {
     const present = new Set(tours.map((tour) => tour.city).filter((c): c is string => !!c));
     if (filters.city) present.add(filters.city);
-    return Object.keys(CITY_NAMES).filter((slug) => present.has(slug));
-  }, [tours, filters.city]);
+    return Object.keys(cityNames).filter((slug) => present.has(slug));
+  }, [tours, filters.city, cityNames]);
 
   const priceFmt = useMemo(() => new Intl.NumberFormat(lang === "en" ? "en-US" : "ru-RU"), [lang]);
   const fmtPrice = (n: number) => `${priceFmt.format(n)} ₸`;
@@ -151,7 +160,7 @@ export default function ToursPage({ tours, categories }: ToursPageProps) {
                 <option value="">{t.catalog.fAll}</option>
                 {cityOptions.map((slug) => (
                   <option key={slug} value={slug}>
-                    {CITY_NAMES[slug][lang]}
+                    {cityNames[slug][lang]}
                   </option>
                 ))}
               </select>
