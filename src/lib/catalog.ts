@@ -55,6 +55,7 @@ function fallbackTours(): CatalogTour[] {
     const meta = TOUR_META[i];
     return {
       slug: meta.slug,
+      updatedAt: null,
       region: { ru: ru.region, en: en.region, kk: kk.region },
       title: { ru: ru.title, en: en.title, kk: kk.title },
       desc: { ru: ru.desc, en: en.desc, kk: kk.desc },
@@ -93,8 +94,9 @@ const queryTours = unstable_cache(
       orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
       include: { category: { select: { slug: true } } },
     });
-    return rows.map((r) => ({
-      slug: r.slug,
+  return rows.map((r) => ({
+    slug: r.slug,
+    updatedAt: r.updatedAt.toISOString(),
       region: r.region as LText,
       title: r.title as LText,
       desc: r.desc as LText,

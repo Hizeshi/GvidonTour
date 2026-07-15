@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Expand, PlayCircle } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
+import { A11Y_LABELS } from "@/lib/a11y";
 import type { CatalogGalleryItem } from "@/lib/catalog-types";
 import { cx, ui } from "@/lib/ui";
 import Lightbox from "@/components/Lightbox";
@@ -16,6 +17,7 @@ const gnav =
 
 export default function GalleryPage({ items }: { items: CatalogGalleryItem[] }) {
   const { t, lang } = useLang();
+  const a11y = A11Y_LABELS[lang];
   const [slide, setSlide] = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const slides = items.slice(0, 6);
@@ -80,7 +82,7 @@ export default function GalleryPage({ items }: { items: CatalogGalleryItem[] }) 
             <button
               type="button"
               className={cx(gnav, "left-6 max-sm:hidden")}
-              aria-label="Previous"
+              aria-label={a11y.previous}
               onClick={() => setSlide((s) => (s + slideCount - 1) % slideCount)}
             >
               <span className="lic">
@@ -90,7 +92,7 @@ export default function GalleryPage({ items }: { items: CatalogGalleryItem[] }) 
             <button
               type="button"
               className={cx(gnav, "right-6 max-sm:hidden")}
-              aria-label="Next"
+              aria-label={a11y.next}
               onClick={() => setSlide((s) => (s + 1) % slideCount)}
             >
               <span className="lic">

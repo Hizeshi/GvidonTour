@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import FloatingCta from "@/components/FloatingCta";
 import RootHtml from "@/components/RootHtml";
 import { LanguageProvider } from "@/lib/LanguageContext";
+import { A11Y_LABELS } from "@/lib/a11y";
 import { EMAIL, PHONE } from "@/lib/content";
 import { isLocale, LOCALES } from "@/lib/i18n";
 import { jsonLdScript, SITE_URL } from "@/lib/seo";
@@ -88,8 +89,16 @@ export default async function SiteLayout({
     <RootHtml lang={lang} jsonLd={jsonLdScript(ORGANIZATION_JSONLD)}>
       <LanguageProvider lang={lang}>
         <div className="min-h-screen">
+          <a
+            href="#site-content"
+            className="fixed left-4 top-4 z-[200] -translate-y-24 rounded bg-gold px-4 py-2 font-bold text-onaccent shadow-lg transition-transform focus:translate-y-0"
+          >
+            {A11Y_LABELS[lang].skipToContent}
+          </a>
           <Header />
-          {children}
+          <div id="site-content" tabIndex={-1}>
+            {children}
+          </div>
           <Footer />
           <FloatingCta />
           <Analytics />

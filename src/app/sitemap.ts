@@ -32,6 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (const tour of tours) {
       entries.push({
         url: `${SITE_URL}${localeHref(`/tours/${tour.slug}`, lang)}`,
+        ...(tour.updatedAt ? { lastModified: tour.updatedAt } : {}),
         changeFrequency: "monthly",
         priority: 0.8,
       });

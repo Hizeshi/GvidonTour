@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useLang } from "@/lib/LanguageContext";
+import { A11Y_LABELS } from "@/lib/a11y";
 import { cx } from "@/lib/ui";
 
 const gnav =
@@ -16,6 +18,8 @@ interface ImageSliderProps {
 }
 
 export default function ImageSlider({ images, alt, className, autoPlayMs = 6000 }: ImageSliderProps) {
+  const { lang } = useLang();
+  const a11y = A11Y_LABELS[lang];
   const [slide, setSlide] = useState(0);
   const count = images.length;
 
@@ -51,7 +55,7 @@ export default function ImageSlider({ images, alt, className, autoPlayMs = 6000 
           <button
             type="button"
             className={cx(gnav, "left-4")}
-            aria-label="Previous"
+            aria-label={a11y.previous}
             onClick={() => setSlide((s) => (s + count - 1) % count)}
           >
             <span className="lic">
@@ -61,7 +65,7 @@ export default function ImageSlider({ images, alt, className, autoPlayMs = 6000 
           <button
             type="button"
             className={cx(gnav, "right-4")}
-            aria-label="Next"
+            aria-label={a11y.next}
             onClick={() => setSlide((s) => (s + 1) % count)}
           >
             <span className="lic">

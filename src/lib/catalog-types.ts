@@ -31,6 +31,7 @@ export interface TourDetails {
 
 export interface CatalogTour {
   slug: string;
+  updatedAt: string | null;
   region: LText;
   title: LText;
   desc: LText;

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "@/components/LocaleLink";
-import { ArrowLeft, Calendar, Check, Clock, Lightbulb, MapPin, MessageCircle, Route, X } from "lucide-react";
+import { Calendar, Check, Clock, Lightbulb, MapPin, MessageCircle, Route, X } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
 import type { CatalogTour } from "@/lib/catalog-types";
 import { WHATSAPP_BOOKING } from "@/lib/content";
@@ -10,6 +10,7 @@ import ImageSlider from "@/components/ImageSlider";
 import KazMap from "@/components/KazMap";
 import Reveal from "@/components/Reveal";
 import TourCard from "@/components/TourCard";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface TourDetailPageProps {
   tour: CatalogTour;
@@ -34,15 +35,13 @@ export default function TourDetailPage({ tour, similar }: TourDetailPageProps) {
     <main>
       <div className="bg-gradient-to-b from-panel to-surface pb-10 pt-32">
         <div className={ui.wrap}>
-          <Link
-            href="/tours"
-            className="inline-flex items-center gap-2 text-[13px] font-semibold text-content/60 transition-colors hover:text-gold"
-          >
-            <span className="lic">
-              <ArrowLeft />
-            </span>
-            {t.tourPage.back}
-          </Link>
+          <Breadcrumbs
+            items={[
+              { label: t.nav.home, href: "/" },
+              { label: t.nav.tours, href: "/tours" },
+              { label: tour.title[lang] },
+            ]}
+          />
           <div className="mt-5 flex flex-wrap items-center gap-3">
             <span className="rounded-[2px] bg-gold/15 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-gold">
               {tour.region[lang]}

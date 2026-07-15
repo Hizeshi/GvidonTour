@@ -1,14 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import Link from "@/components/LocaleLink";
-import { ArrowLeft } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
 import type { CatalogBlogPost } from "@/lib/catalog-types";
 import { toEmbedUrl } from "@/lib/video-embed";
 import { cx, ui } from "@/lib/ui";
 import BlogCard, { formatBlogDate } from "@/components/BlogCard";
 import Reveal from "@/components/Reveal";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 interface BlogPostPageProps {
   post: CatalogBlogPost;
@@ -22,15 +21,13 @@ export default function BlogPostPage({ post, others }: BlogPostPageProps) {
     <main>
       <div className="bg-gradient-to-b from-panel to-surface pb-10 pt-32">
         <div className={ui.wrap}>
-          <Link
-            href="/blog"
-            className="inline-flex items-center gap-2 text-[13px] font-semibold text-content/60 transition-colors hover:text-gold"
-          >
-            <span className="lic">
-              <ArrowLeft />
-            </span>
-            {t.blogPage.back}
-          </Link>
+          <Breadcrumbs
+            items={[
+              { label: t.nav.home, href: "/" },
+              { label: t.nav.blog, href: "/blog" },
+              { label: post.title[lang] },
+            ]}
+          />
           <div className="mt-5 text-[12px] font-bold uppercase tracking-[0.14em] text-gold">
             {formatBlogDate(post.publishedAt, lang)}
           </div>

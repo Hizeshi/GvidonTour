@@ -2,10 +2,11 @@
 
 import Link from "@/components/LocaleLink";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronDown, Moon, Sun } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
 import { useTheme } from "@/lib/ThemeContext";
+import { A11Y_LABELS } from "@/lib/a11y";
 import { NAV_ROUTES, TOURS_MENU_LINKS, type NavKey } from "@/lib/content";
 import { stripLocale } from "@/lib/i18n";
 import { cx, ui } from "@/lib/ui";
@@ -18,14 +19,17 @@ const navBase =
   "relative cursor-pointer py-1 text-sm font-semibold tracking-[0.02em] transition-colors after:absolute after:-bottom-0.5 after:left-0 after:h-[1.5px] after:w-0 after:bg-gold after:transition-[width] after:duration-300 hover:after:w-full";
 
 export default function Header() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { theme, toggle } = useTheme();
+  const a11y = A11Y_LABELS[lang];
   // Locale-agnostic path, so nav highlighting works the same on /ru, /en, /kk.
   const pathname = stripLocale(usePathname());
   const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [toursOpen, setToursOpen] = useState(false);
+  const [desktopToursOpen, setDesktopToursOpen] = useState(false);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > window.innerHeight - 90);
@@ -37,7 +41,20 @@ export default function Header() {
   useEffect(() => {
     setOpen(false);
     setToursOpen(false);
+    setDesktopToursOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      setToursOpen(false);
+      mobileMenuButtonRef.current?.focus();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [open]);
 
   const solid = !isHome || scrolled || open;
 
@@ -79,17 +96,40 @@ export default function Header() {
               const active = pathname === NAV_ROUTES[key];
               if (key === "tours") {
                 return (
-                  <div key={key} className="group relative">
+                  <div
+                    key={key}
+                    className="group relative"
+                    onMouseEnter={() => setDesktopToursOpen(true)}
+                    onMouseLeave={() => setDesktopToursOpen(false)}
+                    onFocusCapture={() => setDesktopToursOpen(true)}
+                    onBlur={(event) => {
+                      if (!event.currentTarget.contains(event.relatedTarget)) setDesktopToursOpen(false);
+                    }}
+                  >
                     <Link
                       href={NAV_ROUTES[key]}
+                      aria-haspopup="true"
+                      aria-expanded={desktopToursOpen}
+                      aria-controls="desktop-tours-navigation"
+                      onKeyDown={(event) => {
+                        if (event.key === "Escape") setDesktopToursOpen(false);
+                      }}
                       className={cx(navBase, "flex items-center gap-1", active ? "text-gold after:w-full" : navInactive)}
                     >
                       {t.nav[key]}
-                      <span className="lic text-[13px] transition-transform duration-300 group-hover:rotate-180">
+                      <span className="lic text-[13px] transition-transform duration-300 group-hover:rotate-180 group-focus-within:rotate-180">
                         <ChevronDown />
                       </span>
                     </Link>
-                    <div className="invisible absolute left-0 top-full z-10 min-w-[210px] rounded-[3px] border border-content/10 bg-panel p-2 opacity-0 shadow-[0_20px_40px_-16px_rgba(0,0,0,0.5)] transition-all duration-200 group-hover:visible group-hover:opacity-100">
+                    <div
+                      id="desktop-tours-navigation"
+                      aria-hidden={!desktopToursOpen}
+                      inert={!desktopToursOpen}
+                      className={cx(
+                        "absolute left-0 top-full z-10 min-w-[210px] rounded-[3px] border border-content/10 bg-panel p-2 shadow-[0_20px_40px_-16px_rgba(0,0,0,0.5)] transition-all duration-200",
+                        desktopToursOpen ? "visible opacity-100" : "invisible opacity-0"
+                      )}
+                    >
                       {TOURS_MENU_LINKS.map((link) => (
                         <Link
                           key={link.key}
@@ -119,17 +159,19 @@ export default function Header() {
             <button
               type="button"
               className={iconBtn}
-              aria-label={theme === "dark" ? "Светлая тема" : "Тёмная тема"}
+              aria-label={theme === "dark" ? a11y.lightTheme : a11y.darkTheme}
               onClick={toggle}
             >
               <span className="lic">{theme === "dark" ? <Sun /> : <Moon />}</span>
             </button>
             <LangSwitcher tone={navInactive} />
             <button
+              ref={mobileMenuButtonRef}
               type="button"
               className="flex h-11 w-11 flex-none cursor-pointer flex-col items-center justify-center gap-[5px] lg:hidden"
-              aria-label={t.nav.home}
+              aria-label={open ? a11y.closeMenu : a11y.openMenu}
               aria-expanded={open}
+              aria-controls="mobile-navigation"
               onClick={() =>
                 setOpen((v) => {
                   if (v) setToursOpen(false);
@@ -146,6 +188,9 @@ export default function Header() {
       </header>
 
       <nav
+        id="mobile-navigation"
+        aria-hidden={!open}
+        inert={!open}
         className={cx(
           "fixed inset-x-0 top-0 z-40 flex flex-col gap-2 border-b border-gold/20 bg-surface/98 px-[26px] pb-[34px] pt-24 backdrop-blur-2xl transition-transform duration-[400ms] lg:hidden",
           open ? "translate-y-0" : "-translate-y-[102%]"
@@ -180,6 +225,7 @@ export default function Header() {
                   </button>
                 </div>
                 <div
+                  inert={!toursOpen}
                   className={cx(
                     "grid transition-all duration-300",
                     toursOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"

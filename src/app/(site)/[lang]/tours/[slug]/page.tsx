@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import TourDetailPage from "@/components/pages/TourDetailPage";
 import { getTourBySlug, getTours } from "@/lib/catalog";
+import { CONTENT } from "@/lib/content";
 import { DEFAULT_LOCALE, isLocale, localeAlternates, localeHref } from "@/lib/i18n";
-import { absoluteUrl, jsonLdScript, SITE_URL } from "@/lib/seo";
+import { absoluteUrl, breadcrumbJsonLd, jsonLdScript, SITE_URL } from "@/lib/seo";
 
 export const revalidate = 300;
 
@@ -65,10 +66,16 @@ export default async function Page({ params }: { params: Promise<{ lang: string;
     },
     provider: { "@type": "TravelAgency", name: "GVIDON TOUR", url: SITE_URL },
   };
+  const breadcrumbs = breadcrumbJsonLd([
+    { name: "GVIDON TOUR", url: `${SITE_URL}${localeHref("/", lang)}` },
+    { name: CONTENT[lang].nav.tours, url: `${SITE_URL}${localeHref("/tours", lang)}` },
+    { name: tour.title[lang], url: `${SITE_URL}${localeHref(`/tours/${slug}`, lang)}` },
+  ]);
 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbs) }} />
       <TourDetailPage tour={tour} similar={similar} />
     </>
   );

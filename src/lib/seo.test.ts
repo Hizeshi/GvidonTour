@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { absoluteUrl, jsonLdScript, SITE_URL } from "./seo";
+import { absoluteUrl, breadcrumbJsonLd, jsonLdScript, SITE_URL } from "./seo";
 
 test("absoluteUrl prefixes local paths", () => {
   assert.equal(absoluteUrl("/images/hero-astana.jpg"), `${SITE_URL}/images/hero-astana.jpg`);
@@ -22,4 +22,16 @@ test("jsonLdScript escapes < so a string field can't close the script tag", () =
   assert.ok(out.includes("\\u003c"));
   // Still valid JSON — the escape is inside the string, not around it.
   assert.equal(JSON.parse(out).name, "</script><script>alert(1)</script>");
+});
+
+test("breadcrumbJsonLd assigns one-based positions and absolute items", () => {
+  const out = breadcrumbJsonLd([
+    { name: "Home", url: `${SITE_URL}/en` },
+    { name: "Tours", url: `${SITE_URL}/en/tours` },
+  ]);
+  assert.equal(out["@type"], "BreadcrumbList");
+  assert.deepEqual(out.itemListElement, [
+    { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/en` },
+    { "@type": "ListItem", position: 2, name: "Tours", item: `${SITE_URL}/en/tours` },
+  ]);
 });
