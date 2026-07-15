@@ -42,6 +42,9 @@ export interface CatalogTour {
   priceFrom: number;
   city: string | null;
   category: string | null;
+  /** Drives the "Избранные маршруты" block on the home page (Star toggle in
+   *  the admin tour list). */
+  featured: boolean;
   details: TourDetails | null;
 }
 

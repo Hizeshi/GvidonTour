@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import TourDetailPage from "@/components/pages/TourDetailPage";
 import { getTourBySlug, getTours } from "@/lib/catalog";
 import { DEFAULT_LOCALE, isLocale, localeAlternates, localeHref } from "@/lib/i18n";
-import { jsonLdScript, SITE_URL } from "@/lib/seo";
+import { absoluteUrl, jsonLdScript, SITE_URL } from "@/lib/seo";
 
 export const revalidate = 300;
 
@@ -54,7 +54,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string;
     "@type": "TouristTrip",
     name: tour.title[lang],
     description: tour.desc[lang],
-    image: `${SITE_URL}${tour.image}`,
+    image: absoluteUrl(tour.image),
     inLanguage: lang,
     touristType: "Leisure",
     offers: {

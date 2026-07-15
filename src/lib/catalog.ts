@@ -37,8 +37,13 @@ export type {
   TourDetails,
 } from "./catalog-types";
 
-/** Static content assembled from the i18n dictionary — used when the DB is
- *  empty or unreachable so the site never renders blank. */
+/** Static content assembled from the i18n dictionary, served **only when the
+ *  database is unreachable**, so an outage doesn't blank the site.
+ *
+ *  An *empty* table is not an outage: it means the admin unpublished or
+ *  deleted everything, and that has to render as empty. Treating the two the
+ *  same used to resurrect the six demo tours the moment the last real tour was
+ *  hidden — the site contradicting its own admin panel. */
 function fallbackTours(): CatalogTour[] {
   return CONTENT.ru.tours.map((ru, i) => {
     const en = CONTENT.en.tours[i];
@@ -58,6 +63,7 @@ function fallbackTours(): CatalogTour[] {
       priceFrom: meta.priceFrom,
       city: meta.city,
       category: null,
+      featured: meta.featured ?? false,
       details: TOUR_DETAILS[meta.slug] ?? null,
     };
   });
@@ -84,7 +90,6 @@ export async function getTours(): Promise<CatalogTour[]> {
       orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
       include: { category: { select: { slug: true } } },
     });
-    if (rows.length === 0) return fallbackTours();
     return rows.map((r) => ({
       slug: r.slug,
       region: r.region as LText,
@@ -98,6 +103,7 @@ export async function getTours(): Promise<CatalogTour[]> {
       priceFrom: r.priceFrom,
       city: r.city,
       category: r.category?.slug ?? null,
+      featured: r.featured,
       details: (r.details as TourDetails | null) ?? TOUR_DETAILS[r.slug] ?? null,
     }));
   } catch (err) {
@@ -118,7 +124,6 @@ export async function getGalleryItems(): Promise<CatalogGalleryItem[]> {
       where: { published: true },
       orderBy: { sortOrder: "asc" },
     });
-    if (rows.length === 0) return fallbackGallery();
     return rows.map((r) => ({
       kind: r.kind,
       src: r.src,
@@ -135,7 +140,6 @@ export async function getGalleryItems(): Promise<CatalogGalleryItem[]> {
 export async function getCategories(): Promise<CatalogCategory[]> {
   try {
     const rows = await prisma.category.findMany({ orderBy: { sortOrder: "asc" } });
-    if (rows.length === 0) return CATEGORY_DATA;
     return rows.map((r) => ({ slug: r.slug, name: r.name as LText, icon: r.icon }));
   } catch (err) {
     console.error("[catalog] DB unavailable, serving static categories:", err);
@@ -146,7 +150,6 @@ export async function getCategories(): Promise<CatalogCategory[]> {
 export async function getDirections(): Promise<CatalogDirection[]> {
   try {
     const rows = await prisma.direction.findMany({ orderBy: { sortOrder: "asc" } });
-    if (rows.length === 0) return DIRECTION_DATA;
     return rows.map((r) => ({ slug: r.slug, name: r.name as LText, image: r.image }));
   } catch (err) {
     console.error("[catalog] DB unavailable, serving static directions:", err);
@@ -170,7 +173,6 @@ export async function getReviews(): Promise<CatalogReview[]> {
       where: { published: true },
       orderBy: { date: "desc" },
     });
-    if (rows.length === 0) return fallbackReviews();
     return rows.map((r) => ({
       author: r.author,
       rating: r.rating,
@@ -191,7 +193,6 @@ function fallbackAchievements(): CatalogAchievement[] {
 export async function getAchievements(): Promise<CatalogAchievement[]> {
   try {
     const rows = await prisma.achievement.findMany({ orderBy: { sortOrder: "asc" } });
-    if (rows.length === 0) return fallbackAchievements();
     return rows.map((r) => ({ title: r.title as LText, image: r.image, icon: null }));
   } catch (err) {
     console.error("[catalog] DB unavailable, serving static achievements:", err);
@@ -224,7 +225,6 @@ export async function getBlogPosts(): Promise<CatalogBlogPost[]> {
       where: { published: true },
       orderBy: [{ sortOrder: "asc" }, { publishedAt: "desc" }],
     });
-    if (rows.length === 0) return fallbackBlogPosts();
     return rows.map((r) => ({
       slug: r.slug,
       title: r.title as LText,

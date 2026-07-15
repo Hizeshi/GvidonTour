@@ -31,6 +31,12 @@ interface HomePageProps {
 
 export default function HomePage({ tours, categories, directions, reviews, achievements }: HomePageProps) {
   const { t } = useLang();
+
+  // The Star toggle in the admin tour list picks what shows here. Falling back
+  // to the first tours keeps the block populated if nothing is starred yet.
+  const starred = tours.filter((tour) => tour.featured);
+  const featuredTours = (starred.length > 0 ? starred : tours).slice(0, 3);
+
   return (
     <main>
       <HomeHero />
@@ -46,50 +52,59 @@ export default function HomePage({ tours, categories, directions, reviews, achie
         </div>
       </section>
 
-      <section className={ui.sec}>
-        <div className={ui.wrap}>
-          <Reveal className="max-w-[760px]">
-            <div className={ui.eyebrow}>{t.homeCats.eyebrow}</div>
-            <h2 className={ui.sectionTitle}>{t.homeCats.title}</h2>
-            <div className={ui.divider} />
-          </Reveal>
-          <CategoriesGrid categories={categories} />
-        </div>
-      </section>
-
-      <section className={cx(ui.sec, "bg-alt text-altcontent")}>
-        <div className={ui.wrap}>
-          <Reveal className="max-w-[760px]">
-            <div className={ui.eyebrow}>{t.homeDirs.eyebrow}</div>
-            <h2 className={ui.sectionTitle}>{t.homeDirs.title}</h2>
-            <div className={ui.divider} />
-          </Reveal>
-          <DirectionsGrid directions={directions} />
-        </div>
-      </section>
-
-      <section className={ui.sec}>
-        <div className={ui.wrap}>
-          <Reveal className="max-w-[760px]">
-            <div className={ui.eyebrow}>{t.featured.eyebrow}</div>
-            <h2 className={ui.sectionTitle}>{t.featured.title}</h2>
-            <div className={ui.divider} />
-          </Reveal>
-          <div className="mt-[58px] grid grid-cols-1 gap-[30px] sm:grid-cols-2 lg:grid-cols-3">
-            {tours.slice(0, 3).map((tour, i) => (
-              <TourCard key={tour.slug} tour={tour} details={t.toursPage.details} delay={i % 4} />
-            ))}
+      {/* Each block hides itself when it has nothing to show: an empty table
+          now renders as empty (no demo fallback), and a lone section heading
+          over blank space looks broken. */}
+      {categories.length > 0 && (
+        <section className={ui.sec}>
+          <div className={ui.wrap}>
+            <Reveal className="max-w-[760px]">
+              <div className={ui.eyebrow}>{t.homeCats.eyebrow}</div>
+              <h2 className={ui.sectionTitle}>{t.homeCats.title}</h2>
+              <div className={ui.divider} />
+            </Reveal>
+            <CategoriesGrid categories={categories} />
           </div>
-          <Reveal className="mt-[54px] flex justify-center">
-            <Link href="/tours" className={ui.btnGhost}>
-              {t.featured.viewAll}
-              <span className="lic">
-                <ArrowRight />
-              </span>
-            </Link>
-          </Reveal>
-        </div>
-      </section>
+        </section>
+      )}
+
+      {directions.length > 0 && (
+        <section className={cx(ui.sec, "bg-alt text-altcontent")}>
+          <div className={ui.wrap}>
+            <Reveal className="max-w-[760px]">
+              <div className={ui.eyebrow}>{t.homeDirs.eyebrow}</div>
+              <h2 className={ui.sectionTitle}>{t.homeDirs.title}</h2>
+              <div className={ui.divider} />
+            </Reveal>
+            <DirectionsGrid directions={directions} />
+          </div>
+        </section>
+      )}
+
+      {featuredTours.length > 0 && (
+        <section className={ui.sec}>
+          <div className={ui.wrap}>
+            <Reveal className="max-w-[760px]">
+              <div className={ui.eyebrow}>{t.featured.eyebrow}</div>
+              <h2 className={ui.sectionTitle}>{t.featured.title}</h2>
+              <div className={ui.divider} />
+            </Reveal>
+            <div className="mt-[58px] grid grid-cols-1 gap-[30px] sm:grid-cols-2 lg:grid-cols-3">
+              {featuredTours.map((tour, i) => (
+                <TourCard key={tour.slug} tour={tour} details={t.toursPage.details} delay={i % 4} />
+              ))}
+            </div>
+            <Reveal className="mt-[54px] flex justify-center">
+              <Link href="/tours" className={ui.btnGhost}>
+                {t.featured.viewAll}
+                <span className="lic">
+                  <ArrowRight />
+                </span>
+              </Link>
+            </Reveal>
+          </div>
+        </section>
+      )}
 
       {reviews.length > 0 && (
         <section className={cx(ui.sec, "bg-alt text-altcontent")}>
@@ -104,17 +119,19 @@ export default function HomePage({ tours, categories, directions, reviews, achie
         </section>
       )}
 
-      <section className={ui.sec}>
-        <div className={ui.wrap}>
-          <Reveal className="max-w-[760px]">
-            <div className={ui.eyebrow}>{t.homeAch.eyebrow}</div>
-            <h2 className={ui.sectionTitle}>{t.homeAch.title}</h2>
-            <div className={ui.divider} />
-          </Reveal>
-          <AchievementsStrip achievements={achievements} />
-          <Reveal className="mt-8 text-[13.5px] text-content/50">{t.homeAch.note}</Reveal>
-        </div>
-      </section>
+      {achievements.length > 0 && (
+        <section className={ui.sec}>
+          <div className={ui.wrap}>
+            <Reveal className="max-w-[760px]">
+              <div className={ui.eyebrow}>{t.homeAch.eyebrow}</div>
+              <h2 className={ui.sectionTitle}>{t.homeAch.title}</h2>
+              <div className={ui.divider} />
+            </Reveal>
+            <AchievementsStrip achievements={achievements} />
+            <Reveal className="mt-8 text-[13.5px] text-content/50">{t.homeAch.note}</Reveal>
+          </div>
+        </section>
+      )}
 
       <CtaBand withEyebrow />
     </main>

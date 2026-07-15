@@ -74,8 +74,11 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     serverActions: {
-      // Media uploads go through a server action; default limit is 1 MB.
-      bodySizeLimit: "10mb",
+      // Only the admin forms' RPC-style payloads (tour programmes, blog blocks
+      // in three languages) come through server actions — file uploads go
+      // through a Route Handler, which this setting does not affect. Modest
+      // headroom over the 1 MB default is all these JSON bodies need.
+      bodySizeLimit: "2mb",
     },
   },
   async headers() {

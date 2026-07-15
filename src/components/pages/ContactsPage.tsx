@@ -70,7 +70,11 @@ export default function ContactsPage({ tourTitles }: { tourTitles: LText[] }) {
                     <label className={ui.flabel} htmlFor="cf-email">
                       {t.contacts.email}
                     </label>
-                    <input id="cf-email" className={ui.finput} name="email" type="email" required />
+                    {/* Neither contact field is required on its own: the server
+                        accepts a phone or an email, so demanding both here
+                        would turn away visitors who only leave a number. */}
+                    <input id="cf-email" className={ui.finput} name="email" type="email" />
+                    <p className="mt-2 text-[12.5px] text-content/50">{t.contacts.oneOf}</p>
                   </div>
                   <div className="mb-5">
                     <label className={ui.flabel} htmlFor="cf-tour">

@@ -11,7 +11,14 @@ import { uploadMedia } from "@/lib/storage";
  *  read mid-render) despite a valid cookie and a passing proxy check.
  *  A Route Handler is a plain HTTP endpoint: no RSC re-render involved. */
 
-const MAX_BYTES = 8 * 1024 * 1024; // 8 MB
+/** Vercel caps a Function's request body at 4.5 MB and rejects anything bigger
+ *  with a 413 before this handler ever runs — so promising more here just
+ *  turns an oversized file into an unexplained failure. 4 MB leaves room for
+ *  multipart overhead. (next.config's serverActions.bodySizeLimit does not
+ *  apply: this is a Route Handler, not a Server Action.) Raise this once the
+ *  site runs on its own server, where the platform limit no longer exists. */
+const MAX_MB = 4;
+const MAX_BYTES = MAX_MB * 1024 * 1024;
 
 const EXT_BY_TYPE: Record<string, string> = {
   "image/jpeg": "jpg",
@@ -41,7 +48,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Выберите файл" }, { status: 400 });
   }
   if (file.size > MAX_BYTES) {
-    return NextResponse.json({ ok: false, error: "Файл больше 8 МБ" }, { status: 400 });
+    return NextResponse.json({ ok: false, error: `Файл больше ${MAX_MB} МБ` }, { status: 400 });
   }
   const ext = EXT_BY_TYPE[file.type];
   if (!ext) {

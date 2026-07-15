@@ -22,9 +22,23 @@ declare global {
 const SCRIPT_SRC = "https://challenges.cloudflare.com/turnstile/v0/api.js";
 
 /** Renders the Turnstile widget and reports its token (or null once it
- *  expires/errors) back to the parent form via onToken. */
-export default function Turnstile({ siteKey, onToken }: { siteKey: string; onToken: (token: string | null) => void }) {
+ *  expires/errors) back to the parent form via onToken.
+ *
+ *  Turnstile tokens are single-use: once a submission has been sent, that
+ *  token is spent whether the request succeeded or not. Bump `resetKey` after
+ *  a failed submit to issue a fresh challenge — otherwise the retry replays
+ *  the used token and the server rejects it as a captcha failure forever. */
+export default function Turnstile({
+  siteKey,
+  onToken,
+  resetKey = 0,
+}: {
+  siteKey: string;
+  onToken: (token: string | null) => void;
+  resetKey?: number;
+}) {
   const boxRef = useRef<HTMLDivElement | null>(null);
+  const widgetIdRef = useRef<string | null>(null);
   const onTokenRef = useRef(onToken);
   onTokenRef.current = onToken;
 
@@ -33,7 +47,7 @@ export default function Turnstile({ siteKey, onToken }: { siteKey: string; onTok
 
     const renderWidget = () => {
       if (cancelled || !boxRef.current || !window.turnstile) return;
-      window.turnstile.render(boxRef.current, {
+      widgetIdRef.current = window.turnstile.render(boxRef.current, {
         sitekey: siteKey,
         callback: (token) => onTokenRef.current(token),
         "expired-callback": () => onTokenRef.current(null),
@@ -59,6 +73,12 @@ export default function Turnstile({ siteKey, onToken }: { siteKey: string; onTok
     document.head.appendChild(script);
     return () => script.removeEventListener("load", renderWidget);
   }, [siteKey]);
+
+  useEffect(() => {
+    if (resetKey === 0 || !window.turnstile || widgetIdRef.current === null) return;
+    onTokenRef.current(null);
+    window.turnstile.reset(widgetIdRef.current);
+  }, [resetKey]);
 
   return <div ref={boxRef} />;
 }

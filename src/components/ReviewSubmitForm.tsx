@@ -30,6 +30,7 @@ export default function ReviewSubmitForm() {
   const [text, setText] = useState("");
   const [photo, setPhoto] = useState<File | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [captchaNonce, setCaptchaNonce] = useState(0);
   const [pending, setPending] = useState(false);
   const [result, setResult] = useState<SubmitResult | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
@@ -68,8 +69,13 @@ export default function ReviewSubmitForm() {
       const res = await fetch("/api/reviews/submit", { method: "POST", body: formData });
       const data: SubmitResult = await res.json();
       setResult(data);
+      // The token we just sent is spent either way. On failure the visitor
+      // stays on the form and will retry, so hand them a fresh challenge —
+      // replaying the used token would fail the captcha check forever.
+      if (!data.ok) setCaptchaNonce((n) => n + 1);
     } catch {
       setResult({ ok: false, error: "network" });
+      setCaptchaNonce((n) => n + 1);
     } finally {
       setPending(false);
     }
@@ -155,7 +161,7 @@ export default function ReviewSubmitForm() {
       </div>
 
       <div className="mt-5">
-        <Turnstile siteKey={TURNSTILE_SITE_KEY} onToken={setToken} />
+        <Turnstile siteKey={TURNSTILE_SITE_KEY} onToken={setToken} resetKey={captchaNonce} />
       </div>
 
       {result && !result.ok && (

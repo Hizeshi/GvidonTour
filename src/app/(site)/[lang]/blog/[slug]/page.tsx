@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import BlogPostPage from "@/components/pages/BlogPostPage";
 import { getBlogPostBySlug, getBlogPosts } from "@/lib/catalog";
 import { DEFAULT_LOCALE, isLocale, localeAlternates, localeHref } from "@/lib/i18n";
-import { jsonLdScript, SITE_URL } from "@/lib/seo";
+import { absoluteUrl, jsonLdScript, SITE_URL } from "@/lib/seo";
 
 export const revalidate = 300;
 
@@ -51,7 +51,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string;
     "@type": "BlogPosting",
     headline: post.title[lang],
     description: post.excerpt[lang],
-    image: `${SITE_URL}${post.image}`,
+    image: absoluteUrl(post.image),
     datePublished: post.publishedAt,
     inLanguage: lang,
     author: { "@type": "Organization", name: "GVIDON TOUR" },

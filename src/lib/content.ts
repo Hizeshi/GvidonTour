@@ -154,7 +154,7 @@ export interface Dict {
   contacts: {
     eyebrow: string; title: string; intro: string;
     name: string; email: string; phone: string; tour: string; message: string; send: string;
-    success: string; successTitle: string; error: string;
+    success: string; successTitle: string; error: string; oneOf: string;
     lAddr: string; lPhone: string; lMail: string; lHours: string; lSocial: string;
     address: string; hours: string; mapEyebrow: string; mapTitle: string;
   };
@@ -378,6 +378,7 @@ export const CONTENT: Record<Lang, Dict> = {
       success: "Спасибо! Мы свяжемся с вами в ближайшее время.",
       successTitle: "Заявка отправлена",
       error: "Не удалось отправить заявку. Проверьте имя и контакты или попробуйте чуть позже.",
+      oneOf: "Оставьте телефон или email — достаточно одного",
       lAddr: "Адрес", lPhone: "Телефон", lMail: "Email", lHours: "Время работы", lSocial: "Соцсети",
       address: "РК, г. Астана, пр. Тауелсыздык, 3–402",
       hours: "Пн–Пт: 9:00 – 18:00",
@@ -622,6 +623,7 @@ export const CONTENT: Record<Lang, Dict> = {
       success: "Thank you! We will get back to you shortly.",
       successTitle: "Request sent",
       error: "Could not send the request. Check your name and contact details, or try again a bit later.",
+      oneOf: "Leave a phone or an email — either one is enough",
       lAddr: "Address", lPhone: "Phone", lMail: "Email", lHours: "Working hours", lSocial: "Social",
       address: "Astana, Tauelsizdik Ave, 3–402, Kazakhstan",
       hours: "Mon–Fri: 9:00 – 18:00",
@@ -866,6 +868,7 @@ export const CONTENT: Record<Lang, Dict> = {
       success: "Рахмет! Жақын арада сізбен хабарласамыз.",
       successTitle: "Өтінім жіберілді",
       error: "Өтінімді жіберу мүмкін болмады. Аты-жөніңіз бен байланыс деректерін тексеріңіз немесе сәл кейінірек қайталап көріңіз.",
+      oneOf: "Телефон немесе email қалдырыңыз — біреуі жеткілікті",
       lAddr: "Мекенжай", lPhone: "Телефон", lMail: "Email", lHours: "Жұмыс уақыты", lSocial: "Әлеуметтік желі",
       address: "Қазақстан, Астана қ., Тәуелсіздік даңғ., 3–402",
       hours: "Дс–Жм: 9:00 – 18:00",

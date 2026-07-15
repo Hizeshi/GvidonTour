@@ -71,7 +71,7 @@ export default function MediaUploader() {
         <span className="text-[14px] font-semibold text-content/75">
           {file?.name ?? "Выберите фото (JPEG/PNG/WebP/AVIF) или видео MP4"}
         </span>
-        <span className="text-[12px] text-content/45">до 8 МБ</span>
+        <span className="text-[12px] text-content/45">до 4 МБ</span>
       </label>
       <input
         ref={inputRef}
