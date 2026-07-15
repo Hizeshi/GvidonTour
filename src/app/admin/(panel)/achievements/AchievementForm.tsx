@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/admin/Toast";
 import { useState } from "react";
 import { ExternalLink, Save } from "lucide-react";
 import type { LText } from "@/lib/catalog-types";
@@ -23,6 +24,7 @@ export default function AchievementForm({
   initial?: AchievementFormInitial;
 }) {
   const router = useRouter();
+  const toast = useToast();
   const [title, setTitle] = useState<LText>(initial?.title ?? emptyLText());
   const [image, setImage] = useState(initial?.image ?? "");
   const [sortOrder, setSortOrder] = useState(initial?.sortOrder ?? 0);
@@ -40,6 +42,7 @@ export default function AchievementForm({
       setError(result.error ?? "Не удалось сохранить");
       return;
     }
+    toast.success(achievementId ? "Достижение сохранено" : "Достижение добавлено");
     router.push("/admin/achievements");
     router.refresh();
   };

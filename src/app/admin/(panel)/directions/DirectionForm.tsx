@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/admin/Toast";
 import { useState } from "react";
 import { ExternalLink, Save } from "lucide-react";
 import type { LText } from "@/lib/catalog-types";
@@ -25,6 +26,7 @@ export default function DirectionForm({
   initial?: DirectionFormInitial;
 }) {
   const router = useRouter();
+  const toast = useToast();
   const [slug, setSlug] = useState(initial?.slug ?? "");
   const [name, setName] = useState<LText>(initial?.name ?? emptyLText());
   const [image, setImage] = useState(initial?.image ?? "");
@@ -43,6 +45,7 @@ export default function DirectionForm({
       setError(result.error ?? "Не удалось сохранить");
       return;
     }
+    toast.success(directionId ? "Город сохранён" : "Город добавлен");
     router.push("/admin/directions");
     router.refresh();
   };

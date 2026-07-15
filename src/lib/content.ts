@@ -161,6 +161,8 @@ export interface Dict {
   mapCities: { key: string; n: string; hub?: boolean }[];
   footer: { nav: string; contacts: string; rights: string };
   slogan: string;
+  notFound: { eyebrow: string; title: string; text: string; home: string; tours: string };
+  errorPage: { eyebrow: string; title: string; text: string; retry: string; home: string };
 }
 
 export const CONTENT: Record<Lang, Dict> = {
@@ -393,6 +395,20 @@ export const CONTENT: Record<Lang, Dict> = {
     ],
     footer: { nav: "Навигация", contacts: "Контакты", rights: "Все права защищены." },
     slogan: "Откройте Казахстан с надёжным партнёром",
+    notFound: {
+      eyebrow: "Ошибка 404",
+      title: "Такой страницы нет",
+      text: "Возможно, она была перемещена или удалена. Давайте вернёмся к путешествиям.",
+      home: "На главную",
+      tours: "Смотреть туры",
+    },
+    errorPage: {
+      eyebrow: "Ошибка",
+      title: "Что-то пошло не так",
+      text: "Мы уже знаем о проблеме. Попробуйте обновить страницу — обычно это помогает.",
+      retry: "Попробовать снова",
+      home: "На главную",
+    },
   },
   en: {
     brandTag: "Inbound tour operator in Kazakhstan",
@@ -623,6 +639,20 @@ export const CONTENT: Record<Lang, Dict> = {
     ],
     footer: { nav: "Navigation", contacts: "Contacts", rights: "All rights reserved." },
     slogan: "Discover Kazakhstan with a trusted partner",
+    notFound: {
+      eyebrow: "Error 404",
+      title: "This page doesn't exist",
+      text: "It may have been moved or removed. Let's get back to travelling.",
+      home: "Go to home",
+      tours: "Browse tours",
+    },
+    errorPage: {
+      eyebrow: "Error",
+      title: "Something went wrong",
+      text: "We already know about the problem. Try reloading the page — that usually helps.",
+      retry: "Try again",
+      home: "Go to home",
+    },
   },
   kk: {
     brandTag: "Қазақстандағы қабылдаушы туроператор",
@@ -853,6 +883,20 @@ export const CONTENT: Record<Lang, Dict> = {
     ],
     footer: { nav: "Навигация", contacts: "Байланыс", rights: "Барлық құқықтар қорғалған." },
     slogan: "Қазақстанды сенімді серіктеспен ашыңыз",
+    notFound: {
+      eyebrow: "404 қатесі",
+      title: "Мұндай бет жоқ",
+      text: "Ол жылжытылған немесе жойылған болуы мүмкін. Саяхатқа оралайық.",
+      home: "Басты бетке",
+      tours: "Турларды қарау",
+    },
+    errorPage: {
+      eyebrow: "Қате",
+      title: "Бірдеңе дұрыс болмады",
+      text: "Біз мәселе туралы білеміз. Бетті жаңартып көріңіз — әдетте бұл көмектеседі.",
+      retry: "Қайталап көру",
+      home: "Басты бетке",
+    },
   },
 };
 

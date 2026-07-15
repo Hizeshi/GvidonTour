@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/admin/Toast";
 import { useState } from "react";
 import { ExternalLink, Save } from "lucide-react";
 import type { LText } from "@/lib/catalog-types";
@@ -21,6 +22,7 @@ interface GalleryItemFormInitial {
 
 export default function GalleryItemForm({ itemId, initial }: { itemId: string | null; initial?: GalleryItemFormInitial }) {
   const router = useRouter();
+  const toast = useToast();
   const [kind, setKind] = useState<"PHOTO" | "VIDEO">(initial?.kind ?? "PHOTO");
   const [src, setSrc] = useState(initial?.src ?? "");
   const [videoUrl, setVideoUrl] = useState(initial?.videoUrl ?? "");
@@ -50,6 +52,7 @@ export default function GalleryItemForm({ itemId, initial }: { itemId: string | 
       setError(result.error ?? "Не удалось сохранить");
       return;
     }
+    toast.success(itemId ? "Материал сохранён" : "Материал добавлен");
     router.push("/admin/gallery");
     router.refresh();
   };

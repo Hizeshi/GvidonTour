@@ -18,6 +18,7 @@ import {
 import { getSession } from "@/lib/auth";
 import { cx } from "@/lib/ui";
 import Logo from "@/components/Logo";
+import { ToastProvider } from "@/components/admin/Toast";
 import { logoutAction } from "./actions";
 
 export const metadata: Metadata = {
@@ -45,7 +46,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (!session) redirect("/admin/login");
 
   return (
-    <div className="flex min-h-screen bg-surface">
+    <ToastProvider>
+      <div className="flex min-h-screen bg-surface">
       <aside className="flex w-[230px] flex-none flex-col border-r border-content/10 bg-panel max-md:w-[64px]">
         <Link href="/admin" className="flex items-center gap-3 border-b border-content/10 px-4 py-4">
           <div className="h-[34px] w-[34px] flex-none [&_svg]:block [&_svg]:h-full [&_svg]:w-full">
@@ -109,7 +111,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </div>
       </aside>
 
-      <main className="min-w-0 flex-1 p-6 md:p-9">{children}</main>
-    </div>
+        <main className="min-w-0 flex-1 p-6 md:p-9">{children}</main>
+      </div>
+    </ToastProvider>
   );
 }

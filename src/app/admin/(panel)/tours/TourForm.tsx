@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/admin/Toast";
 import { useState } from "react";
 import { ExternalLink, Plus, Save, Trash2 } from "lucide-react";
 import { LANGS } from "@/lib/content";
@@ -186,6 +187,7 @@ export default function TourForm({
   initial?: TourFormInitial;
 }) {
   const router = useRouter();
+  const toast = useToast();
   const [slug, setSlug] = useState(initial?.slug ?? "");
   const [categoryId, setCategoryId] = useState(initial?.categoryId ?? "");
   const [city, setCity] = useState(initial?.city ?? "");
@@ -256,6 +258,7 @@ export default function TourForm({
       setError(result.error ?? "Не удалось сохранить тур");
       return;
     }
+    toast.success(tourId ? "Тур сохранён" : "Тур добавлен");
     router.push("/admin/tours");
     router.refresh();
   };

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/admin/Toast";
 import { useState } from "react";
 import { ExternalLink, Save } from "lucide-react";
 import type { BlogBlock, LText } from "@/lib/catalog-types";
@@ -39,6 +40,7 @@ interface BlogPostFormInitial {
 
 export default function BlogPostForm({ postId, initial }: { postId: string | null; initial?: BlogPostFormInitial }) {
   const router = useRouter();
+  const toast = useToast();
   const [slug, setSlug] = useState(initial?.slug ?? "");
   const [title, setTitle] = useState<LText>(initial?.title ?? emptyLText());
   const [excerpt, setExcerpt] = useState<LText>(initial?.excerpt ?? emptyLText());
@@ -70,6 +72,7 @@ export default function BlogPostForm({ postId, initial }: { postId: string | nul
       setError(result.error ?? "Не удалось сохранить статью");
       return;
     }
+    toast.success(postId ? "Статья сохранена" : "Статья добавлена");
     router.push("/admin/blog");
     router.refresh();
   };

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/admin/Toast";
 import { useState } from "react";
 import { ExternalLink, Save } from "lucide-react";
 import type { LText } from "@/lib/catalog-types";
@@ -20,6 +21,7 @@ interface ReviewFormInitial {
 
 export default function ReviewForm({ reviewId, initial }: { reviewId: string | null; initial?: ReviewFormInitial }) {
   const router = useRouter();
+  const toast = useToast();
   const [author, setAuthor] = useState(initial?.author ?? "");
   const [rating, setRating] = useState(initial?.rating ?? 5);
   const [text, setText] = useState<LText>(initial?.text ?? emptyLText());
@@ -40,6 +42,7 @@ export default function ReviewForm({ reviewId, initial }: { reviewId: string | n
       setError(result.error ?? "Не удалось сохранить");
       return;
     }
+    toast.success(reviewId ? "Отзыв сохранён" : "Отзыв добавлен");
     router.push("/admin/reviews");
     router.refresh();
   };

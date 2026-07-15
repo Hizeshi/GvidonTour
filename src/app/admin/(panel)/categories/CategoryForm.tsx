@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/admin/Toast";
 import { useState } from "react";
 import { Save } from "lucide-react";
 import type { LText } from "@/lib/catalog-types";
@@ -26,6 +27,7 @@ export default function CategoryForm({
   initial?: CategoryFormInitial;
 }) {
   const router = useRouter();
+  const toast = useToast();
   const [slug, setSlug] = useState(initial?.slug ?? "");
   const [name, setName] = useState<LText>(initial?.name ?? emptyLText());
   const [icon, setIcon] = useState(initial?.icon ?? "");
@@ -44,6 +46,7 @@ export default function CategoryForm({
       setError(result.error ?? "Не удалось сохранить");
       return;
     }
+    toast.success(categoryId ? "Категория сохранена" : "Категория добавлена");
     router.push("/admin/categories");
     router.refresh();
   };
