@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
+import { EXT_BY_SNIFFED, sniffFileType } from "@/lib/file-type";
 import { uploadMedia } from "@/lib/storage";
 
 /** Plain REST endpoint for file uploads, deliberately NOT a Server Action.
@@ -19,14 +20,6 @@ import { uploadMedia } from "@/lib/storage";
  *  site runs on its own server, where the platform limit no longer exists. */
 const MAX_MB = 4;
 const MAX_BYTES = MAX_MB * 1024 * 1024;
-
-const EXT_BY_TYPE: Record<string, string> = {
-  "image/jpeg": "jpg",
-  "image/png": "png",
-  "image/webp": "webp",
-  "image/avif": "avif",
-  "video/mp4": "mp4",
-};
 
 export async function POST(request: Request) {
   // Server Actions get an origin check from Next.js for free; this plain
@@ -50,8 +43,12 @@ export async function POST(request: Request) {
   if (file.size > MAX_BYTES) {
     return NextResponse.json({ ok: false, error: `Файл больше ${MAX_MB} МБ` }, { status: 400 });
   }
-  const ext = EXT_BY_TYPE[file.type];
-  if (!ext) {
+  // The type comes from the bytes, not from file.type — see file-type.ts. Both
+  // the extension and the Content-Type we hand Storage derive from it, so a
+  // mislabelled file can't be served back as something it isn't.
+  const bytes = Buffer.from(await file.arrayBuffer());
+  const type = sniffFileType(bytes);
+  if (!type) {
     return NextResponse.json(
       { ok: false, error: "Поддерживаются JPEG, PNG, WebP, AVIF и MP4" },
       { status: 400 }
@@ -59,8 +56,8 @@ export async function POST(request: Request) {
   }
 
   const date = new Date().toISOString().slice(0, 10);
-  const path = `uploads/${date}-${randomBytes(5).toString("hex")}.${ext}`;
-  const result = await uploadMedia(path, Buffer.from(await file.arrayBuffer()), file.type);
+  const path = `uploads/${date}-${randomBytes(5).toString("hex")}.${EXT_BY_SNIFFED[type]}`;
+  const result = await uploadMedia(path, bytes, type);
 
   if (!result.ok) {
     return NextResponse.json(

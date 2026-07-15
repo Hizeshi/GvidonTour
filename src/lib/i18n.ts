@@ -13,12 +13,6 @@ import { SITE_URL } from "./seo";
 export const LOCALES: Lang[] = ["ru", "en", "kk"];
 export const DEFAULT_LOCALE: Lang = "ru";
 
-/** proxy.ts stamps the request with the locale it parsed from the path, so
- *  the 404 page can render server-side in the right language. It's the one
- *  page that can't read [lang] from params: Next.js only ever uses the root
- *  not-found.tsx, which sits above the [lang] segment. */
-export const LANG_HEADER = "x-gv-lang";
-
 export function isLocale(value: string): value is Lang {
   return (LOCALES as readonly string[]).includes(value);
 }

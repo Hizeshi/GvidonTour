@@ -15,6 +15,7 @@ declare global {
         }
       ) => string;
       reset: (id?: string) => void;
+      remove: (id: string) => void;
     };
   }
 }
@@ -40,7 +41,13 @@ export default function Turnstile({
   const boxRef = useRef<HTMLDivElement | null>(null);
   const widgetIdRef = useRef<string | null>(null);
   const onTokenRef = useRef(onToken);
-  onTokenRef.current = onToken;
+
+  // The widget outlives any one render, so its callbacks read the handler from
+  // a ref rather than closing over the render that created them. Assigning in
+  // an effect rather than during render keeps the render pure.
+  useEffect(() => {
+    onTokenRef.current = onToken;
+  });
 
   useEffect(() => {
     let cancelled = false;
@@ -55,23 +62,34 @@ export default function Turnstile({
       });
     };
 
+    let stopWaiting: (() => void) | undefined;
     if (window.turnstile) {
       renderWidget();
-      return;
+    } else {
+      const existing = document.querySelector<HTMLScriptElement>(`script[src="${SCRIPT_SRC}"]`);
+      const script = existing ?? document.createElement("script");
+      script.addEventListener("load", renderWidget);
+      stopWaiting = () => script.removeEventListener("load", renderWidget);
+      if (!existing) {
+        script.src = SCRIPT_SRC;
+        script.async = true;
+        document.head.appendChild(script);
+      }
     }
 
-    const existing = document.querySelector<HTMLScriptElement>(`script[src="${SCRIPT_SRC}"]`);
-    if (existing) {
-      existing.addEventListener("load", renderWidget);
-      return () => existing.removeEventListener("load", renderWidget);
-    }
-
-    const script = document.createElement("script");
-    script.src = SCRIPT_SRC;
-    script.async = true;
-    script.addEventListener("load", renderWidget);
-    document.head.appendChild(script);
-    return () => script.removeEventListener("load", renderWidget);
+    // Every path needs this cleanup, and the early `return` on the
+    // already-loaded path used to skip it entirely: the widget was left
+    // registered with Cloudflare after unmount, and `cancelled` was set up but
+    // never assigned, so the guard above could never fire. Remounting the form
+    // then stacked a second widget on the first.
+    return () => {
+      cancelled = true;
+      stopWaiting?.();
+      if (widgetIdRef.current !== null) {
+        window.turnstile?.remove(widgetIdRef.current);
+        widgetIdRef.current = null;
+      }
+    };
   }, [siteKey]);
 
   useEffect(() => {

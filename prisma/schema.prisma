@@ -128,3 +128,14 @@ model BlogPost {
   sortOrder   Int      @default(0)
   published   Boolean  @default(true)
 }
+
+// Brute-force / spam brake, shared by every server instance.
+// Key is "<scope>:<ip>"; a row is reused across windows rather than deleted
+// on every hit, and expired leftovers are swept occasionally (rate-limit.ts).
+model RateLimit {
+  key       String   @id
+  count     Int      @default(1)
+  expiresAt DateTime
+
+  @@index([expiresAt])
+}

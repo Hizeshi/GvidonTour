@@ -1,11 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { Prisma } from "@/generated/prisma/client";
 import { getSession } from "@/lib/auth";
 import { isBlockEmpty } from "@/lib/blog-blocks";
 import { prisma } from "@/lib/db";
 import type { BlogBlock, LText } from "@/lib/catalog-types";
+import { CATALOG_TAGS } from "@/lib/catalog-cache";
 
 export interface BlogPostFormPayload {
   slug: string;
@@ -24,10 +25,9 @@ export interface SaveResult {
   id?: string;
 }
 
-function revalidateBlogPaths(slug?: string) {
+function revalidateBlogPaths(_slug?: string) {
   revalidatePath("/admin/blog");
-  revalidatePath("/blog");
-  if (slug) revalidatePath(`/blog/${slug}`);
+  updateTag(CATALOG_TAGS.blog);
 }
 
 export async function saveBlogPost(id: string | null, payload: BlogPostFormPayload): Promise<SaveResult> {

@@ -4,17 +4,23 @@ import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/db";
 import { createSession } from "@/lib/auth";
+import { allowHit, clientIp, resetHits } from "@/lib/rate-limit";
 
 export interface LoginState {
   error: string;
 }
 
-// Per-instance brute-force brake: 5 failures per login per 10 minutes.
-// Serverless instances each keep their own map — combined with bcrypt cost
-// that is enough friction for a two-account admin panel.
+// Brute-force brake: 5 failed attempts per IP per 10 minutes.
+//
+// Keyed by IP, NOT by login. Keying by login handed anyone a lockout button:
+// the admin login is guessable ("admin"), so five deliberate wrong passwords
+// locked the real admin out of their own panel for ten minutes, repeatable
+// forever. Keyed by IP, an attacker can only lock themselves out.
+//
+// A distributed attack sidesteps any IP counter; what stops that one is bcrypt
+// at cost 12 (~0.25s per guess), which is why the compare below always runs.
 const WINDOW_MS = 10 * 60 * 1000;
 const MAX_FAILURES = 5;
-const failures = new Map<string, { count: number; since: number }>();
 
 // Compared against when the login doesn't exist, so unknown and known
 // logins take the same time to reject (no user enumeration via timing).
@@ -25,8 +31,8 @@ export async function loginAction(_prev: LoginState | null, formData: FormData):
   const password = String(formData.get("password") ?? "");
   if (!login || !password) return { error: "Введите логин и пароль" };
 
-  const rec = failures.get(login);
-  if (rec && Date.now() - rec.since < WINDOW_MS && rec.count >= MAX_FAILURES) {
+  const limitKey = `login:${await clientIp()}`;
+  if (!(await allowHit(limitKey, MAX_FAILURES, WINDOW_MS))) {
     return { error: "Слишком много попыток. Подождите 10 минут." };
   }
 
@@ -39,13 +45,12 @@ export async function loginAction(_prev: LoginState | null, formData: FormData):
 
   const passwordOk = await bcrypt.compare(password, user?.passwordHash ?? DUMMY_HASH);
   if (!user || !passwordOk) {
-    const cur = failures.get(login);
-    if (cur && Date.now() - cur.since < WINDOW_MS) cur.count += 1;
-    else failures.set(login, { count: 1, since: Date.now() });
     return { error: "Неверный логин или пароль" };
   }
 
-  failures.delete(login);
+  // Only a correct password clears the counter, so a burst of guesses that
+  // happens to include the right one still leaves the attacker throttled.
+  await resetHits(limitKey);
   await createSession({ userId: user.id, login: user.login, name: user.name });
   redirect("/admin");
 }

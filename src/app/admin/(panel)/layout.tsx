@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
@@ -20,11 +19,6 @@ import { cx } from "@/lib/ui";
 import Logo from "@/components/Logo";
 import { ToastProvider } from "@/components/admin/Toast";
 import { logoutAction } from "./actions";
-
-export const metadata: Metadata = {
-  title: { default: "Панель управления", template: "%s — Админка GVIDON TOUR" },
-  robots: { index: false, follow: false },
-};
 
 const NAV: { href: string; label: string; icon: LucideIcon; soon?: boolean }[] = [
   { href: "/admin", label: "Обзор", icon: LayoutDashboard },

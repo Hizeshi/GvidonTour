@@ -1,3 +1,5 @@
+import { unstable_cache } from "next/cache";
+import { cache } from "react";
 import {
   ACHIEVEMENT_DATA,
   BLOG_META,
@@ -24,6 +26,7 @@ import type {
 import { normalizeBlogContent } from "./blog-blocks";
 import { TOUR_DETAILS } from "./tour-details";
 import { prisma } from "./db";
+import { CATALOG_REVALIDATE_SECONDS, CATALOG_TAGS } from "./catalog-cache";
 
 export type {
   CatalogAchievement,
@@ -83,8 +86,8 @@ function fallbackGallery(): CatalogGalleryItem[] {
   }));
 }
 
-export async function getTours(): Promise<CatalogTour[]> {
-  try {
+const queryTours = unstable_cache(
+  async (): Promise<CatalogTour[]> => {
     const rows = await prisma.tour.findMany({
       where: { published: true },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
@@ -106,11 +109,19 @@ export async function getTours(): Promise<CatalogTour[]> {
       featured: r.featured,
       details: (r.details as TourDetails | null) ?? TOUR_DETAILS[r.slug] ?? null,
     }));
+  },
+  ["catalog-tours-v1"],
+  { tags: [CATALOG_TAGS.tours], revalidate: CATALOG_REVALIDATE_SECONDS },
+);
+
+export const getTours = cache(async (): Promise<CatalogTour[]> => {
+  try {
+    return await queryTours();
   } catch (err) {
     console.error("[catalog] DB unavailable, serving static tours:", err);
     return fallbackTours();
   }
-}
+});
 
 /** Single tour by slug, for the detail page. */
 export async function getTourBySlug(slug: string): Promise<CatalogTour | null> {
@@ -118,8 +129,8 @@ export async function getTourBySlug(slug: string): Promise<CatalogTour | null> {
   return tours.find((tour) => tour.slug === slug) ?? null;
 }
 
-export async function getGalleryItems(): Promise<CatalogGalleryItem[]> {
-  try {
+const queryGalleryItems = unstable_cache(
+  async (): Promise<CatalogGalleryItem[]> => {
     const rows = await prisma.galleryItem.findMany({
       where: { published: true },
       orderBy: { sortOrder: "asc" },
@@ -131,31 +142,53 @@ export async function getGalleryItems(): Promise<CatalogGalleryItem[]> {
       caption: r.caption as LText,
       span: r.span,
     }));
+  },
+  ["catalog-gallery-v1"],
+  { tags: [CATALOG_TAGS.gallery], revalidate: CATALOG_REVALIDATE_SECONDS },
+);
+
+export const getGalleryItems = cache(async (): Promise<CatalogGalleryItem[]> => {
+  try {
+    return await queryGalleryItems();
   } catch (err) {
     console.error("[catalog] DB unavailable, serving static gallery:", err);
     return fallbackGallery();
   }
-}
+});
 
-export async function getCategories(): Promise<CatalogCategory[]> {
+const queryCategories = unstable_cache(async (): Promise<CatalogCategory[]> => {
+  const rows = await prisma.category.findMany({ orderBy: { sortOrder: "asc" } });
+  return rows.map((r) => ({ slug: r.slug, name: r.name as LText, icon: r.icon }));
+}, ["catalog-categories-v1"], {
+  tags: [CATALOG_TAGS.categories],
+  revalidate: CATALOG_REVALIDATE_SECONDS,
+});
+
+export const getCategories = cache(async (): Promise<CatalogCategory[]> => {
   try {
-    const rows = await prisma.category.findMany({ orderBy: { sortOrder: "asc" } });
-    return rows.map((r) => ({ slug: r.slug, name: r.name as LText, icon: r.icon }));
+    return await queryCategories();
   } catch (err) {
     console.error("[catalog] DB unavailable, serving static categories:", err);
     return CATEGORY_DATA;
   }
-}
+});
 
-export async function getDirections(): Promise<CatalogDirection[]> {
+const queryDirections = unstable_cache(async (): Promise<CatalogDirection[]> => {
+  const rows = await prisma.direction.findMany({ orderBy: { sortOrder: "asc" } });
+  return rows.map((r) => ({ slug: r.slug, name: r.name as LText, image: r.image }));
+}, ["catalog-directions-v1"], {
+  tags: [CATALOG_TAGS.directions],
+  revalidate: CATALOG_REVALIDATE_SECONDS,
+});
+
+export const getDirections = cache(async (): Promise<CatalogDirection[]> => {
   try {
-    const rows = await prisma.direction.findMany({ orderBy: { sortOrder: "asc" } });
-    return rows.map((r) => ({ slug: r.slug, name: r.name as LText, image: r.image }));
+    return await queryDirections();
   } catch (err) {
     console.error("[catalog] DB unavailable, serving static directions:", err);
     return DIRECTION_DATA;
   }
-}
+});
 
 function fallbackReviews(): CatalogReview[] {
   return REVIEW_DATA.map((r) => ({
@@ -167,8 +200,8 @@ function fallbackReviews(): CatalogReview[] {
   }));
 }
 
-export async function getReviews(): Promise<CatalogReview[]> {
-  try {
+const queryReviews = unstable_cache(
+  async (): Promise<CatalogReview[]> => {
     const rows = await prisma.review.findMany({
       where: { published: true },
       orderBy: { date: "desc" },
@@ -180,25 +213,40 @@ export async function getReviews(): Promise<CatalogReview[]> {
       photo: r.photo,
       videoUrl: r.videoUrl,
     }));
+  },
+  ["catalog-reviews-v1"],
+  { tags: [CATALOG_TAGS.reviews], revalidate: CATALOG_REVALIDATE_SECONDS },
+);
+
+export const getReviews = cache(async (): Promise<CatalogReview[]> => {
+  try {
+    return await queryReviews();
   } catch (err) {
     console.error("[catalog] DB unavailable, serving static reviews:", err);
     return fallbackReviews();
   }
-}
+});
 
 function fallbackAchievements(): CatalogAchievement[] {
   return ACHIEVEMENT_DATA.map((a) => ({ title: a.name, image: null, icon: a.icon }));
 }
 
-export async function getAchievements(): Promise<CatalogAchievement[]> {
+const queryAchievements = unstable_cache(async (): Promise<CatalogAchievement[]> => {
+  const rows = await prisma.achievement.findMany({ orderBy: { sortOrder: "asc" } });
+  return rows.map((r) => ({ title: r.title as LText, image: r.image, icon: null }));
+}, ["catalog-achievements-v1"], {
+  tags: [CATALOG_TAGS.achievements],
+  revalidate: CATALOG_REVALIDATE_SECONDS,
+});
+
+export const getAchievements = cache(async (): Promise<CatalogAchievement[]> => {
   try {
-    const rows = await prisma.achievement.findMany({ orderBy: { sortOrder: "asc" } });
-    return rows.map((r) => ({ title: r.title as LText, image: r.image, icon: null }));
+    return await queryAchievements();
   } catch (err) {
     console.error("[catalog] DB unavailable, serving static achievements:", err);
     return fallbackAchievements();
   }
-}
+});
 
 function fallbackBlogPosts(): CatalogBlogPost[] {
   return BLOG_META.map((meta, i) => {
@@ -219,8 +267,8 @@ function fallbackBlogPosts(): CatalogBlogPost[] {
   });
 }
 
-export async function getBlogPosts(): Promise<CatalogBlogPost[]> {
-  try {
+const queryBlogPosts = unstable_cache(
+  async (): Promise<CatalogBlogPost[]> => {
     const rows = await prisma.blogPost.findMany({
       where: { published: true },
       orderBy: [{ sortOrder: "asc" }, { publishedAt: "desc" }],
@@ -233,11 +281,19 @@ export async function getBlogPosts(): Promise<CatalogBlogPost[]> {
       image: r.image,
       publishedAt: r.publishedAt.toISOString(),
     }));
+  },
+  ["catalog-blog-v1"],
+  { tags: [CATALOG_TAGS.blog], revalidate: CATALOG_REVALIDATE_SECONDS },
+);
+
+export const getBlogPosts = cache(async (): Promise<CatalogBlogPost[]> => {
+  try {
+    return await queryBlogPosts();
   } catch (err) {
     console.error("[catalog] DB unavailable, serving static blog posts:", err);
     return fallbackBlogPosts();
   }
-}
+});
 
 export async function getBlogPostBySlug(slug: string): Promise<CatalogBlogPost | null> {
   const posts = await getBlogPosts();

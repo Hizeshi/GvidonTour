@@ -1,11 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { Prisma } from "@/generated/prisma/client";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { slugify } from "@/lib/slugify";
 import type { LText } from "@/lib/catalog-types";
+import { CATALOG_TAGS } from "@/lib/catalog-cache";
 
 export interface DirectionFormPayload {
   slug: string;
@@ -22,8 +23,8 @@ export interface SaveResult {
 
 function revalidateDirectionPaths() {
   revalidatePath("/admin/directions");
-  revalidatePath("/"); // "Куда поехать в Казахстане" block
-  revalidatePath("/tours"); // city filter
+  updateTag(CATALOG_TAGS.directions);
+  updateTag(CATALOG_TAGS.tours);
 }
 
 export async function saveDirection(id: string | null, payload: DirectionFormPayload): Promise<SaveResult> {
@@ -42,7 +43,16 @@ export async function saveDirection(id: string | null, payload: DirectionFormPay
 
   try {
     if (id) {
-      await prisma.direction.update({ where: { id }, data });
+      // Tour.city stores the direction's *slug*, not a foreign key, so nothing
+      // in the database keeps the two in step: renaming a slug silently strips
+      // every tour of its city. Carry the tours over in the same transaction.
+      const current = await prisma.direction.findUnique({ where: { id }, select: { slug: true } });
+      await prisma.$transaction([
+        prisma.direction.update({ where: { id }, data }),
+        ...(current && current.slug !== slug
+          ? [prisma.tour.updateMany({ where: { city: current.slug }, data: { city: slug } })]
+          : []),
+      ]);
       revalidateDirectionPaths();
       return { ok: true, id };
     }
@@ -60,6 +70,21 @@ export async function saveDirection(id: string | null, payload: DirectionFormPay
 
 export async function deleteDirection(id: string) {
   if (!(await getSession())) return;
-  await prisma.direction.delete({ where: { id } }).catch(() => {});
+  try {
+    // Same missing link as in saveDirection: deleting the city used to leave
+    // its slug behind on every tour that pointed at it. Those tours matched no
+    // city filter and no longer had a city to be edited back to — invisible,
+    // but still in the database. Clearing the field puts them back in "all
+    // tours", where the admin can reassign them.
+    const direction = await prisma.direction.findUnique({ where: { id }, select: { slug: true } });
+    await prisma.$transaction([
+      ...(direction
+        ? [prisma.tour.updateMany({ where: { city: direction.slug }, data: { city: null } })]
+        : []),
+      prisma.direction.delete({ where: { id } }),
+    ]);
+  } catch (err) {
+    console.error("[directions] delete failed:", err);
+  }
   revalidateDirectionPaths();
 }

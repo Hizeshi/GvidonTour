@@ -1,11 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { Prisma } from "@/generated/prisma/client";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { slugify } from "@/lib/slugify";
 import type { LText } from "@/lib/catalog-types";
+import { CATALOG_TAGS } from "@/lib/catalog-cache";
 
 export interface CategoryFormPayload {
   slug: string;
@@ -22,8 +23,8 @@ export interface SaveResult {
 
 function revalidateCategoryPaths() {
   revalidatePath("/admin/categories");
-  revalidatePath("/"); // "Категории туров" block
-  revalidatePath("/tours"); // category filter
+  updateTag(CATALOG_TAGS.categories);
+  updateTag(CATALOG_TAGS.tours);
 }
 
 export async function saveCategory(id: string | null, payload: CategoryFormPayload): Promise<SaveResult> {

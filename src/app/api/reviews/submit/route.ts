@@ -1,7 +1,9 @@
 import { randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { uploadMedia } from "@/lib/storage";
+import { EXT_BY_SNIFFED, sniffFileType, type SniffedType } from "@/lib/file-type";
+import { allowHit, ipFromHeaders } from "@/lib/rate-limit";
+import { deleteMedia, uploadMedia } from "@/lib/storage";
 import { notifyReviewPendingViaTelegram } from "@/lib/telegram";
 import { verifyTurnstile } from "@/lib/turnstile";
 import type { Lang } from "@/lib/content";
@@ -14,27 +16,16 @@ import type { Lang } from "@/lib/content";
  *  construction. */
 
 const DAILY_LIMIT = 3;
-const submissionsByIpDay = new Map<string, number>();
-
-function tooManyToday(ip: string): boolean {
-  const day = new Date().toISOString().slice(0, 10);
-  const key = `${ip}:${day}`;
-  const count = (submissionsByIpDay.get(key) ?? 0) + 1;
-  submissionsByIpDay.set(key, count);
-  return count > DAILY_LIMIT;
-}
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 const MAX_PHOTO_BYTES = 3 * 1024 * 1024; // 3 MB — an avatar photo, not a gallery shot
-const EXT_BY_TYPE: Record<string, string> = {
-  "image/jpeg": "jpg",
-  "image/png": "png",
-  "image/webp": "webp",
-  "image/avif": "avif",
-};
+/** Stills only: this is the little round avatar next to the review. MP4 passes
+ *  sniffFileType, so it has to be excluded here rather than left to it. */
+const PHOTO_TYPES: SniffedType[] = ["image/jpeg", "image/png", "image/webp", "image/avif"];
 const LANGS: Lang[] = ["ru", "en", "kk"];
 
 export async function POST(request: Request) {
-  const ip = (request.headers.get("x-forwarded-for") ?? "local").split(",")[0].trim();
+  const ip = ipFromHeaders(request.headers);
 
   let formData: FormData;
   try {
@@ -49,10 +40,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true }); // pretend success, don't tip off the bot
   }
 
-  if (tooManyToday(ip)) {
-    return NextResponse.json({ ok: false, error: "limit" }, { status: 429 });
-  }
-
   const token = String(formData.get("turnstileToken") ?? "");
   if (!(await verifyTurnstile(token, ip))) {
     return NextResponse.json({ ok: false, error: "captcha" }, { status: 400 });
@@ -60,28 +47,38 @@ export async function POST(request: Request) {
 
   const author = String(formData.get("author") ?? "").trim().slice(0, 100);
   const text = String(formData.get("text") ?? "").trim().slice(0, 2000);
-  const rating = Math.min(5, Math.max(1, Math.round(Number(formData.get("rating")) || 0)));
+  const rating = Number(formData.get("rating"));
   const langRaw = String(formData.get("lang") ?? "ru");
   const lang: Lang = LANGS.includes(langRaw as Lang) ? (langRaw as Lang) : "ru";
 
-  if (author.length < 2 || text.length < 10 || !rating) {
+  if (author.length < 2 || text.length < 10 || !Number.isInteger(rating) || rating < 1 || rating > 5) {
     return NextResponse.json({ ok: false, error: "invalid" }, { status: 400 });
   }
 
+  // Count actual valid submission attempts, not typos and failed captchas.
+  if (!(await allowHit(`review:${ip}`, DAILY_LIMIT, DAY_MS))) {
+    return NextResponse.json({ ok: false, error: "limit" }, { status: 429 });
+  }
+
   let photoUrl: string | null = null;
+  let photoPath: string | null = null;
   const file = formData.get("photo");
   if (file instanceof File && file.size > 0) {
     if (file.size > MAX_PHOTO_BYTES) {
       return NextResponse.json({ ok: false, error: "photo-too-large" }, { status: 400 });
     }
-    const ext = EXT_BY_TYPE[file.type];
-    if (!ext) {
+    const bytes = Buffer.from(await file.arrayBuffer());
+    const type = sniffFileType(bytes);
+    if (!type || !PHOTO_TYPES.includes(type)) {
       return NextResponse.json({ ok: false, error: "photo-type" }, { status: 400 });
     }
     const date = new Date().toISOString().slice(0, 10);
-    const path = `reviews/${date}-${randomBytes(5).toString("hex")}.${ext}`;
-    const result = await uploadMedia(path, Buffer.from(await file.arrayBuffer()), file.type);
-    if (result.ok) photoUrl = result.url;
+    const path = `reviews/${date}-${randomBytes(5).toString("hex")}.${EXT_BY_SNIFFED[type]}`;
+    const result = await uploadMedia(path, bytes, type);
+    if (result.ok) {
+      photoUrl = result.url;
+      photoPath = path;
+    }
     // A failed avatar upload isn't fatal — the review still gets posted,
     // it just falls back to the initials avatar on render.
   }
@@ -100,6 +97,7 @@ export async function POST(request: Request) {
     });
   } catch (err) {
     console.error("[reviews/submit] DB write failed:", err);
+    if (photoPath) await deleteMedia(photoPath);
     return NextResponse.json({ ok: false, error: "db" }, { status: 500 });
   }
 

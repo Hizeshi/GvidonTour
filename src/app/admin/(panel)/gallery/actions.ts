@@ -1,9 +1,10 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import type { LText } from "@/lib/catalog-types";
+import { CATALOG_TAGS } from "@/lib/catalog-cache";
 
 export interface GalleryFormPayload {
   kind: "PHOTO" | "VIDEO";
@@ -23,8 +24,7 @@ export interface SaveResult {
 
 function revalidateGalleryPaths() {
   revalidatePath("/admin/gallery");
-  revalidatePath("/gallery");
-  revalidatePath("/");
+  updateTag(CATALOG_TAGS.gallery);
 }
 
 export async function saveGalleryItem(id: string | null, payload: GalleryFormPayload): Promise<SaveResult> {

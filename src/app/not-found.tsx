@@ -1,13 +1,6 @@
-import { headers } from "next/headers";
-import { ArrowRight } from "lucide-react";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
-import Link from "@/components/LocaleLink";
-import StatusPage from "@/components/pages/StatusPage";
-import { LanguageProvider } from "@/lib/LanguageContext";
-import { CONTENT } from "@/lib/content";
-import { DEFAULT_LOCALE, isLocale, LANG_HEADER } from "@/lib/i18n";
-import { ui } from "@/lib/ui";
+import NotFoundContent from "@/components/NotFoundContent";
+import RootHtml from "@/components/RootHtml";
+import { DEFAULT_LOCALE } from "@/lib/i18n";
 
 /** The app's only 404 boundary. Next.js ignores a nested not-found.tsx when the
  *  route sits under a dynamic segment ([lang]) — verified: even one placed
@@ -15,31 +8,16 @@ import { ui } from "@/lib/ui";
  *  single /_not-found route. So notFound() from the tour/blog pages and
  *  unmatched URLs alike all land here, above [lang] and without its params.
  *
- *  The locale therefore arrives as a request header set by proxy.ts, which
- *  makes this route render per-request and lets the server emit the right
- *  language directly — no client-side detection, no flash of the wrong one. */
-export default async function RootNotFound() {
-  const raw = (await headers()).get(LANG_HEADER) ?? "";
-  const lang = isLocale(raw) ? raw : DEFAULT_LOCALE;
-  const t = CONTENT[lang].notFound;
-
+ *  Reading request headers here makes every public route dynamic because this
+ *  boundary is shared by the whole app. The shell therefore stays static;
+ *  NotFoundContent derives the locale from the browser pathname.
+ *
+ *  It renders <html> itself because the app has no shared root layout: this
+ *  page sits above both branches, so neither of their roots wraps it. */
+export default function RootNotFound() {
   return (
-    <LanguageProvider lang={lang}>
-      <div className="min-h-screen">
-        <Header />
-        <StatusPage code="404" eyebrow={t.eyebrow} title={t.title} text={t.text}>
-          <Link href="/tours" className={ui.btnGold}>
-            {t.tours}
-            <span className="lic">
-              <ArrowRight />
-            </span>
-          </Link>
-          <Link href="/" className={ui.btnGhost}>
-            {t.home}
-          </Link>
-        </StatusPage>
-        <Footer />
-      </div>
-    </LanguageProvider>
+    <RootHtml lang={DEFAULT_LOCALE}>
+      <NotFoundContent />
+    </RootHtml>
   );
 }

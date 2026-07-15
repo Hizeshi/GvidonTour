@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 import { SESSION_COOKIE } from "@/lib/auth";
-import { DEFAULT_LOCALE, LANG_HEADER, LOCALES } from "@/lib/i18n";
+import { DEFAULT_LOCALE, LOCALES } from "@/lib/i18n";
 
 /** Two jobs:
  *  1. Gate /admin behind the session cookie. Runs on the edge, so it only
@@ -45,11 +45,7 @@ export default async function proxy(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Hand the locale to the 404 page, which renders above [lang] and so has no
-  // params of its own to read it from (see LANG_HEADER).
-  const headers = new Headers(req.headers);
-  headers.set(LANG_HEADER, pathname.split("/")[1]);
-  return NextResponse.next({ request: { headers } });
+  return NextResponse.next();
 }
 
 export const config = {

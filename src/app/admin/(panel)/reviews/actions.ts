@@ -1,9 +1,10 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import type { LText } from "@/lib/catalog-types";
+import { CATALOG_TAGS } from "@/lib/catalog-cache";
 
 export interface ReviewFormPayload {
   author: string;
@@ -22,8 +23,7 @@ export interface SaveResult {
 
 function revalidateReviewPaths() {
   revalidatePath("/admin/reviews");
-  revalidatePath("/");
-  revalidatePath("/reviews");
+  updateTag(CATALOG_TAGS.reviews);
 }
 
 export async function saveReview(id: string | null, payload: ReviewFormPayload): Promise<SaveResult> {

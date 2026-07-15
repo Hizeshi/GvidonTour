@@ -1,10 +1,11 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { Prisma } from "@/generated/prisma/client";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import type { LText, TourDetails } from "@/lib/catalog-types";
+import { CATALOG_TAGS } from "@/lib/catalog-cache";
 
 export interface TourFormPayload {
   slug: string;
@@ -31,11 +32,9 @@ export interface SaveResult {
   id?: string;
 }
 
-function revalidateTourPaths(slug?: string) {
+function revalidateTourPaths(_slug?: string) {
   revalidatePath("/admin/tours");
-  revalidatePath("/tours");
-  revalidatePath("/");
-  if (slug) revalidatePath(`/tours/${slug}`);
+  updateTag(CATALOG_TAGS.tours);
 }
 
 export async function saveTour(id: string | null, payload: TourFormPayload): Promise<SaveResult> {
