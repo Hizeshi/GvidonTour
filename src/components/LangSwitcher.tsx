@@ -1,13 +1,19 @@
 "use client";
 
+// Plain next/link on purpose: these hrefs already carry their own locale
+// prefix, so LocaleLink would double it.
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
 import { LANGS } from "@/lib/content";
+import { localeHref, stripLocale } from "@/lib/i18n";
 import { cx } from "@/lib/ui";
 
 export default function LangSwitcher({ tone }: { tone: string }) {
-  const { lang, setLang } = useLang();
+  const { lang } = useLang();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
 
@@ -19,6 +25,9 @@ export default function LangSwitcher({ tone }: { tone: string }) {
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);
   }, [open]);
+
+  // Switching language keeps you on the same page, just in the other locale.
+  const basePath = stripLocale(pathname);
 
   return (
     <div ref={ref} className="relative">
@@ -43,20 +52,18 @@ export default function LangSwitcher({ tone }: { tone: string }) {
         )}
       >
         {LANGS.map((code) => (
-          <button
+          <Link
             key={code}
-            type="button"
-            onClick={() => {
-              setLang(code);
-              setOpen(false);
-            }}
+            href={localeHref(basePath, code)}
+            hrefLang={code}
+            onClick={() => setOpen(false)}
             className={cx(
               "block w-full cursor-pointer rounded-[2px] px-3 py-2 text-left text-xs font-bold tracking-[0.08em] transition-colors",
               lang === code ? "bg-gold text-onaccent" : "text-content/75 hover:bg-gold/10 hover:text-gold"
             )}
           >
             {code.toUpperCase()}
-          </button>
+          </Link>
         ))}
       </div>
     </div>

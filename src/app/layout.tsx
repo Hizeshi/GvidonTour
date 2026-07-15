@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Manrope, Playfair_Display } from "next/font/google";
 import "./globals.css";
-import { LanguageProvider } from "@/lib/LanguageContext";
 import { ThemeProvider } from "@/lib/ThemeContext";
 import { EMAIL, PHONE } from "@/lib/content";
 import { jsonLdScript, SITE_URL } from "@/lib/seo";
@@ -89,9 +88,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        <ThemeProvider>
-          <LanguageProvider>{children}</LanguageProvider>
-        </ThemeProvider>
+        {/* LanguageProvider lives in (site)/[lang]/layout.tsx — the language
+            comes from the URL. Admin is Russian-only and needs no provider. */}
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

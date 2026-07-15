@@ -20,9 +20,21 @@
 
 Решение по архитектуре (подтверждено с пользователем): полный self-hosted Supabase на VPS **не нужен**. При переезде на VPS — обычный Postgres + MinIO/диск. Вся работа с хранилищем изолирована в одном модуле `src/lib/storage.ts` именно ради этого.
 
+## Языки в URL (важно)
+
+Язык — часть адреса: `/ru/…`, `/en/…`, `/kk/…` (все три с префиксом). Это сделано ради SEO: раньше язык жил в localStorage, сервер всегда отдавал русский HTML, и англ./каз. версии были невидимы для Google.
+
+- `/` и любой старый адрес без префикса (`/tours`, `/blog/x`) → 307-редирект на `/ru/…` (в `src/proxy.ts`).
+- Префикс казахского — `kk` (код языка по ISO 639-1). `kz` — это код страны, для hreflang он невалиден.
+- Язык приходит из сегмента `[lang]` в `LanguageProvider` (см. `(site)/[lang]/layout.tsx`), а не из localStorage. `setLang` больше нет — смена языка это переход по ссылке (`LangSwitcher`).
+- **Ссылки внутри сайта пишутся без префикса** (`href="/tours"`): их подставляет `src/components/LocaleLink.tsx`. В site-компонентах импортировать `Link` из `@/components/LocaleLink`, а не из `next/link`.
+- Сравнение путей (`usePathname`) — только через `stripLocale()` из `src/lib/i18n.ts`, иначе сломается на `/en/...`.
+- `src/lib/i18n.ts` не должен импортировать `content.ts` как значение (только `import type`) — его тянет edge-middleware, и словарь раздует бандл. `LANGS` в content.ts — это ре-экспорт `LOCALES` из i18n.
+- API-роуты (`/api/…`) вне локали: POST нельзя редиректить, тело запроса потеряется. Форма отзывов шлёт на `/api/reviews/submit`.
+
 ## Структура
 
-- `src/app/(site)/…` — публичные страницы (общий layout с Header/Footer/FloatingCta)
+- `src/app/(site)/[lang]/…` — публичные страницы (общий layout с Header/Footer/FloatingCta + LanguageProvider)
 - `src/app/admin/login/…` — логин (вне panel-группы)
 - `src/app/admin/(panel)/…` — админка: layout с сайдбаром и проверкой сессии; разделы: обзор, requests, media, tours, gallery, reviews, blog, achievements
 - `src/lib/auth.ts` — createSession / getSession / destroySession

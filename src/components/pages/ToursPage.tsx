@@ -1,12 +1,13 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/LocaleLink";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { RotateCcw, SearchX } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
 import type { CatalogCategory, CatalogDirection, CatalogTour, LText } from "@/lib/catalog-types";
 import { CITY_NAMES } from "@/lib/content";
+import { localeHref } from "@/lib/i18n";
 import { cx, ui } from "@/lib/ui";
 import CtaBand from "@/components/CtaBand";
 import PageHead from "@/components/PageHead";
@@ -103,7 +104,7 @@ export default function ToursPage({ tours, categories, directions }: ToursPagePr
     if (next.days[0] !== daysBounds[0] || next.days[1] !== daysBounds[1]) {
       qs.set("days", `${next.days[0]}-${next.days[1]}`);
     }
-    router.replace(`/tours${qs.size ? `?${qs}` : ""}`, { scroll: false });
+    router.replace(`${localeHref("/tours", lang)}${qs.size ? `?${qs}` : ""}`, { scroll: false });
   };
 
   const setFilter = (key: "city" | "category", value: string) => applyFilters({ ...filters, [key]: value });

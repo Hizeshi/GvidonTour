@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/LocaleLink";
 import { ArrowLeft, Calendar, Check, Clock, Lightbulb, MapPin, MessageCircle, Route, X } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
 import type { CatalogTour } from "@/lib/catalog-types";

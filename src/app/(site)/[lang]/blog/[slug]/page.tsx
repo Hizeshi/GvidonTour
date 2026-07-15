@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BlogPostPage from "@/components/pages/BlogPostPage";
 import { getBlogPostBySlug, getBlogPosts } from "@/lib/catalog";
+import { DEFAULT_LOCALE, isLocale, localeAlternates, localeHref } from "@/lib/i18n";
 import { jsonLdScript, SITE_URL } from "@/lib/seo";
 
 export const revalidate = 300;
@@ -14,24 +15,32 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ lang: string; slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { lang: raw, slug } = await params;
+  const lang = isLocale(raw) ? raw : DEFAULT_LOCALE;
   const post = await getBlogPostBySlug(slug);
-  if (!post) return { title: "Блог" };
+  if (!post) return {};
+
+  const title = post.title[lang];
+  const description = post.excerpt[lang];
   return {
-    title: post.title.ru,
-    description: post.excerpt.ru,
+    title,
+    description,
+    alternates: localeAlternates(`/blog/${slug}`, lang),
     openGraph: {
-      title: `${post.title.ru} — GVIDON TOUR`,
-      description: post.excerpt.ru,
+      title: `${title} — GVIDON TOUR`,
+      description,
+      url: `${SITE_URL}${localeHref(`/blog/${slug}`, lang)}`,
+      locale: lang,
       images: [{ url: post.image }],
     },
   };
 }
 
-export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
+export default async function Page({ params }: { params: Promise<{ lang: string; slug: string }> }) {
+  const { lang: raw, slug } = await params;
+  const lang = isLocale(raw) ? raw : DEFAULT_LOCALE;
   const [post, all] = await Promise.all([getBlogPostBySlug(slug), getBlogPosts()]);
   if (!post) notFound();
 
@@ -40,17 +49,18 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    headline: post.title.ru,
-    description: post.excerpt.ru,
+    headline: post.title[lang],
+    description: post.excerpt[lang],
     image: `${SITE_URL}${post.image}`,
     datePublished: post.publishedAt,
+    inLanguage: lang,
     author: { "@type": "Organization", name: "GVIDON TOUR" },
     publisher: {
       "@type": "Organization",
       name: "GVIDON TOUR",
       logo: { "@type": "ImageObject", url: `${SITE_URL}/icon.svg` },
     },
-    mainEntityOfPage: `${SITE_URL}/blog/${post.slug}`,
+    mainEntityOfPage: `${SITE_URL}${localeHref(`/blog/${slug}`, lang)}`,
   };
 
   return (

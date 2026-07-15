@@ -1,6 +1,9 @@
 export type Lang = "ru" | "en" | "kk";
 
-export const LANGS: Lang[] = ["ru", "en", "kk"];
+/** The locale list lives in i18n.ts (which the edge middleware imports and so
+ *  must stay free of this dictionary); re-exported here under its long-standing
+ *  name so both names always describe the same list. */
+export { LOCALES as LANGS } from "./i18n";
 
 export type NavKey = "home" | "about" | "tours" | "gallery" | "services" | "agencies" | "blog" | "contacts";
 

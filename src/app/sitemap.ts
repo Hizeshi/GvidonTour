@@ -1,9 +1,10 @@
 import type { MetadataRoute } from "next";
 import { getBlogPosts, getTours } from "@/lib/catalog";
+import { localeHref, LOCALES } from "@/lib/i18n";
 import { SITE_URL } from "@/lib/seo";
 
 const STATIC_ROUTES = [
-  "",
+  "/",
   "/about",
   "/tours",
   "/gallery",
@@ -14,27 +15,36 @@ const STATIC_ROUTES = [
   "/contacts",
 ];
 
+/** Every page is listed once per locale, since /ru/tours, /en/tours and
+ *  /kk/tours are three separate indexable URLs. */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [tours, posts] = await Promise.all([getTours(), getBlogPosts()]);
+  const entries: MetadataRoute.Sitemap = [];
 
-  const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map((path) => ({
-    url: `${SITE_URL}${path}`,
-    changeFrequency: path === "" ? "weekly" : "monthly",
-    priority: path === "" ? 1 : 0.7,
-  }));
+  for (const lang of LOCALES) {
+    for (const path of STATIC_ROUTES) {
+      entries.push({
+        url: `${SITE_URL}${localeHref(path, lang)}`,
+        changeFrequency: path === "/" ? "weekly" : "monthly",
+        priority: path === "/" ? 1 : 0.7,
+      });
+    }
+    for (const tour of tours) {
+      entries.push({
+        url: `${SITE_URL}${localeHref(`/tours/${tour.slug}`, lang)}`,
+        changeFrequency: "monthly",
+        priority: 0.8,
+      });
+    }
+    for (const post of posts) {
+      entries.push({
+        url: `${SITE_URL}${localeHref(`/blog/${post.slug}`, lang)}`,
+        lastModified: post.publishedAt,
+        changeFrequency: "yearly",
+        priority: 0.5,
+      });
+    }
+  }
 
-  const tourEntries: MetadataRoute.Sitemap = tours.map((tour) => ({
-    url: `${SITE_URL}/tours/${tour.slug}`,
-    changeFrequency: "monthly",
-    priority: 0.8,
-  }));
-
-  const blogEntries: MetadataRoute.Sitemap = posts.map((post) => ({
-    url: `${SITE_URL}/blog/${post.slug}`,
-    lastModified: post.publishedAt,
-    changeFrequency: "yearly",
-    priority: 0.5,
-  }));
-
-  return [...staticEntries, ...tourEntries, ...blogEntries];
+  return entries;
 }

@@ -1,14 +1,15 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/LocaleLink";
 import { usePathname } from "next/navigation";
 import { MessageCircle } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
+import { stripLocale } from "@/lib/i18n";
 
 export default function FloatingCta() {
   const { t } = useLang();
   const pathname = usePathname();
-  if (pathname === "/contacts") return null;
+  if (stripLocale(pathname) === "/contacts") return null;
 
   return (
     <Link

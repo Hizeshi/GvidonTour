@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/LocaleLink";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";

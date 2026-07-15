@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/LocaleLink";
 import { useLang } from "@/lib/LanguageContext";
 import { EMAIL, NAV_ROUTES, PHONE, PHONE_2, PHONE_2_HREF, PHONE_HREF, type NavKey } from "@/lib/content";
 import { cx, ui } from "@/lib/ui";

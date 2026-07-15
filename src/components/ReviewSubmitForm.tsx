@@ -65,7 +65,7 @@ export default function ReviewSubmitForm() {
       formData.set("lang", lang);
       formData.set("turnstileToken", token);
       if (photo) formData.set("photo", photo);
-      const res = await fetch("/reviews/submit", { method: "POST", body: formData });
+      const res = await fetch("/api/reviews/submit", { method: "POST", body: formData });
       const data: SubmitResult = await res.json();
       setResult(data);
     } catch {

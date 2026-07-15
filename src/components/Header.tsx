@@ -1,12 +1,13 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/LocaleLink";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ChevronDown, Moon, Sun } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
 import { useTheme } from "@/lib/ThemeContext";
 import { NAV_ROUTES, TOURS_MENU_LINKS, type NavKey } from "@/lib/content";
+import { stripLocale } from "@/lib/i18n";
 import { cx, ui } from "@/lib/ui";
 import LangSwitcher from "./LangSwitcher";
 import Logo from "./Logo";
@@ -19,7 +20,8 @@ const navBase =
 export default function Header() {
   const { t } = useLang();
   const { theme, toggle } = useTheme();
-  const pathname = usePathname();
+  // Locale-agnostic path, so nav highlighting works the same on /ru, /en, /kk.
+  const pathname = stripLocale(usePathname());
   const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);

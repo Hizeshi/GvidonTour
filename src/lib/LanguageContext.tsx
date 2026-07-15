@@ -1,48 +1,29 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, type ReactNode } from "react";
 import { CONTENT, type Dict, type Lang } from "./content";
 
 interface LanguageContextValue {
   lang: Lang;
-  setLang: (lang: Lang) => void;
   t: Dict;
 }
 
-const LanguageContext = createContext<LanguageContextValue>({
-  lang: "ru",
-  setLang: () => {},
-  t: CONTENT.ru,
-});
+const LanguageContext = createContext<LanguageContextValue>({ lang: "ru", t: CONTENT.ru });
 
-const STORAGE_KEY = "gv_lang";
-
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("ru");
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY) as Lang | null;
-      if (saved && saved in CONTENT) setLangState(saved);
-    } catch {}
-  }, []);
-
+/** The language is part of the URL (/ru, /en, /kk), so it arrives as a prop
+ *  from the [lang] route segment instead of being read from localStorage.
+ *  That way the server renders the right language for each URL — which is
+ *  what makes the EN/KK versions indexable. Switching language is a
+ *  navigation (see LangSwitcher), not local state. */
+export function LanguageProvider({ lang, children }: { lang: Lang; children: ReactNode }) {
+  // The root layout renders a static <html lang>, so keep the attribute in
+  // sync with the active locale for screen readers and browser translation.
   useEffect(() => {
     document.documentElement.lang = lang;
   }, [lang]);
 
-  const setLang = useCallback((next: Lang) => {
-    setLangState(next);
-    try {
-      localStorage.setItem(STORAGE_KEY, next);
-    } catch {}
-  }, []);
-
-  return (
-    <LanguageContext.Provider value={{ lang, setLang, t: CONTENT[lang] }}>
-      {children}
-    </LanguageContext.Provider>
-  );
+  const value = useMemo(() => ({ lang, t: CONTENT[lang] }), [lang]);
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 }
 
 export function useLang() {

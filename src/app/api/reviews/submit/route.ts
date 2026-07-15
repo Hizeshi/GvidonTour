@@ -36,7 +36,13 @@ const LANGS: Lang[] = ["ru", "en", "kk"];
 export async function POST(request: Request) {
   const ip = (request.headers.get("x-forwarded-for") ?? "local").split(",")[0].trim();
 
-  const formData = await request.formData();
+  let formData: FormData;
+  try {
+    formData = await request.formData();
+  } catch {
+    // Malformed/empty body (a bot poking the endpoint) — not a server fault.
+    return NextResponse.json({ ok: false, error: "invalid" }, { status: 400 });
+  }
 
   // Honeypot: real visitors never see or fill this field.
   if (String(formData.get("website") ?? "") !== "") {

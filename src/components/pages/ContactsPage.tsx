@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { AtSign, CheckCircle2, Clock, Mail, MapPin, Phone, Send } from "lucide-react";
-import { submitLead } from "@/app/(site)/contacts/actions";
+import { submitLead } from "@/app/(site)/[lang]/contacts/actions";
 import { useLang } from "@/lib/LanguageContext";
 import type { LText } from "@/lib/catalog-types";
 import { EMAIL, INSTAGRAM, PHONE, PHONE_2, PHONE_2_HREF, PHONE_HREF } from "@/lib/content";
