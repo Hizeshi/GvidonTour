@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Analytics from "@/components/Analytics";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import FloatingCta from "@/components/FloatingCta";
@@ -27,6 +28,7 @@ export default async function SiteLayout({
         {children}
         <Footer />
         <FloatingCta />
+        <Analytics />
       </div>
     </LanguageProvider>
   );

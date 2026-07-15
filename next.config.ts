@@ -13,20 +13,26 @@ import type { NextConfig } from "next";
  *   be silently blocked. script-src also allows Turnstile's widget script.
  * - img-src/media-src allow the Supabase Storage host: admin-uploaded photos
  *   and videos are served from the public "media" bucket there.
+ * - The analytics hosts (Yandex Metrica, GA4) need script-src to load their
+ *   snippets, connect-src to report hits, img-src for their tracking pixels
+ *   and, for Metrica's webvisor, frame-src. Miss any one of these and the
+ *   counter fails silently — which is exactly how analytics dies unnoticed.
  * - Everything else is served same-origin: fonts are self-hosted by
  *   next/font, all photos live in /public.
  */
 const SUPABASE_HOST = "https://hkozmvhdzuegihwhmeyl.supabase.co";
+const YANDEX_HOSTS = "https://mc.yandex.ru https://mc.yandex.com https://yastatic.net";
+const GA_HOSTS = "https://www.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com";
 
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com",
+  `script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com ${YANDEX_HOSTS} https://www.googletagmanager.com`,
   "style-src 'self' 'unsafe-inline'",
-  `img-src 'self' data: ${SUPABASE_HOST}`,
+  `img-src 'self' data: ${SUPABASE_HOST} ${YANDEX_HOSTS} ${GA_HOSTS}`,
   `media-src 'self' ${SUPABASE_HOST}`,
   "font-src 'self'",
-  "connect-src 'self' https://open.er-api.com https://challenges.cloudflare.com",
-  "frame-src https://www.youtube.com https://player.vimeo.com https://challenges.cloudflare.com",
+  `connect-src 'self' https://open.er-api.com https://challenges.cloudflare.com ${YANDEX_HOSTS} ${GA_HOSTS}`,
+  `frame-src https://www.youtube.com https://player.vimeo.com https://challenges.cloudflare.com ${YANDEX_HOSTS}`,
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

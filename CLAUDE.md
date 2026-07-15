@@ -87,6 +87,7 @@
 | `AUTH_SECRET` | подпись JWT сессии админки |
 | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | уведомления о заявках |
 | `SUPABASE_URL`, `SUPABASE_SERVICE_KEY` | Storage REST API |
+| `NEXT_PUBLIC_YM_ID`, `NEXT_PUBLIC_GA_ID` | Яндекс.Метрика и GA4 (`src/components/Analytics.tsx`). Не заданы → счётчики не грузятся. Публичные ID, не секреты. `NEXT_PUBLIC_*` вшиваются при сборке → после смены нужен передеплой. Счётчики только на сайте, в админке их нет |
 
 ⚠️ Не подтверждено, что пользователь внёс все 5 переменных (кроме DATABASE_URL) в Vercel — при проблемах на проде (логин/загрузка/телеграм) сначала проверить это.
 
