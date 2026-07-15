@@ -4,12 +4,12 @@ import Link from "@/components/LocaleLink";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { RotateCcw, SearchX } from "lucide-react";
-import { useLang } from "@/lib/LanguageContext";
 import type { CatalogCategory, CatalogDirection, CatalogTour, LText } from "@/lib/catalog-types";
-import { CITY_NAMES } from "@/lib/content";
+import type { Dict, Lang } from "@/lib/content";
+import { CITY_NAMES } from "@/lib/site-data";
 import { localeHref } from "@/lib/i18n";
 import { cx, ui } from "@/lib/ui";
-import CtaBand from "@/components/CtaBand";
+import CtaBand, { ctaLabels } from "@/components/CtaBand";
 import PageHead from "@/components/PageHead";
 import RangeSlider from "@/components/RangeSlider";
 import Reveal from "@/components/Reveal";
@@ -19,6 +19,10 @@ interface ToursPageProps {
   tours: CatalogTour[];
   categories: CatalogCategory[];
   directions: CatalogDirection[];
+  lang: Lang;
+  /** The filters keep their state in the URL, so this page can't be a server
+   *  component; it takes the dictionary as a prop instead of importing it. */
+  t: Dict;
 }
 
 type NumRange = [number, number];
@@ -57,8 +61,7 @@ function parseRange(raw: string | null, bounds: NumRange): NumRange {
   return bounds;
 }
 
-export default function ToursPage({ tours, categories, directions }: ToursPageProps) {
-  const { t, lang } = useLang();
+export default function ToursPage({ tours, categories, directions, lang, t }: ToursPageProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -236,7 +239,7 @@ export default function ToursPage({ tours, categories, directions }: ToursPagePr
           {filtered.length > 0 ? (
             <div className="grid grid-cols-1 gap-[30px] sm:grid-cols-2 lg:grid-cols-3">
               {filtered.map((tour, i) => (
-                <TourCard key={tour.slug} tour={tour} details={t.toursPage.details} delay={i % 4} />
+                <TourCard key={tour.slug} tour={tour} details={t.toursPage.details} book={t.catalog.book} bookMsg={t.catalog.bookMsg} lang={lang} delay={(i % 4) as 0 | 1 | 2 | 3} />
               ))}
             </div>
           ) : (
@@ -258,7 +261,7 @@ export default function ToursPage({ tours, categories, directions }: ToursPagePr
         </div>
       </section>
 
-      <CtaBand compact />
+      <CtaBand labels={ctaLabels(t)} compact />
     </main>
   );
 }

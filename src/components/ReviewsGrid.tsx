@@ -3,8 +3,8 @@
 import Link from "@/components/LocaleLink";
 import { useState } from "react";
 import { ChevronDown, PlayCircle, Star } from "lucide-react";
-import { useLang } from "@/lib/LanguageContext";
 import type { CatalogReview } from "@/lib/catalog-types";
+import type { Dict, Lang } from "@/lib/content";
 import { cx, ui } from "@/lib/ui";
 import Reveal from "./Reveal";
 
@@ -24,12 +24,15 @@ const CAP = 9;
 
 interface ReviewsGridProps {
   reviews: CatalogReview[];
+  lang: Lang;
+  labels: Dict["homeReviews"];
   /** Full /reviews page passes false to render every review, no cap/button. */
   expandable?: boolean;
 }
 
-export default function ReviewsGrid({ reviews, expandable = true }: ReviewsGridProps) {
-  const { t, lang } = useLang();
+/** Client island: the "read more" step is local state. Its labels arrive as a
+ *  prop so the dictionary stays on the server. */
+export default function ReviewsGrid({ reviews, lang, labels, expandable = true }: ReviewsGridProps) {
   const [visible, setVisible] = useState(STEP);
 
   const shown = expandable ? reviews.slice(0, visible) : reviews;
@@ -67,7 +70,7 @@ export default function ReviewsGrid({ reviews, expandable = true }: ReviewsGridP
                 <span className="lic text-[18px]">
                   <PlayCircle />
                 </span>
-                {t.homeReviews.video}
+                {labels.video}
               </a>
             )}
 
@@ -94,14 +97,14 @@ export default function ReviewsGrid({ reviews, expandable = true }: ReviewsGridP
         <div className="mt-10 flex justify-center">
           {canExpand ? (
             <button type="button" onClick={() => setVisible(Math.min(CAP, reviews.length))} className={ui.btnGhost}>
-              {t.homeReviews.more}
+              {labels.more}
               <span className="lic">
                 <ChevronDown />
               </span>
             </button>
           ) : (
             <Link href="/reviews" className={ui.btnGhost}>
-              {t.homeReviews.more}
+              {labels.more}
               <span className="lic">
                 <ChevronDown />
               </span>

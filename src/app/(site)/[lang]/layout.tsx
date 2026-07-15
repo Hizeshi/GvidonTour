@@ -7,7 +7,8 @@ import FloatingCta from "@/components/FloatingCta";
 import RootHtml from "@/components/RootHtml";
 import { LanguageProvider } from "@/lib/LanguageContext";
 import { A11Y_LABELS } from "@/lib/a11y";
-import { EMAIL, PHONE } from "@/lib/content";
+import { CONTENT } from "@/lib/content";
+import { EMAIL, PHONE } from "@/lib/site-data";
 import { isLocale, LOCALES } from "@/lib/i18n";
 import { jsonLdScript, SITE_URL } from "@/lib/seo";
 
@@ -84,6 +85,7 @@ export default async function SiteLayout({
 }) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
+  const t = CONTENT[lang];
 
   return (
     <RootHtml lang={lang} jsonLd={jsonLdScript(ORGANIZATION_JSONLD)}>
@@ -95,12 +97,15 @@ export default async function SiteLayout({
           >
             {A11Y_LABELS[lang].skipToContent}
           </a>
-          <Header />
+          {/* Header and FloatingCta stay client islands, so their labels are
+              read from the dictionary here — on the server — and handed over as
+              props. Footer is a plain server component. */}
+          <Header labels={{ brandTag: t.brandTag, nav: t.nav, toursMenu: t.toursMenu }} />
           <div id="site-content" tabIndex={-1}>
             {children}
           </div>
-          <Footer />
-          <FloatingCta />
+          <Footer lang={lang} />
+          <FloatingCta label={t.hero.cta2} />
           <Analytics />
         </div>
       </LanguageProvider>

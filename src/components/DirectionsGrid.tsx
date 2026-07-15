@@ -3,14 +3,17 @@
 import Image from "next/image";
 import Link from "@/components/LocaleLink";
 import { ArrowRight } from "lucide-react";
-import { useLang } from "@/lib/LanguageContext";
 import type { CatalogDirection } from "@/lib/catalog-types";
-import { DIRECTION_IMAGE_POS } from "@/lib/content";
+import type { Lang } from "@/lib/content";
+import { DIRECTION_IMAGE_POS } from "@/lib/site-data";
 import { cx, ui } from "@/lib/ui";
 import { useReveal } from "./useReveal";
 
-function DirectionCard({ direction, delay }: { direction: CatalogDirection; delay: number }) {
-  const { lang } = useLang();
+/** Stays a client component: useReveal puts its ref straight on the <Link>, so
+ *  the card can't be wrapped in <Reveal> without adding a div that would become
+ *  the grid item and change the layout. It takes `lang` as a prop, which is all
+ *  it ever needed from context. */
+function DirectionCard({ direction, delay, lang }: { direction: CatalogDirection; delay: number; lang: Lang }) {
   const { ref, cls } = useReveal<HTMLAnchorElement>();
   return (
     <Link
@@ -44,11 +47,17 @@ function DirectionCard({ direction, delay }: { direction: CatalogDirection; dela
   );
 }
 
-export default function DirectionsGrid({ directions }: { directions: CatalogDirection[] }) {
+export default function DirectionsGrid({
+  directions,
+  lang,
+}: {
+  directions: CatalogDirection[];
+  lang: Lang;
+}) {
   return (
     <div className="mt-[58px] grid grid-cols-1 gap-[18px] sm:grid-cols-2 lg:grid-cols-3">
       {directions.map((d, i) => (
-        <DirectionCard key={d.slug} direction={d} delay={i % 4} />
+        <DirectionCard key={d.slug} direction={d} delay={i % 4} lang={lang} />
       ))}
     </div>
   );

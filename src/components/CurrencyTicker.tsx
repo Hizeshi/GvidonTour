@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useLang } from "@/lib/LanguageContext";
 
 interface Rates {
   USD: number;
@@ -12,8 +11,11 @@ interface Rates {
 const CACHE_KEY = "gv_fx_v1";
 const CACHE_MS = 6 * 60 * 60 * 1000; // 6h
 
-export default function CurrencyTicker() {
-  const { t } = useLang();
+/** Client island: fetches live rates in the browser. It takes its one label as
+ *  a prop rather than reading the dictionary from context — pulling the whole
+ *  dictionary into the client bundle for a single word is what this refactor
+ *  is undoing. */
+export default function CurrencyTicker({ label }: { label: string }) {
   const [rates, setRates] = useState<Rates | null>(null);
 
   useEffect(() => {
@@ -59,7 +61,7 @@ export default function CurrencyTicker() {
 
   return (
     <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 text-[13px] text-content/55">
-      <span className="font-bold uppercase tracking-[0.1em] text-gold/85">{t.currencyLabel}</span>
+      <span className="font-bold uppercase tracking-[0.1em] text-gold/85">{label}</span>
       <span>USD 1 = {rates.USD.toFixed(2)} ₸</span>
       <span>EUR 1 = {rates.EUR.toFixed(2)} ₸</span>
       <span>RUB 1 = {rates.RUB.toFixed(2)} ₸</span>

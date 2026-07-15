@@ -1,8 +1,6 @@
-"use client";
-
 import Link from "@/components/LocaleLink";
 import { ArrowRight } from "lucide-react";
-import { useLang } from "@/lib/LanguageContext";
+import { CONTENT, type Lang } from "@/lib/content";
 import type {
   CatalogAchievement,
   CatalogCategory,
@@ -13,7 +11,7 @@ import type {
 import { cx, ui } from "@/lib/ui";
 import AchievementsStrip from "@/components/AchievementsStrip";
 import CategoriesGrid from "@/components/CategoriesGrid";
-import CtaBand from "@/components/CtaBand";
+import CtaBand, { ctaLabels } from "@/components/CtaBand";
 import DirectionsGrid from "@/components/DirectionsGrid";
 import HomeHero from "@/components/HomeHero";
 import Reveal from "@/components/Reveal";
@@ -27,10 +25,21 @@ interface HomePageProps {
   directions: CatalogDirection[];
   reviews: CatalogReview[];
   achievements: CatalogAchievement[];
+  lang: Lang;
 }
 
-export default function HomePage({ tours, categories, directions, reviews, achievements }: HomePageProps) {
-  const { t } = useLang();
+/** Server component: none of this page is interactive except the hero slider,
+ *  the reviews "show more" and the scroll-reveal wrapper, each of which is its
+ *  own client island. */
+export default function HomePage({
+  tours,
+  categories,
+  directions,
+  reviews,
+  achievements,
+  lang,
+}: HomePageProps) {
+  const t = CONTENT[lang];
 
   // The Star toggle in the admin tour list picks what shows here. Falling back
   // to the first tours keeps the block populated if nothing is starred yet.
@@ -39,7 +48,7 @@ export default function HomePage({ tours, categories, directions, reviews, achie
 
   return (
     <main>
-      <HomeHero />
+      <HomeHero hero={t.hero} caps={t.caps} />
 
       <section className={cx(ui.sec, "bg-alt text-altcontent")}>
         <div className={ui.wrap}>
@@ -48,7 +57,7 @@ export default function HomePage({ tours, categories, directions, reviews, achie
             <h2 className={ui.sectionTitle}>{t.valuesHead.title}</h2>
             <div className={ui.divider} />
           </Reveal>
-          <ValuesGrid tone="cream" />
+          <ValuesGrid lang={lang} tone="cream" />
         </div>
       </section>
 
@@ -63,7 +72,7 @@ export default function HomePage({ tours, categories, directions, reviews, achie
               <h2 className={ui.sectionTitle}>{t.homeCats.title}</h2>
               <div className={ui.divider} />
             </Reveal>
-            <CategoriesGrid categories={categories} />
+            <CategoriesGrid categories={categories} lang={lang} />
           </div>
         </section>
       )}
@@ -76,7 +85,7 @@ export default function HomePage({ tours, categories, directions, reviews, achie
               <h2 className={ui.sectionTitle}>{t.homeDirs.title}</h2>
               <div className={ui.divider} />
             </Reveal>
-            <DirectionsGrid directions={directions} />
+            <DirectionsGrid directions={directions} lang={lang} />
           </div>
         </section>
       )}
@@ -91,7 +100,7 @@ export default function HomePage({ tours, categories, directions, reviews, achie
             </Reveal>
             <div className="mt-[58px] grid grid-cols-1 gap-[30px] sm:grid-cols-2 lg:grid-cols-3">
               {featuredTours.map((tour, i) => (
-                <TourCard key={tour.slug} tour={tour} details={t.toursPage.details} delay={i % 4} />
+                <TourCard key={tour.slug} tour={tour} details={t.toursPage.details} book={t.catalog.book} bookMsg={t.catalog.bookMsg} lang={lang} delay={(i % 4) as 0 | 1 | 2 | 3} />
               ))}
             </div>
             <Reveal className="mt-[54px] flex justify-center">
@@ -114,7 +123,7 @@ export default function HomePage({ tours, categories, directions, reviews, achie
               <h2 className={ui.sectionTitle}>{t.homeReviews.title}</h2>
               <div className={ui.divider} />
             </Reveal>
-            <ReviewsGrid reviews={reviews} />
+            <ReviewsGrid reviews={reviews} lang={lang} labels={t.homeReviews} />
           </div>
         </section>
       )}
@@ -127,13 +136,13 @@ export default function HomePage({ tours, categories, directions, reviews, achie
               <h2 className={ui.sectionTitle}>{t.homeAch.title}</h2>
               <div className={ui.divider} />
             </Reveal>
-            <AchievementsStrip achievements={achievements} />
+            <AchievementsStrip achievements={achievements} lang={lang} />
             <Reveal className="mt-8 text-[13.5px] text-content/50">{t.homeAch.note}</Reveal>
           </div>
         </section>
       )}
 
-      <CtaBand withEyebrow />
+      <CtaBand labels={ctaLabels(t)} withEyebrow />
     </main>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { Plus, Trash2 } from "lucide-react";
-import { LANGS } from "@/lib/content";
+import { LOCALES as LANGS } from "@/lib/i18n";
 import type { LText } from "@/lib/catalog-types";
 import { cx, ui } from "@/lib/ui";
 

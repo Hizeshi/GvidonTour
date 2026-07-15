@@ -76,7 +76,7 @@ export default async function Page({ params }: { params: Promise<{ lang: string;
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbs) }} />
-      <TourDetailPage tour={tour} similar={similar} />
+      <TourDetailPage tour={tour} similar={similar} lang={lang} />
     </>
   );
 }

@@ -3,9 +3,9 @@
 import { useActionState } from "react";
 import { AtSign, CheckCircle2, Clock, Mail, MapPin, Phone, Send } from "lucide-react";
 import { submitLead } from "@/app/(site)/[lang]/contacts/actions";
-import { useLang } from "@/lib/LanguageContext";
 import type { LText } from "@/lib/catalog-types";
-import { EMAIL, INSTAGRAM, PHONE, PHONE_2, PHONE_2_HREF, PHONE_HREF } from "@/lib/content";
+import type { Dict, Lang } from "@/lib/content";
+import { EMAIL, INSTAGRAM, PHONE, PHONE_2, PHONE_2_HREF, PHONE_HREF } from "@/lib/site-data";
 import { cx, ui } from "@/lib/ui";
 import KazMap from "@/components/KazMap";
 import PageHead from "@/components/PageHead";
@@ -16,8 +16,7 @@ const infoLabel = "text-xs uppercase tracking-[0.12em] text-content/50";
 const infoValue = "mt-[3px] text-base font-semibold";
 const infoIcon = "lic mt-0.5 text-[22px] text-gold";
 
-export default function ContactsPage({ tourTitles }: { tourTitles: LText[] }) {
-  const { t, lang } = useLang();
+export default function ContactsPage({ tourTitles, lang, t }: { tourTitles: LText[]; lang: Lang; t: Dict }) {
   const [state, formAction, pending] = useActionState(submitLead, null);
   const sent = state?.ok === true;
 
@@ -184,7 +183,7 @@ export default function ContactsPage({ tourTitles }: { tourTitles: LText[] }) {
                 {t.contacts.mapTitle}
               </h2>
             </div>
-            <KazMap />
+            <KazMap mapCities={t.mapCities} />
           </Reveal>
         </div>
       </section>

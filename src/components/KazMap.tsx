@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Plane } from "lucide-react";
-import { useLang } from "@/lib/LanguageContext";
+import type { Dict } from "@/lib/content";
 import { KZ_CITIES, KZ_FLIGHT_ORDER, KZ_OUTLINE_PATH, KZ_VIEWBOX, type KzCityPos } from "@/lib/kz-outline";
 import { cx } from "@/lib/ui";
 
@@ -17,12 +17,13 @@ function toPx(c: KzCityPos) {
   return { x: (c.xPct / 100) * CANVAS.w, y: (c.yPct / 100) * CANVAS.h };
 }
 
-export default function KazMap() {
-  const { t } = useLang();
+/** Client island: an animated plane loops between the cities. It takes the
+ *  city labels as a prop rather than reading the dictionary from context. */
+export default function KazMap({ mapCities }: { mapCities: Dict["mapCities"] }) {
   const [activeCity, setActiveCity] = useState(-1);
   const planeRef = useRef<HTMLSpanElement | null>(null);
 
-  const cities = t.mapCities.map((c) => ({ ...c, ...cityPos(c.key) }));
+  const cities = mapCities.map((c) => ({ ...c, ...cityPos(c.key) }));
   const hub = cities.find((c) => c.hub) ?? cities[0];
 
   // Flies the plane through every city in a loop, at constant apparent

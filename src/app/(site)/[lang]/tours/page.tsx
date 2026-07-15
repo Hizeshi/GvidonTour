@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import ToursPage from "@/components/pages/ToursPage";
 import { getCategories, getDirections, getTours } from "@/lib/catalog";
 import { CONTENT } from "@/lib/content";
-import { isLocale, pageMetadata } from "@/lib/i18n";
+import { isLocale, pageMetadata, toLocale } from "@/lib/i18n";
 
 export const revalidate = 300;
 
@@ -14,11 +14,19 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   return pageMetadata(lang, "/tours", t.toursPage.title, t.toursPage.intro);
 }
 
-export default async function Page() {
+export default async function Page({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  const locale = toLocale(lang);
   const [tours, categories, directions] = await Promise.all([getTours(), getCategories(), getDirections()]);
   return (
     <Suspense fallback={null}>
-      <ToursPage tours={tours} categories={categories} directions={directions} />
+      <ToursPage
+        tours={tours}
+        categories={categories}
+        directions={directions}
+        lang={locale}
+        t={CONTENT[locale]}
+      />
     </Suspense>
   );
 }

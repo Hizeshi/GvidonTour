@@ -1,14 +1,17 @@
-"use client";
-
-import { useLang } from "@/lib/LanguageContext";
 import type { CatalogAchievement } from "@/lib/catalog-types";
+import type { Lang } from "@/lib/content";
 import IconByName from "./IconByName";
 import Reveal from "./Reveal";
 
 /** Renders real licence/award/partner photos once the client provides them
  *  (via the admin panel); falls back to labelled icon placeholders. */
-export default function AchievementsStrip({ achievements }: { achievements: CatalogAchievement[] }) {
-  const { lang } = useLang();
+export default function AchievementsStrip({
+  achievements,
+  lang,
+}: {
+  achievements: CatalogAchievement[];
+  lang: Lang;
+}) {
   return (
     <div className="mt-[54px] grid grid-cols-2 gap-[18px] sm:grid-cols-3 lg:grid-cols-5">
       {achievements.map((a, i) => (

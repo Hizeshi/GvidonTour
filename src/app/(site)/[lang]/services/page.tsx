@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import ServicesPage from "@/components/pages/ServicesPage";
 import { CONTENT } from "@/lib/content";
-import { isLocale, pageMetadata } from "@/lib/i18n";
+import { isLocale, pageMetadata, toLocale } from "@/lib/i18n";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
@@ -10,6 +10,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   return pageMetadata(lang, "/services", t.services.title, t.services.intro);
 }
 
-export default function Page() {
-  return <ServicesPage />;
+export default async function Page({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  return <ServicesPage lang={toLocale(lang)} />;
 }

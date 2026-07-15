@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/components/admin/Toast";
 import { useState } from "react";
 import { ExternalLink, Plus, Save, Trash2 } from "lucide-react";
-import { LANGS } from "@/lib/content";
+import { LOCALES as LANGS } from "@/lib/i18n";
 import type { LText, PriceRow, ProgramStep, TourDetails } from "@/lib/catalog-types";
 import { cx, ui } from "@/lib/ui";
 import { addBtn, emptyLText, LTextField, LTextListEditor, removeBtn } from "@/components/admin/AdminFormFields";

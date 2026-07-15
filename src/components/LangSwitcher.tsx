@@ -8,8 +8,11 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
 import { A11Y_LABELS } from "@/lib/a11y";
-import { LANGS } from "@/lib/content";
-import { localeHref, stripLocale } from "@/lib/i18n";
+// LOCALES straight from i18n, not the LANGS alias re-exported by content.ts:
+// importing anything by value from content.ts risks dragging the whole
+// three-language dictionary into this client bundle, which is what the move to
+// server components just removed. i18n.ts only type-imports content.
+import { LOCALES, localeHref, stripLocale } from "@/lib/i18n";
 import { cx } from "@/lib/ui";
 
 export default function LangSwitcher({ tone }: { tone: string }) {
@@ -77,7 +80,7 @@ export default function LangSwitcher({ tone }: { tone: string }) {
           open ? "visible opacity-100" : "invisible opacity-0"
         )}
       >
-        {LANGS.map((code) => (
+        {LOCALES.map((code) => (
           <Link
             key={code}
             href={localeHref(basePath, code)}

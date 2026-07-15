@@ -1,15 +1,12 @@
-"use client";
-
 import Link from "@/components/LocaleLink";
 import { ArrowRight } from "lucide-react";
-import { useLang } from "@/lib/LanguageContext";
 import type { CatalogCategory } from "@/lib/catalog-types";
+import type { Lang } from "@/lib/content";
 import { cx } from "@/lib/ui";
 import IconByName from "./IconByName";
 import Reveal from "./Reveal";
 
-export default function CategoriesGrid({ categories }: { categories: CatalogCategory[] }) {
-  const { lang } = useLang();
+export default function CategoriesGrid({ categories, lang }: { categories: CatalogCategory[]; lang: Lang }) {
   return (
     <div className="mt-[58px] grid grid-cols-1 gap-[18px] sm:grid-cols-2 lg:grid-cols-3">
       {categories.map((c, i) => (

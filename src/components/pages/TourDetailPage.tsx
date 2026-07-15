@@ -1,10 +1,8 @@
-"use client";
-
 import Link from "@/components/LocaleLink";
 import { Calendar, Check, Clock, Lightbulb, MapPin, MessageCircle, Route, X } from "lucide-react";
-import { useLang } from "@/lib/LanguageContext";
 import type { CatalogTour } from "@/lib/catalog-types";
-import { WHATSAPP_BOOKING } from "@/lib/content";
+import { CONTENT, type Lang } from "@/lib/content";
+import { WHATSAPP_BOOKING } from "@/lib/site-data";
 import { cx, ui } from "@/lib/ui";
 import ImageSlider from "@/components/ImageSlider";
 import KazMap from "@/components/KazMap";
@@ -15,10 +13,11 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 interface TourDetailPageProps {
   tour: CatalogTour;
   similar: CatalogTour[];
+  lang: Lang;
 }
 
-export default function TourDetailPage({ tour, similar }: TourDetailPageProps) {
-  const { t, lang } = useLang();
+export default function TourDetailPage({ tour, similar, lang }: TourDetailPageProps) {
+  const t = CONTENT[lang];
   const d = tour.details;
   const gallery = d?.gallery && d.gallery.length > 0 ? d.gallery : [tour.image];
 
@@ -238,7 +237,7 @@ export default function TourDetailPage({ tour, similar }: TourDetailPageProps) {
             </div>
 
             <div className="mt-6 overflow-hidden rounded border border-content/12">
-              <KazMap />
+              <KazMap mapCities={t.mapCities} />
             </div>
           </Reveal>
         </div>
@@ -254,7 +253,7 @@ export default function TourDetailPage({ tour, similar }: TourDetailPageProps) {
             </Reveal>
             <div className="mt-[46px] grid grid-cols-1 gap-[30px] sm:grid-cols-2 lg:grid-cols-3">
               {similar.map((s, i) => (
-                <TourCard key={s.slug} tour={s} details={t.toursPage.details} delay={i % 4} />
+                <TourCard key={s.slug} tour={s} details={t.toursPage.details} book={t.catalog.book} bookMsg={t.catalog.bookMsg} lang={lang} delay={(i % 4) as 0 | 1 | 2 | 3} />
               ))}
             </div>
           </div>

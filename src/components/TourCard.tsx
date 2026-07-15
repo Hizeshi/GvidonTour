@@ -1,38 +1,43 @@
-"use client";
-
 import Image from "next/image";
 import Link from "@/components/LocaleLink";
 import { ArrowRight, Clock, MessageCircle } from "lucide-react";
-import { useLang } from "@/lib/LanguageContext";
 import type { CatalogTour } from "@/lib/catalog-types";
-import { WHATSAPP_BOOKING } from "@/lib/content";
+import type { Lang } from "@/lib/content";
+import { WHATSAPP_BOOKING } from "@/lib/site-data";
 import { cx, ui } from "@/lib/ui";
-import { useReveal } from "./useReveal";
+import Reveal from "./Reveal";
 
 interface TourCardProps {
   tour: CatalogTour;
   details: string;
-  delay?: number;
+  /** "Забронировать" and the WhatsApp message template ({title} placeholder). */
+  book: string;
+  bookMsg: string;
+  lang: Lang;
+  delay?: 0 | 1 | 2 | 3;
 }
 
 const badge =
   "absolute z-[3] rounded-[2px] bg-[rgba(0,16,36,0.7)] px-3 py-1.5 backdrop-blur-[4px]";
 
-export default function TourCard({ tour, details, delay = 0 }: TourCardProps) {
-  const { lang, t } = useLang();
-  const { ref, cls } = useReveal<HTMLDivElement>();
-
+/** Renders as a server component from HomePage, and gets compiled as a client
+ *  one inside ToursPage, whose filters have to run in the browser. That is why
+ *  it takes its strings as props instead of reading CONTENT: a server component
+ *  imported by a client component is *not* a server component, and this card's
+ *  dictionary import was enough to ship all three languages to /tours.
+ *
+ *  It used to call useReveal directly, which is the only thing that forced it
+ *  to be client everywhere; <Reveal> emits the identical div (same ref, same
+ *  reveal/d{n} classes), so the card itself is plain HTML now. */
+export default function TourCard({ tour, details, book, bookMsg, lang, delay = 0 }: TourCardProps) {
   const waHref = `https://wa.me/${WHATSAPP_BOOKING}?text=${encodeURIComponent(
-    t.catalog.bookMsg.replace("{title}", tour.title[lang])
+    bookMsg.replace("{title}", tour.title[lang])
   )}`;
 
   return (
-    <div
-      ref={ref}
-      className={cx(
-        "group flex flex-col overflow-hidden rounded border border-content/10 bg-panel transition-all duration-[450ms] hover:-translate-y-2 hover:border-gold/40 hover:shadow-[0_28px_50px_-28px_rgba(0,0,0,0.7)]",
-        `reveal${delay ? ` d${delay}` : ""}${cls}`
-      )}
+    <Reveal
+      delay={delay}
+      className="group flex flex-col overflow-hidden rounded border border-content/10 bg-panel transition-all duration-[450ms] hover:-translate-y-2 hover:border-gold/40 hover:shadow-[0_28px_50px_-28px_rgba(0,0,0,0.7)]"
     >
       <Link href={`/tours/${tour.slug}`} className="relative block h-[236px] overflow-hidden">
         <span className={cx(badge, "left-3.5 top-3.5 text-[11px] font-bold uppercase tracking-[0.14em] text-gold")}>
@@ -74,12 +79,12 @@ export default function TourCard({ tour, details, delay = 0 }: TourCardProps) {
           rel="noopener noreferrer"
           className={cx(ui.btnGold, "mt-4 w-full justify-center py-2.5 text-[13px]")}
         >
-          {t.catalog.book}
+          {book}
           <span className="lic">
             <MessageCircle />
           </span>
         </a>
       </div>
-    </div>
+    </Reveal>
   );
 }

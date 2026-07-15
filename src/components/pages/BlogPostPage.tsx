@@ -1,7 +1,5 @@
-"use client";
-
 import Image from "next/image";
-import { useLang } from "@/lib/LanguageContext";
+import { CONTENT, type Lang } from "@/lib/content";
 import type { CatalogBlogPost } from "@/lib/catalog-types";
 import { toEmbedUrl } from "@/lib/video-embed";
 import { cx, ui } from "@/lib/ui";
@@ -12,10 +10,11 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 interface BlogPostPageProps {
   post: CatalogBlogPost;
   others: CatalogBlogPost[];
+  lang: Lang;
 }
 
-export default function BlogPostPage({ post, others }: BlogPostPageProps) {
-  const { t, lang } = useLang();
+export default function BlogPostPage({ post, others, lang }: BlogPostPageProps) {
+  const t = CONTENT[lang];
 
   return (
     <main>
@@ -115,7 +114,7 @@ export default function BlogPostPage({ post, others }: BlogPostPageProps) {
             </Reveal>
             <div className="mt-[46px] grid grid-cols-1 gap-[30px] sm:grid-cols-2 lg:grid-cols-3">
               {others.map((o, i) => (
-                <BlogCard key={o.slug} post={o} readMore={t.blogPage.readMore} delay={i % 4} />
+                <BlogCard key={o.slug} post={o} readMore={t.blogPage.readMore} lang={lang} delay={(i % 4) as 0 | 1 | 2 | 3} />
               ))}
             </div>
           </div>

@@ -1,14 +1,12 @@
-"use client";
-
-import { useLang } from "@/lib/LanguageContext";
+import { CONTENT, type Lang } from "@/lib/content";
 import { cx, ui } from "@/lib/ui";
-import CtaBand from "@/components/CtaBand";
+import CtaBand, { ctaLabels } from "@/components/CtaBand";
 import IconByName from "@/components/IconByName";
 import PageHead from "@/components/PageHead";
 import Reveal from "@/components/Reveal";
 
-export default function ServicesPage() {
-  const { t } = useLang();
+export default function ServicesPage({ lang }: { lang: Lang }) {
+  const t = CONTENT[lang];
   return (
     <main>
       <PageHead eyebrow={t.services.eyebrow} title={t.services.title} intro={t.services.intro} />
@@ -33,7 +31,7 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      <CtaBand compact />
+      <CtaBand labels={ctaLabels(t)} compact />
     </main>
   );
 }

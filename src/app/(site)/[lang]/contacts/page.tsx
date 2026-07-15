@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import ContactsPage from "@/components/pages/ContactsPage";
 import { getTours } from "@/lib/catalog";
 import { CONTENT } from "@/lib/content";
-import { isLocale, pageMetadata } from "@/lib/i18n";
+import { isLocale, pageMetadata, toLocale } from "@/lib/i18n";
 
 export const revalidate = 300;
 
@@ -13,7 +13,9 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   return pageMetadata(lang, "/contacts", t.contacts.title, t.contacts.intro);
 }
 
-export default async function Page() {
+export default async function Page({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
+  const locale = toLocale(lang);
   const tours = await getTours();
-  return <ContactsPage tourTitles={tours.map((tour) => tour.title)} />;
+  return <ContactsPage tourTitles={tours.map((tour) => tour.title)} lang={locale} t={CONTENT[locale]} />;
 }

@@ -1,13 +1,10 @@
-"use client";
-
 import Image from "next/image";
 import Link from "@/components/LocaleLink";
 import { ArrowRight } from "lucide-react";
-import { useLang } from "@/lib/LanguageContext";
 import type { CatalogBlogPost } from "@/lib/catalog-types";
 import type { Lang } from "@/lib/content";
 import { cx, ui } from "@/lib/ui";
-import { useReveal } from "./useReveal";
+import Reveal from "./Reveal";
 
 export function formatBlogDate(iso: string, lang: Lang) {
   try {
@@ -24,20 +21,17 @@ export function formatBlogDate(iso: string, lang: Lang) {
 interface BlogCardProps {
   post: CatalogBlogPost;
   readMore: string;
-  delay?: number;
+  lang: Lang;
+  delay?: 0 | 1 | 2 | 3;
 }
 
-export default function BlogCard({ post, readMore, delay = 0 }: BlogCardProps) {
-  const { lang } = useLang();
-  const { ref, cls } = useReveal<HTMLDivElement>();
-
+/** Server component, like TourCard: <Reveal> emits the same div useReveal used
+ *  to produce here, so the animation stays and the card itself is plain HTML. */
+export default function BlogCard({ post, readMore, lang, delay = 0 }: BlogCardProps) {
   return (
-    <div
-      ref={ref}
-      className={cx(
-        "group flex flex-col overflow-hidden rounded border border-content/10 bg-panel transition-all duration-[450ms] hover:-translate-y-2 hover:border-gold/40 hover:shadow-[0_28px_50px_-28px_rgba(0,0,0,0.7)]",
-        `reveal${delay ? ` d${delay}` : ""}${cls}`
-      )}
+    <Reveal
+      delay={delay}
+      className="group flex flex-col overflow-hidden rounded border border-content/10 bg-panel transition-all duration-[450ms] hover:-translate-y-2 hover:border-gold/40 hover:shadow-[0_28px_50px_-28px_rgba(0,0,0,0.7)]"
     >
       <Link href={`/blog/${post.slug}`} className="relative block h-[210px] overflow-hidden">
         <Image
@@ -64,6 +58,6 @@ export default function BlogCard({ post, readMore, delay = 0 }: BlogCardProps) {
           </span>
         </Link>
       </div>
-    </div>
+    </Reveal>
   );
 }

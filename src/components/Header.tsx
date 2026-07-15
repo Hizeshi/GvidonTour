@@ -7,7 +7,8 @@ import { ChevronDown, Moon, Sun } from "lucide-react";
 import { useLang } from "@/lib/LanguageContext";
 import { useTheme } from "@/lib/ThemeContext";
 import { A11Y_LABELS } from "@/lib/a11y";
-import { NAV_ROUTES, TOURS_MENU_LINKS, type NavKey } from "@/lib/content";
+import type { Dict, NavKey } from "@/lib/content";
+import { NAV_ROUTES, TOURS_MENU_LINKS } from "@/lib/site-data";
 import { stripLocale } from "@/lib/i18n";
 import { cx, ui } from "@/lib/ui";
 import LangSwitcher from "./LangSwitcher";
@@ -18,8 +19,17 @@ const NAV_KEYS: NavKey[] = ["home", "about", "tours", "gallery", "services", "ag
 const navBase =
   "relative cursor-pointer py-1 text-sm font-semibold tracking-[0.02em] transition-colors after:absolute after:-bottom-0.5 after:left-0 after:h-[1.5px] after:w-0 after:bg-gold after:transition-[width] after:duration-300 hover:after:w-full";
 
-export default function Header() {
-  const { t, lang } = useLang();
+export interface HeaderLabels {
+  brandTag: string;
+  nav: Dict["nav"];
+  toursMenu: Dict["toursMenu"];
+}
+
+/** Client island: scroll state, the mobile and desktop menus, and the theme
+ *  toggle all need the browser. Only its labels come from the server — the
+ *  locale still comes from context, which now carries nothing else. */
+export default function Header({ labels }: { labels: HeaderLabels }) {
+  const { lang } = useLang();
   const { theme, toggle } = useTheme();
   const a11y = A11Y_LABELS[lang];
   // Locale-agnostic path, so nav highlighting works the same on /ru, /en, /kk.
@@ -86,7 +96,7 @@ export default function Header() {
                 GVIDON TOUR
               </div>
               <div className="mt-1 hidden max-w-[170px] text-[8.5px] uppercase tracking-[0.2em] text-gold/85 md:block">
-                {t.brandTag}
+                {labels.brandTag}
               </div>
             </div>
           </Link>
@@ -116,7 +126,7 @@ export default function Header() {
                       }}
                       className={cx(navBase, "flex items-center gap-1", active ? "text-gold after:w-full" : navInactive)}
                     >
-                      {t.nav[key]}
+                      {labels.nav[key]}
                       <span className="lic text-[13px] transition-transform duration-300 group-hover:rotate-180 group-focus-within:rotate-180">
                         <ChevronDown />
                       </span>
@@ -136,7 +146,7 @@ export default function Header() {
                           href={link.href}
                           className="block cursor-pointer rounded-[2px] px-3.5 py-2.5 text-[13.5px] font-semibold text-content/75 transition-colors hover:bg-gold/10 hover:text-gold"
                         >
-                          {t.toursMenu[link.key]}
+                          {labels.toursMenu[link.key]}
                         </Link>
                       ))}
                     </div>
@@ -149,7 +159,7 @@ export default function Header() {
                   href={NAV_ROUTES[key]}
                   className={cx(navBase, active ? "text-gold after:w-full" : navInactive)}
                 >
-                  {t.nav[key]}
+                  {labels.nav[key]}
                 </Link>
               );
             })}
@@ -208,11 +218,11 @@ export default function Header() {
               <div key={key}>
                 <div className="flex items-center justify-between">
                   <Link href={NAV_ROUTES[key]} className={rowCls} onClick={() => setOpen(false)}>
-                    {t.nav[key]}
+                    {labels.nav[key]}
                   </Link>
                   <button
                     type="button"
-                    aria-label={t.nav[key]}
+                    aria-label={labels.nav[key]}
                     aria-expanded={toursOpen}
                     onClick={() => setToursOpen((v) => !v)}
                     className="flex h-9 w-9 cursor-pointer items-center justify-center text-content/55"
@@ -240,7 +250,7 @@ export default function Header() {
                           className="cursor-pointer py-2 text-[14.5px] font-semibold text-content/60 transition-colors hover:text-gold"
                           onClick={() => setOpen(false)}
                         >
-                          {t.toursMenu[link.key]}
+                          {labels.toursMenu[link.key]}
                         </Link>
                       ))}
                     </div>
@@ -251,7 +261,7 @@ export default function Header() {
           }
           return (
             <Link key={key} href={NAV_ROUTES[key]} className={rowCls} onClick={() => setOpen(false)}>
-              {t.nav[key]}
+              {labels.nav[key]}
             </Link>
           );
         })}

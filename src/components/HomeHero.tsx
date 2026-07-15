@@ -4,16 +4,20 @@ import Image from "next/image";
 import Link from "@/components/LocaleLink";
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
-import { useLang } from "@/lib/LanguageContext";
-import { HERO_SLIDES } from "@/lib/content";
+import type { Dict } from "@/lib/content";
+import { HERO_SLIDES } from "@/lib/site-data";
 import { cx, ui } from "@/lib/ui";
 import Reveal from "./Reveal";
 import { useSwipe } from "./useSwipe";
 
 const SLIDE_MS = 7000;
 
-export default function HomeHero() {
-  const { t } = useLang();
+/** Client island: auto-advancing slider, parallax and swipe.
+ *
+ *  It takes the handful of strings it needs as props. `Dict` is imported as a
+ *  type only — a value import of the dictionary here would undo the point of
+ *  the refactor and pull all three languages back into the browser. */
+export default function HomeHero({ hero, caps }: { hero: Dict["hero"]; caps: Dict["caps"] }) {
   const heroRef = useRef<HTMLElement | null>(null);
   const bgRef = useRef<HTMLDivElement | null>(null);
   const [slide, setSlide] = useState(0);
@@ -35,10 +39,10 @@ export default function HomeHero() {
   useEffect(() => {
     let raf = 0;
     const tick = () => {
-      const hero = heroRef.current;
+      const section = heroRef.current;
       const bg = bgRef.current;
-      if (hero && bg) {
-        const top = hero.getBoundingClientRect().top;
+      if (section && bg) {
+        const top = section.getBoundingClientRect().top;
         bg.style.transform = `translateY(${-top * 0.18}px)`;
       }
       raf = requestAnimationFrame(tick);
@@ -76,7 +80,7 @@ export default function HomeHero() {
             {(i === 0 || warm) && (
               <Image
                 src={s.src}
-                alt={t.caps[s.capIndex]}
+                alt={caps[s.capIndex]}
                 fill
                 priority={i === 0}
                 sizes="100vw"
@@ -91,7 +95,7 @@ export default function HomeHero() {
       <div className="absolute inset-0 z-[1] bg-[radial-gradient(120%_80%_at_18%_90%,rgba(0,21,47,0.7),transparent_60%)]" />
       <div className={cx(ui.wrap, "relative z-[2] pb-[9vh] text-ondark")}>
         <Reveal className={ui.eyebrow} immediate>
-          {t.hero.eyebrow}
+          {hero.eyebrow}
         </Reveal>
         <Reveal
           as="h1"
@@ -102,7 +106,7 @@ export default function HomeHero() {
           delay={1}
           immediate
         >
-          {t.hero.title}
+          {hero.title}
         </Reveal>
         <Reveal
           as="p"
@@ -110,17 +114,17 @@ export default function HomeHero() {
           delay={2}
           immediate
         >
-          {t.hero.sub}
+          {hero.sub}
         </Reveal>
         <Reveal className="mt-[38px] flex flex-wrap gap-4" delay={3} immediate>
           <Link href="/tours" className={ui.btnGold}>
-            {t.hero.cta1}
+            {hero.cta1}
             <span className="lic">
               <ArrowRight />
             </span>
           </Link>
           <Link href="/contacts" className={ui.btnGhost}>
-            {t.hero.cta2}
+            {hero.cta2}
           </Link>
         </Reveal>
       </div>
@@ -131,7 +135,7 @@ export default function HomeHero() {
             <button
               key={s.src}
               type="button"
-              aria-label={`${t.caps[s.capIndex]} (${i + 1})`}
+              aria-label={`${caps[s.capIndex]} (${i + 1})`}
               onClick={() => goTo(i)}
               className="group/dot flex h-6 min-w-6 cursor-pointer items-center justify-center p-0"
             >
@@ -149,7 +153,7 @@ export default function HomeHero() {
       )}
 
       <div className="absolute bottom-[26px] left-1/2 z-[3] hidden -translate-x-1/2 flex-col items-center gap-[9px] text-[10.5px] uppercase tracking-[0.26em] text-ondark/60 sm:flex [@media(max-height:760px)]:hidden">
-        <span>{t.hero.scroll}</span>
+        <span>{hero.scroll}</span>
         <span className="h-[46px] w-px animate-scrolln bg-gradient-to-b from-gold/90 to-transparent" />
       </div>
     </section>

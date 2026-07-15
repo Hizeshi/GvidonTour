@@ -17,6 +17,16 @@ export function isLocale(value: string): value is Lang {
   return (LOCALES as readonly string[]).includes(value);
 }
 
+/** Narrows the raw [lang] route param to a Lang.
+ *
+ *  Pages read `lang` from params as a plain string, but every server component
+ *  below them indexes the dictionary with it. The layout already 404s on an
+ *  unknown locale, so the fallback here is unreachable in practice — it exists
+ *  so a page can't be typed into indexing CONTENT with an arbitrary string. */
+export function toLocale(value: string): Lang {
+  return isLocale(value) ? value : DEFAULT_LOCALE;
+}
+
 /** Builds a locale-prefixed href from a locale-agnostic path.
  *  localeHref("/tours", "en") -> "/en/tours";  localeHref("/", "ru") -> "/ru" */
 export function localeHref(path: string, lang: Lang): string {

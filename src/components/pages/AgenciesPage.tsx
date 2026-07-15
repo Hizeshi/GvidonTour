@@ -1,16 +1,14 @@
-"use client";
-
 import Image from "next/image";
 import { MessageCircle } from "lucide-react";
-import { useLang } from "@/lib/LanguageContext";
-import { WHATSAPP_BOOKING } from "@/lib/content";
+import { CONTENT, type Lang } from "@/lib/content";
+import { WHATSAPP_BOOKING } from "@/lib/site-data";
 import { cx, ui } from "@/lib/ui";
 import IconByName from "@/components/IconByName";
 import PageHead from "@/components/PageHead";
 import Reveal from "@/components/Reveal";
 
-export default function AgenciesPage() {
-  const { t } = useLang();
+export default function AgenciesPage({ lang }: { lang: Lang }) {
+  const t = CONTENT[lang];
   const a = t.agencies;
   const waHref = `https://wa.me/${WHATSAPP_BOOKING}?text=${encodeURIComponent(a.bookMsg)}`;
 

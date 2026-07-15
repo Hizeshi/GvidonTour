@@ -1,29 +1,29 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, type ReactNode } from "react";
-import { CONTENT, type Dict, type Lang } from "./content";
+import { createContext, useContext, type ReactNode } from "react";
+import type { Lang } from "./content";
 
-interface LanguageContextValue {
-  lang: Lang;
-  t: Dict;
-}
+/** Carries **only the locale**, never the dictionary.
+ *
+ *  This provider used to import CONTENT and hand `t` to every consumer. Because
+ *  it is a client component, that shipped all three languages — a 62 KB chunk —
+ *  to every visitor, who then read one third of it. Worse, it forced every
+ *  component that wanted a translated string to be a client component too, so
+ *  practically the whole public site hydrated for nothing.
+ *
+ *  Now the dictionary stays on the server: server components read CONTENT[lang]
+ *  directly and the text arrives as finished HTML. The interactive islands that
+ *  genuinely need strings take them as props. What is left here is a two-letter
+ *  locale, kept in context only so LocaleLink can prefix hrefs without every
+ *  caller threading it through.
+ *
+ *  The locale comes from the [lang] URL segment (see (site)/[lang]/layout.tsx),
+ *  which is what makes the EN/KK pages indexable. Switching language is a
+ *  navigation (LangSwitcher), not state. */
+const LanguageContext = createContext<{ lang: Lang }>({ lang: "ru" });
 
-const LanguageContext = createContext<LanguageContextValue>({ lang: "ru", t: CONTENT.ru });
-
-/** The language is part of the URL (/ru, /en, /kk), so it arrives as a prop
- *  from the [lang] route segment instead of being read from localStorage.
- *  That way the server renders the right language for each URL — which is
- *  what makes the EN/KK versions indexable. Switching language is a
- *  navigation (see LangSwitcher), not local state. */
 export function LanguageProvider({ lang, children }: { lang: Lang; children: ReactNode }) {
-  // The root layout renders a static <html lang>, so keep the attribute in
-  // sync with the active locale for screen readers and browser translation.
-  useEffect(() => {
-    document.documentElement.lang = lang;
-  }, [lang]);
-
-  const value = useMemo(() => ({ lang, t: CONTENT[lang] }), [lang]);
-  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
+  return <LanguageContext.Provider value={{ lang }}>{children}</LanguageContext.Provider>;
 }
 
 export function useLang() {

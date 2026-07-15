@@ -1,8 +1,6 @@
-"use client";
-
 import Link from "@/components/LocaleLink";
-import { useLang } from "@/lib/LanguageContext";
-import { EMAIL, NAV_ROUTES, PHONE, PHONE_2, PHONE_2_HREF, PHONE_HREF, type NavKey } from "@/lib/content";
+import { CONTENT, type Lang, type NavKey } from "@/lib/content";
+import { EMAIL, NAV_ROUTES, PHONE, PHONE_2, PHONE_2_HREF, PHONE_HREF } from "@/lib/site-data";
 import { cx, ui } from "@/lib/ui";
 import CurrencyTicker from "./CurrencyTicker";
 import Logo from "./Logo";
@@ -12,8 +10,10 @@ const NAV_KEYS: NavKey[] = ["home", "about", "tours", "gallery", "services", "ag
 const footLink =
   "block cursor-pointer py-1.5 text-[14.5px] text-content/70 transition-colors hover:text-gold";
 
-export default function Footer() {
-  const { t } = useLang();
+/** Server component. Everything here is static text and links; the only live
+ *  part is CurrencyTicker, which stays a client island nested inside. */
+export default function Footer({ lang }: { lang: Lang }) {
+  const t = CONTENT[lang];
   return (
     <footer className="border-t border-gold/15 bg-footer pb-[34px] pt-[74px]">
       <div className={ui.wrap}>
@@ -63,7 +63,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-[54px] border-t border-content/10 pt-[26px]">
-          <CurrencyTicker />
+          <CurrencyTicker label={t.currencyLabel} />
         </div>
         <div className="mt-[22px] flex flex-wrap items-center justify-between gap-3.5 text-[13px] text-content/60">
           <span>© 2026 GVIDON TOUR. {t.footer.rights}</span>

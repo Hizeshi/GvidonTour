@@ -1,23 +1,21 @@
-"use client";
-
-import { useLang } from "@/lib/LanguageContext";
+import { CONTENT, type Lang } from "@/lib/content";
 import type { CatalogReview } from "@/lib/catalog-types";
 import { cx, ui } from "@/lib/ui";
-import CtaBand from "@/components/CtaBand";
+import CtaBand, { ctaLabels } from "@/components/CtaBand";
 import PageHead from "@/components/PageHead";
 import Reveal from "@/components/Reveal";
 import ReviewSubmitForm from "@/components/ReviewSubmitForm";
 import ReviewsGrid from "@/components/ReviewsGrid";
 
-export default function ReviewsPage({ reviews }: { reviews: CatalogReview[] }) {
-  const { t } = useLang();
+export default function ReviewsPage({ reviews, lang }: { reviews: CatalogReview[]; lang: Lang }) {
+  const t = CONTENT[lang];
   return (
     <main>
       <PageHead eyebrow={t.reviewsPage.eyebrow} title={t.reviewsPage.title} intro={t.reviewsPage.intro} />
 
       <section className={cx(ui.sec, "pt-16")}>
         <div className={ui.wrap}>
-          <ReviewsGrid reviews={reviews} expandable={false} />
+          <ReviewsGrid reviews={reviews} lang={lang} labels={t.homeReviews} expandable={false} />
         </div>
       </section>
 
@@ -28,12 +26,12 @@ export default function ReviewsPage({ reviews }: { reviews: CatalogReview[] }) {
             <div className={cx(ui.divider, "mx-auto")} />
           </Reveal>
           <div className="mt-10">
-            <ReviewSubmitForm />
+            <ReviewSubmitForm lang={lang} t={t} />
           </div>
         </div>
       </section>
 
-      <CtaBand compact />
+      <CtaBand labels={ctaLabels(t)} compact />
     </main>
   );
 }

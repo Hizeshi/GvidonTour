@@ -1,13 +1,16 @@
-"use client";
-
-import { useLang } from "@/lib/LanguageContext";
+import { CONTENT, type Lang } from "@/lib/content";
 import { cx } from "@/lib/ui";
 import IconByName from "./IconByName";
 import Reveal from "./Reveal";
 
-/** tone: "dark" for navy sections, "cream" for the light section on the home page. */
-export default function ValuesGrid({ tone = "dark" }: { tone?: "dark" | "cream" }) {
-  const { t } = useLang();
+/** Server component: the text is baked into the HTML and no dictionary reaches
+ *  the browser. Reveal below stays a client component, but children rendered on
+ *  the server pass through it as an opaque slot — a client parent doesn't drag
+ *  its children onto the client.
+ *
+ *  tone: "dark" for navy sections, "cream" for the light section on the home page. */
+export default function ValuesGrid({ lang, tone = "dark" }: { lang: Lang; tone?: "dark" | "cream" }) {
+  const t = CONTENT[lang];
   const card =
     tone === "cream"
       ? "border-altcontent/10 bg-altpanel hover:border-gold/60"

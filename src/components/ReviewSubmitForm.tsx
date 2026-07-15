@@ -1,8 +1,8 @@
 "use client";
 
+import type { Dict, Lang } from "@/lib/content";
 import { useRef, useState } from "react";
 import { CheckCircle2, Send, Star, UploadCloud } from "lucide-react";
-import { useLang } from "@/lib/LanguageContext";
 import { cx, ui } from "@/lib/ui";
 import Reveal from "@/components/Reveal";
 import Turnstile from "@/components/Turnstile";
@@ -23,8 +23,8 @@ const ERROR_KEY: Record<string, "errorInvalid" | "errorLimit" | "errorCaptcha" |
 
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? null;
 
-export default function ReviewSubmitForm() {
-  const { t, lang } = useLang();
+/** Client island: a form with a captcha. Takes the dictionary as a prop. */
+export default function ReviewSubmitForm({ lang, t }: { lang: Lang; t: Dict }) {
   const [author, setAuthor] = useState("");
   const [rating, setRating] = useState(5);
   const [text, setText] = useState("");

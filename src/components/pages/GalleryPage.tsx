@@ -3,9 +3,9 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Expand, PlayCircle } from "lucide-react";
-import { useLang } from "@/lib/LanguageContext";
 import { A11Y_LABELS } from "@/lib/a11y";
 import type { CatalogGalleryItem } from "@/lib/catalog-types";
+import type { Dict, Lang } from "@/lib/content";
 import { cx, ui } from "@/lib/ui";
 import Lightbox from "@/components/Lightbox";
 import PageHead from "@/components/PageHead";
@@ -15,8 +15,7 @@ import { useSwipe } from "@/components/useSwipe";
 const gnav =
   "absolute top-1/2 z-[5] flex h-[54px] w-[54px] -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-ondark/25 bg-[rgba(0,16,36,0.5)] text-[22px] text-white backdrop-blur-[6px] transition-colors hover:border-gold hover:bg-gold hover:text-onaccent";
 
-export default function GalleryPage({ items }: { items: CatalogGalleryItem[] }) {
-  const { t, lang } = useLang();
+export default function GalleryPage({ items, lang, t }: { items: CatalogGalleryItem[]; lang: Lang; t: Dict }) {
   const a11y = A11Y_LABELS[lang];
   const [slide, setSlide] = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);

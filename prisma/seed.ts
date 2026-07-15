@@ -1,17 +1,8 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Prisma, PrismaClient } from "../src/generated/prisma/client";
-import {
-  BLOG_META,
-  CATEGORY_DATA,
-  CONTENT,
-  DIRECTION_DATA,
-  GRID_IMAGES,
-  GRID_SPANS,
-  REVIEW_DATA,
-  TOUR_IMAGES,
-  TOUR_META,
-} from "../src/lib/content";
+import { CONTENT } from "../src/lib/content";
+import { BLOG_META, CATEGORY_DATA, DIRECTION_DATA, GRID_IMAGES, GRID_SPANS, REVIEW_DATA, TOUR_IMAGES, TOUR_META } from "../src/lib/site-data";
 import { TOUR_DETAILS } from "../src/lib/tour-details";
 
 const prisma = new PrismaClient({

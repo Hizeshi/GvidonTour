@@ -1,17 +1,7 @@
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
-import {
-  ACHIEVEMENT_DATA,
-  BLOG_META,
-  CATEGORY_DATA,
-  CONTENT,
-  DIRECTION_DATA,
-  GRID_IMAGES,
-  GRID_SPANS,
-  REVIEW_DATA,
-  TOUR_IMAGES,
-  TOUR_META,
-} from "./content";
+import { CONTENT } from "./content";
+import { ACHIEVEMENT_DATA, BLOG_META, CATEGORY_DATA, DIRECTION_DATA, GRID_IMAGES, GRID_SPANS, REVIEW_DATA, TOUR_IMAGES, TOUR_META } from "./site-data";
 import type {
   CatalogAchievement,
   CatalogBlogPost,

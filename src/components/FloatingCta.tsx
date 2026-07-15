@@ -3,11 +3,10 @@
 import Link from "@/components/LocaleLink";
 import { usePathname } from "next/navigation";
 import { MessageCircle } from "lucide-react";
-import { useLang } from "@/lib/LanguageContext";
 import { stripLocale } from "@/lib/i18n";
 
-export default function FloatingCta() {
-  const { t } = useLang();
+/** Client island: it hides itself on /contacts, which needs the current path. */
+export default function FloatingCta({ label }: { label: string }) {
   const pathname = usePathname();
   if (stripLocale(pathname) === "/contacts") return null;
 
@@ -21,7 +20,7 @@ export default function FloatingCta() {
         <MessageCircle />
       </span>
       <span className="max-w-0 overflow-hidden whitespace-nowrap text-sm font-bold tracking-[0.02em] opacity-0 transition-all duration-300 group-hover:ml-2.5 group-hover:max-w-[160px] group-hover:opacity-100">
-        {t.hero.cta2}
+        {label}
       </span>
     </Link>
   );
